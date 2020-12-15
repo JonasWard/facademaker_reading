@@ -60,8 +60,10 @@ def string_reader(string):
         coords = [c.replace('\n', '') for c in coords]
         for i, c in enumerate(coords):
             if c is None or c == '':
-                coords[i] = 0.0
-        loc_dict["mid"] = [float(c) for c in coords]
+                coords[i] = None
+            else:
+                coords[i] = float(c)
+        loc_dict["mid"] = coords
     except:
         print("no mid tag present")
 

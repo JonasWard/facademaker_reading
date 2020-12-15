@@ -49,8 +49,19 @@ def centerpoint(l, w, a, b, h0, h1):
 
 # q4
 def four_squares(l, w, a, b, h0, h1, h2, h3):
-    h_list = [h0, h1, h2, h3]
-    b_pts = simple_square(l * a, w * b, None)
-    l_list = [a * l, a * l, (1 - a) * l, (1 - a) * l]
-    w_list = [b * w, (1 - b) * w, (1 - b) * w, b * w]
-    return [simple_square_with_b_pt(b_pts[i], l_list[i], w_list[i], h_list[i]) for i in range(4)]
+    h_list = [[h0, h1], [h3, h2]]
+    x_base = [0, a * l]
+    l_list = [a * l, (1.0 - a) * l]
+    y_base = [0, b * w]
+    w_list = [b * w, (1.0 - b) * w]
+    
+    global_list = []
+    for i, x in enumerate(x_base):
+        row_list = []
+        l = l_list[i]
+        for j, y in enumerate(y_base):
+            row_list.append(simple_square_with_b_pt([x, y], l, w_list[j], h_list[i][j]))
+
+        global_list.append(row_list)
+
+    return global_list
