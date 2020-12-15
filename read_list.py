@@ -4,6 +4,7 @@ f = open("links.csv", 'r')
 
 dicts = []
 tag_lists = []
+type_list = []
 
 for string in f.readlines():
     dicts.append(string_reader(string) )
@@ -12,3 +13,5 @@ for string in f.readlines():
 print(set(tag_lists) )
 print(dicts)
 
+print(set([d["ft"] for d in dicts]) )
+ 

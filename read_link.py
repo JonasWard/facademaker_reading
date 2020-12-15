@@ -65,7 +65,10 @@ def string_reader(string):
     except:
         print("no mid tag present")
 
-    loc_dict["ftypo"] = bin(int(loc_dict["ftypo"], 32))
+    try:
+        loc_dict["ftypo"] = bin(int(loc_dict["ftypo"], 32))
+    except:
+        loc_dict["ftypo"] = bin(int(2))
 
     return loc_dict
 
