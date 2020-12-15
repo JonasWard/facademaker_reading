@@ -1,18 +1,28 @@
-def string_to_dict(string):
-
+def clean_string(string):
     parts = string.split('/')
     part = parts[-1]
 
-    # print(part)
     part = part.replace('?', '')
+    part = part.replace("index.php", '')
     segments = part.split('&')
-    # print(segments)
+
+    return segments
+
+def string_to_dict(string):
     loc_dict = {}
-    for seg in segments:
+    for seg in clean_string(string):
         a, b = seg.split('=')
         loc_dict[a] = b
 
     return loc_dict
+
+def complete_tag_list(string):
+    tag_list = []
+    for seg in clean_string(string):
+        a, b = seg.split('=')
+        tag_list.append(a)
+
+    return tag_list
 
 def string_reader(string):
 
@@ -44,6 +54,16 @@ def string_reader(string):
                 print("wrong float_tag {} : {}".format(float_tag, loc_dict[float_tag] ) )
             except:
                 print("non present float_tag {}".format(float_tag) )
+
+    try:
+        coords = loc_dict["mid"].split("%2C")
+        coords = [c.replace('\n', '') for c in coords]
+        for i, c in enumerate(coords):
+            if c is None or c == '':
+                coords[i] = 0.0
+        loc_dict["mid"] = [float(c) for c in coords]
+    except:
+        print("no mid tag present")
 
     loc_dict["ftypo"] = bin(int(loc_dict["ftypo"], 32))
 
