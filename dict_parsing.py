@@ -22,6 +22,8 @@ def side_detection_lifted(heights):
 def is_complex(d_d):
     return not(not(d_d["mirrh"]) and not(d_d["mirrv"]) and not(d_d["konh"]) and not(d_d["konv"]) and d_d["roth"] == 0 and d_d["rotv"] == 0)
 
+def height_flipping(hs, bot_rot = 0, right_rot = 0, )
+
 def check_reflections_double(d_d, h0, h1, side):
     print("double reflections check")
     hs = [h0, h1]
@@ -32,10 +34,9 @@ def check_reflections_double(d_d, h0, h1, side):
 
     else:
         print("reflections and rotations to consider, I am complex")
-        p_list = [[hs[:], s] for i in range(4)]
+        p_list = [ [ [ hs[:], side ] for i in range(2)] for i in range(2) ]
 
         return True, p_list
-
 
 def check_reflections_quad(d_d, h0, h1, h2, h3, a, b):
     print("quad reflections check")
@@ -48,13 +49,9 @@ def check_reflections_quad(d_d, h0, h1, h2, h3, a, b):
 
     else:
         print("reflections and rotations to consider, I am complex")
-        p_list = [[hs[:], ab[:]] for i in range(4)]
+        p_list = [ [ [ hs[:], ab[:] ] for i in range(2)] for i in range(2) ]
 
         return True, p_list   # is complex, parameters
-
-
-
-    
 
 def string_to_pointsets(d_d, xy_dimension = 750, z_dimension = 100, def_h = .2):
     pts, shp, rshift, xres, yres = "pts", "shp", "rshift", "xres", "yres"
@@ -87,13 +84,6 @@ def string_to_pointsets(d_d, xy_dimension = 750, z_dimension = 100, def_h = .2):
     output_dict = {pts : [], shp : (2, 2), rshift : 0, xres : 5, yres : 6}
 
     try:
-        if d_d[]
-            is_complex = 
-    except:
-        print("was not able to find out reflexions and rotations, complex is OFF")
-        is_complex = False
-
-    try:
         if d_d["ft"] == "q1":
             h = h0
             print("function: single value square")
@@ -107,7 +97,7 @@ def string_to_pointsets(d_d, xy_dimension = 750, z_dimension = 100, def_h = .2):
             if is_complex:
                 pass
             else:
-                output_dict[pts].extend(four_squares.simple_square(l, w, a, b, h0, h1, h2, h3) )
+                output_dict[pts].extend(type_generation.simple_square(l, w, a, b, h0, h1, h2, h3) )
         elif d_d["ft"] == "d2":
             print("function: all sides lifted")
         elif d_d["ft"] == "d4":
