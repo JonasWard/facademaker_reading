@@ -22,7 +22,7 @@ def side_detection_lifted(heights):
 def is_complex(d_d):
     return not(not(d_d["mirrh"]) and not(d_d["mirrv"]) and not(d_d["konh"]) and not(d_d["konv"]) and d_d["roth"] == 0 and d_d["rotv"] == 0)
 
-def height_flipping(hs, bot_rot = 0, right_rot = 0, )
+def height_flipping(hs, bot_rot = 0, right_rot = 0, bot_flip = False, right_flip = False)
 
 def check_reflections_double(d_d, h0, h1, side):
     print("double reflections check")
