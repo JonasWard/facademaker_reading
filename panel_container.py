@@ -26,4 +26,4 @@ class SimplePanel:
 
 class WithCenterpoin(SimplePanel):
     def __init__(self, corners_2D, heights, centerpoint):
-        self.
+        __super__.
