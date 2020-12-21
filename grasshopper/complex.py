@@ -566,7 +566,7 @@ class Center(Base):
         self.start_run()
         self.pts=boundary
         if orient:
-            self.pts=self.orient_pts(pts, 0)
+            self.pts=self.orient_pts(self.pts, 0)
         self.pts=[center]+self.pts
 
         self.f_list=self.construct_graph()

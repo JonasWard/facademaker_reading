@@ -67,6 +67,15 @@ def string_reader(string):
     except:
         print("no mid tag present")
 
+    hs = []
+    for h_tag in ["c00", "c01", "c10", "c11"]:
+        try:
+            hs.append(loc_dict[h_tag])
+        except:
+            print("no tag {} found in this data_dict".format(h_tag))
+
+    loc_dict["hs"] = hs
+
     try:
         loc_dict["ftypo"] = bin(int(loc_dict["ftypo"], 32))
     except:
