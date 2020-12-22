@@ -24,6 +24,38 @@ def complete_tag_list(string):
 
     return tag_list
 
+def ftypo_handling(data_dict):
+    key_name = "ftypo"
+    found_key = False
+    for key in data_dict.keys():
+        if "ftypo" in key:
+            found_key = True
+            key_name = key
+            ftypo = data_dict["key"]
+            break
+    
+    if not(found_key):
+        print("no ftypo found, populated with all int 1")
+        row = [ 1 for i in range( data_dict["fgh"] ) ]
+        data_dict["ftypo"] = [ row[:] for i in range( data_dict["fgv"] ) ]
+    
+    else:
+        if key_name == "ftypo":
+            ftypo = str( bin (int (data_dict["ftypo"], 32 ) ) )
+            ftypo = [ftypo[i * data_dict["fgh"] : (i + 1) * data_dict["fgh"]] for i in range(data_dict["fgv"])]
+            ftypo = [ [int(c) for c in chars] for chars in ftypo]
+
+        else:
+            key_remainder = int(key_name.replace("ftypo", '') )
+            ftypo = data_dict["ftypo"].split('_')
+            ftypo = [int(chars, 36) for chars in ftypo]
+            # conversion line missing
+            ftypo = str(ftypo)
+            ftypo = [ftypo[i * data_dict["fgh"] : (i + 1) * data_dict["fgh"]] for i in range(data_dict["fgv"])]
+            ftypo = [ [int(c) for c in chars] for chars in ftypo]
+
+    
+
 def string_reader(string):
 
     loc_dict = string_to_dict(string)

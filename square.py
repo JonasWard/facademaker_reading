@@ -45,7 +45,6 @@ class Square:
 
     def flip_in_out(self):
         self._in_out = not(self._in_out)
-
     
     def get_pts(self):
         b_pts = [ ( 0, 0, self.hs[0] ), ( self.l, 0, self.hs[1] ), ( self.l, self.w, self.hs[2] ), ( 0, self.w, self.hs[3] ) ]

@@ -125,44 +125,43 @@ def set_heights(data_dict, base_parameters = None, minimum_height = .2):
     return data_dict
 
 def gen_points(data_dict):
-    
-    
     return data_dict
 
 def rot_ref_dir_vis(data_dict):
     m, n = data_dict["mns"]['m'], data_dict["mns"]['n']
 
-    rot_y = 0
-    flip_y = 0
-    inside_y = 0
+    rot_v = 0
+    flip_v = 0
+    inside_v = 0
 
     values = []
 
     for j in range(n): # through each row
 
-        rot_x = 0
-        flip_x = 0
-        inside_x = 0
+        rot_h = 0
+        flip_h = 0
+        inside_h = 0
         
         row_values = []
         
         for i in range(m): # through each column
             
-            row_values.append([
-                (rot_x + rot_y) % 4,
-                bool( (flip_y + flip_x) % 2),
-                bool( (inside_y + inside_x) % 2)
-            ])
+            row_values.append({
+                "flip_h": bool (flip_h % 2),
+                "flip_v": bool (flip_v % 2),
+                "inside": bool ( (inside_v + inside_h) % 2),
+                "rotation": (rot_h + rot_v) % 4
+            })
             
-            rot_x += data_dict["roth"]
-            flip_x += data_dict["mirrh"]
-            inside_x += data_dict["konh"]
+            rot_h += data_dict["roth"]
+            flip_h += data_dict["mirrh"]
+            inside_h += data_dict["konh"]
 
         values.append(row_values)
 
-        rot_y += data_dict["rotv"]
-        flip_y += data_dict["mirrv"]
-        inside_y += data_dict["konv"]
+        rot_v += data_dict["rotv"]
+        flip_v += data_dict["mirrv"]
+        inside_v += data_dict["konv"]
 
     data_dict["rmd"] = values
 
