@@ -16,7 +16,10 @@ def generate_rnd_values(x_dim, y_dim, base):
         string_set.append(baseconvert(string, 36))
         ori_strings.append(ori_string)
     
-    return 'ftypo' + str(base) + '=' + '_'.join(string_set), '_'.join(ori_strings)
+    if base == 1:
+        return 'ftypo=' + ''.join(string_set), '_'.join(ori_strings)
+    else:
+        return 'ftypo' + str(base) + '=' + '_'.join(string_set), '_'.join(ori_strings)
 
 if __name__ == "__main__":
     examples = [
@@ -39,7 +42,7 @@ if __name__ == "__main__":
         refs.append(ref)
 
     
-    this_file.write('\n'.join( ftypos ) )
-    other_file.write('\n'.join( refs ) )
+    this_file.write('\n'.join( ftypos )+'\n' )
+    other_file.write('\n'.join( refs )+'\n' )
     this_file.close()
     other_file.close()

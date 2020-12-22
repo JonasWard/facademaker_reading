@@ -1,3 +1,5 @@
+from skittzles.base_conversions import baseconvert
+
 def clean_string(string):
     parts = string.split('/')
     part = parts[-1]
@@ -25,13 +27,11 @@ def complete_tag_list(string):
     return tag_list
 
 def ftypo_handling(data_dict):
-    key_name = "ftypo"
     found_key = False
     for key in data_dict.keys():
         if "ftypo" in key:
             found_key = True
-            key_name = key
-            ftypo = data_dict["key"]
+            ftypo = data_dict[key]
             break
     
     if not(found_key):
@@ -40,21 +40,20 @@ def ftypo_handling(data_dict):
         data_dict["ftypo"] = [ row[:] for i in range( data_dict["fgv"] ) ]
     
     else:
-        if key_name == "ftypo":
-            ftypo = str( bin (int (data_dict["ftypo"], 32 ) ) )
+        if key == "ftypo":
+            ftypo = str( bin (int (data_dict["ftypo"], 32 ) ) )[2:]
             ftypo = [ftypo[i * data_dict["fgh"] : (i + 1) * data_dict["fgh"]] for i in range(data_dict["fgv"])]
             ftypo = [ [int(c) for c in chars] for chars in ftypo]
 
         else:
-            key_remainder = int(key_name.replace("ftypo", '') )
-            ftypo = data_dict["ftypo"].split('_')
-            ftypo = [int(chars, 36) for chars in ftypo]
-            # conversion line missing
-            ftypo = str(ftypo)
-            ftypo = [ftypo[i * data_dict["fgh"] : (i + 1) * data_dict["fgh"]] for i in range(data_dict["fgv"])]
-            ftypo = [ [int(c) for c in chars] for chars in ftypo]
+            key_remainder = int(key.replace("ftypo", '') )
+            ftypo = data_dict[key].split('_')
+            ftypo = [baseconvert(int(chars, 36), 2 ** key_remainder) for chars in ftypo]
+            ftypo = [ [int(c) for c in str(number)] for number in ftypo]
 
-    
+    data_dict["ftypo"] = ftypo
+
+    return data_dict
 
 def string_reader(string):
 
@@ -108,10 +107,7 @@ def string_reader(string):
 
     loc_dict["hs"] = hs
 
-    try:
-        loc_dict["ftypo"] = bin(int(loc_dict["ftypo"], 32))
-    except:
-        loc_dict["ftypo"] = bin(int(2))
+    loc_dict = ftypo_handling(loc_dict)
 
     return loc_dict
 
