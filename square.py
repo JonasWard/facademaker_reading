@@ -20,6 +20,13 @@ class Square:
         self.h_in = h_in
         self.h_out = h_out
 
+    def clone(self):
+        new_square = Square(self.l, self.w, self.hs, self.ls)
+        if self._has_center:
+            new_square.add_center(self.a, self.b, self.h_in, self.h_out)
+
+        return new_square
+
     def rotate(self, count):
         tmp_hs = [ self.hs[ (i + count) % 4 ] for i in range(4) ]
         self.hs = tmp_hs

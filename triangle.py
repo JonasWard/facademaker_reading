@@ -1,5 +1,5 @@
 class Triangle:
-    def __init__(self, l, w, hs, rel_top_shift = 0.0):
+    def __init__(self, l, w, hs, rel_top_shift = 0.0, is_up = True):
         self.l = l
         self.w = w
         self.hs = hs # 00, 10, 11
@@ -9,7 +9,10 @@ class Triangle:
         if not( len(hs) == 3 ) :
             raise ValueError("only takes 3 inputs for heights, given {}".format(len(hs)))
 
-        self._is_up = True
+        self._is_up = is_up
+
+    def clone(self):
+        return Triangle(self.l, self.w, self.hs, self.ls, self._is_up)
 
     def rotate(self, count):
         tmp_hs = [ self.hs[ (i + count) % 3 ] for i in range(3) ]
