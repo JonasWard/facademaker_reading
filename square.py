@@ -31,12 +31,13 @@ class Square:
         tmp_hs = [ self.hs[ (i + count) % 4 ] for i in range(4) ]
         self.hs = tmp_hs
 
-        self.a, self.b = [
-            (self.a, self.b),
-            (1 - self.a, self.b),
-            (1 - self.a, 1 - self.b),
-            (self.a, 1 - self.b)
-        ][count % 4]
+        if self._has_center:
+            self.a, self.b = [
+                (self.a, self.b),
+                (1 - self.a, self.b),
+                (1 - self.a, 1 - self.b),
+                (self.a, 1 - self.b)
+            ][count % 4]
 
     def flip_h(self):
         tmp_hs = [ self.hs[i] for i in [3, 2, 1, 0] ]

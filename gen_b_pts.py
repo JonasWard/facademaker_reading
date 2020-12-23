@@ -1,4 +1,6 @@
 # import Rhino.Geometry as rg
+from triangle import Triangle
+from square import Square
 
 def create_mns(m, n, shift = 0):
     mns_obj = {'m': m,'n': n,'s': shift}
@@ -45,11 +47,15 @@ def has_multiple_types(data_dict):
 
 def mns_gen(data_dict):
     global f_dict
+
+    data_dict["mapping"] = f_dict[data_dict["ft"]]["mns_single"]
     
     if has_multiple_types:
-        return f_dict[data_dict["ft"]]["mns_complex"]
+        data_dict["mns"] = f_dict[data_dict["ft"]]["mns_complex"]
     else:
-        return f_dict[data_dict["ft"]]["mns_single"]
+        data_dict["mns"] = f_dict[data_dict["ft"]]["mns_single"]
+
+    return data_dict
 
 def extend_data_dict(data_dict):
     global f_dict
@@ -59,8 +65,7 @@ def extend_data_dict(data_dict):
         data_dict = set_abh_mid(data_dict)
 
     data_dict["pt_cnt"] = f_dict[data_dict["ft"]]["pt_cnt"]
-    data_dict["mns"] = mns_gen(data_dict)
-    data_dict["mapping"] = f_dict[data_dict["ft"]]["mns_single"]
+    data_dict = mns_gen(data_dict)
     data_dict["co_planar"] = f_dict[data_dict["ft"]]["co_planar"]
 
     return data_dict
@@ -91,6 +96,8 @@ def set_heights(data_dict, base_parameters = None, minimum_height = .2):
         base_parameters = default_base_parameters
 
     xy_dim = base_parameters["z_dim"]
+
+    data_dict["xy_dim"] = xy_dim
 
     # checking if an adequate amount of heights are available, if not adding
     hs = [ h * xy_dim for h in data_dict["hs"] ]
@@ -124,10 +131,49 @@ def set_heights(data_dict, base_parameters = None, minimum_height = .2):
 
     return data_dict
 
-def gen_points(data_dict):
+def gen_objects(data_dict):
+    base_object = None
+    if data_dict["pt_cnt"] == 3:
+        base_object = Triangle(
+            l = data_dict["xy_dim"],
+            w = data_dict["xy_dim"] * data_dict["frat"],
+            hs = data_dict["hs"]
+        )
+    elif data_dict["pt_cnt"] == 4:
+        base_object = Square(
+            l = data_dict["xy_dim"],
+            w = data_dict["xy_dim"] * data_dict["frat"],
+            hs = data_dict["hs"]
+        )
+
+    base_set = []
+    mns = data_dict["mns"]
+    m, n = mns['m'], mns['n']
+
+    for i in range(m):
+        row = []
+        for j in range(n):
+            loc_obj = base_object.clone()
+
+            if (data_dict["rmd"][i][j]["flip_h"]):
+                loc_obj.flip_h()
+
+            if (data_dict["rmd"][i][j]["flip_v"]):
+                loc_obj.flip_v()
+
+            if (data_dict["rmd"][i][j]["inside"]):
+                loc_obj.flip_in_out()
+
+            loc_obj.rotate(data_dict["rmd"][i][j]["rotation"])
+
+            row.append(loc_obj)
+        base_set.append(row)
+
+    data_dict["object_set"] = base_set
+
     return data_dict
 
-def rot_ref_dir_vis(data_dict):
+def rot_ref_dir(data_dict):
     m, n = data_dict["mns"]['m'], data_dict["mns"]['n']
 
     rot_v = 0
@@ -170,5 +216,7 @@ def rot_ref_dir_vis(data_dict):
 def initialize_points(data_dict, base_parameters = None, minimum_height = .2):
     data_dict = extend_data_dict(data_dict)
     data_dict = set_heights(data_dict, base_parameters, minimum_height)
+    data_dict = rot_ref_dir(data_dict)
+    data_dict = gen_objects(data_dict)
 
     return data_dict

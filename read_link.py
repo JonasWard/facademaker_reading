@@ -1,4 +1,4 @@
-from skittzles.base_conversions import baseconvert
+from base_conversions import baseconvert
 
 def clean_string(string):
     parts = string.split('/')
