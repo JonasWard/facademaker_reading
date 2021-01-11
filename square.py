@@ -1,5 +1,5 @@
 class Square:
-    def __init__(self, l, w, hs, ls = 0.0):
+    def __init__(self, l, w, hs, ls = 0.0, b_pt = None):
         self.l = l
         self.w = w
         self.hs = hs # 00, 10, 11, 01
@@ -11,6 +11,9 @@ class Square:
         self._b_shift = True # True = bottom, False = top
         self._has_center = False
         self._in_out = False
+
+        self.b_pt = b_pt
+        self._has_base = not(self.b_pt is None)
 
     def add_center(self, a, b, h_in, h_out):
         self._has_center = True
@@ -57,9 +60,38 @@ class Square:
 
     def flip_in_out(self):
         self._in_out = not(self._in_out)
+
+    def create_corner_points(self):
+        corner_pts = [
+            [ 0, 0, self.hs[0] ],
+            [ self.l, 0, self.hs[1] ],
+            [ self.l, self.w, self.hs[2] ],
+            [ 0, self.w, self.hs[3] ]
+        ]
+
+        if self._has_base:
+            for c_pt in corner_pts:
+                c_pt[0] += self.b_pt[0]
+                c_pt[1] += self.b_pt[1]
+
+        return corner_pts
+
+    @property
+    def center_point(self):
+        center_pt = [
+            self.a * self.l,
+            self.b * self.w,
+            [self.h_in, self.h_out][self._in_out]
+        ]
+
+        if self._has_base:
+            center_pt[0] += self.b_pt[0]
+            center_pt[1] += self.b_pt[1]
+
+        return center_pt
     
     def get_pts(self):
-        b_pts = [ [ 0, 0, self.hs[0] ], [ self.l, 0, self.hs[1] ], [ self.l, self.w, self.hs[2] ], [ 0, self.w, self.hs[3] ] ]
+        b_pts = self.create_corner_points()
         
         # apply shift
         if self._b_shift:
@@ -72,11 +104,39 @@ class Square:
         if self._in_out and not(self._has_center): # order switch for square type
             b_pts = b_pts[1:] + [ b_pts[0] ]
 
-
         if self._has_center:
-            return b_pts, (self.a * self.l, self.b * self.w, [self.h_in, self.h_out][self._in_out])
+            return b_pts, self.center_point
         else:
             return b_pts
 
-    
+    def split(self, with_center = False):
+        if not(self._has_center):
+            print("had to initialize a,b values, cause not present ...")
+            self.a = .5
+            self.b = .5
 
+        ### will right now only work double subdivision ###
+        ws = [self.b * self.w, (1.0 - self.b) * self.w]
+        y_bases = [0.0, self.b * self.w]
+
+        ls = [self.a * self.l, (1.0 - self.a) * self.l]
+        x_bases = [0.0, self.a * self.l]
+
+        hs_remap = [
+            [self.hs[0], self.hs[1]],
+            [self.hs[3], self.hs[2]]
+        ]
+
+        new_squares = []
+
+        for j in range(2):
+            w = ws[j]             
+            y_base = y_bases[j]
+
+            for i in range(2):
+                l = ls[i]
+                x_base = x_bases[i]
+
+                loc_hs = [hs_remap[j][i] for i in range(4)]
+
+                new_squares.append( Square(l, w, loc_hs, [x_base, y_base] ) )
