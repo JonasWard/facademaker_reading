@@ -1,4 +1,4 @@
-class Triangle:
+class TriangleData:
     def __init__(self, l, w, hs, rel_top_shift = 0.0, is_up = True):
         self.l = l
         self.w = w
@@ -12,7 +12,7 @@ class Triangle:
         self._is_up = is_up
 
     def clone(self):
-        return Triangle(self.l, self.w, self.hs, self.ls, self._is_up)
+        return TriangleData(self.l, self.w, self.hs, self.ls, self._is_up)
 
     def rotate(self, count):
         tmp_hs = [ self.hs[ (i + count) % 3 ] for i in range(3) ]

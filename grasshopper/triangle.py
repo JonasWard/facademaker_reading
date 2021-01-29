@@ -37,6 +37,27 @@ class Triangle:
         elif interlock_type==5:
             self.pattern = [3]
 
+    def flap_interlocking(self, interlock_type):
+        self.pattern = [(0,0)]
+        
+        if interlock_type==0:
+            self.pattern = [3, (0,0), 3]
+
+        elif interlock_type==1:
+            self.pattern = [3, (1,1), 3]
+            
+        elif interlock_type==2:
+            self.pattern = [3, (2,2), 3]
+            
+        elif interlock_type==3:
+            self.pattern = [3, (3,1), 3]
+
+        elif interlock_type==4:
+            self.pattern = [3, (1,3), 3]
+
+        elif interlock_type==5:
+            self.pattern = [3]
+
     def mesh(self, show_with_correction_val = 0.0):
         return self.datastructure.rhino_mesh(show_with_correction_val)
 
@@ -99,6 +120,7 @@ class Triangle:
 class CenterTriangle(Triangle):
     def __init__(self, b_pts, c_pt, correction, side_interlock, mesh_correction = False, extra_folds = False):
         self.datastructure = Center(b_pts, c_pt, 0)
+        self._interlockicking(side_interlock)
 
         if mesh_correction:
             self.datastructure.mesh_correction(correction)
@@ -106,6 +128,5 @@ class CenterTriangle(Triangle):
             if abs(correction) > .01:
                 self.datastructure.polyline_correction(correction)
 
-        self._interlockicking(side_interlock)
         self._unfolded = False
         self._extra_folds = extra_folds

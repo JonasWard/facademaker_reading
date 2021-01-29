@@ -1,4 +1,4 @@
-class Square:
+class SquareData:
     def __init__(self, l, w, hs, ls = 0.0, b_pt = None):
         self.l = l
         self.w = w
@@ -24,7 +24,7 @@ class Square:
         self.h_out = h_out
 
     def clone(self):
-        new_square = Square(self.l, self.w, self.hs, self.ls)
+        new_square = SquareData(self.l, self.w, self.hs, self.ls)
         if self._has_center:
             new_square.add_center(self.a, self.b, self.h_in, self.h_out)
 
@@ -139,4 +139,4 @@ class Square:
 
                 loc_hs = [hs_remap[j][i] for i in range(4)]
 
-                new_squares.append( Square(l, w, loc_hs, [x_base, y_base] ) )
+                new_squares.append( SquareData(l, w, loc_hs, [x_base, y_base] ) )

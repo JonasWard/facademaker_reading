@@ -1,6 +1,6 @@
 # import Rhino.Geometry as rg
-from triangle import Triangle
-from square import Square
+from triangle_data import TriangleData
+from square_data import SquareData
 
 def create_mns(m, n, shift = 0):
     mns_obj = {'m': m,'n': n,'s': shift}
@@ -134,13 +134,13 @@ def set_heights(data_dict, base_parameters = None, minimum_height = .2):
 def gen_objects(data_dict):
     base_object = None
     if data_dict["pt_cnt"] == 3:
-        base_object = Triangle(
+        base_object = TriangleData(
             l = data_dict["xy_dim"],
             w = data_dict["xy_dim"] * data_dict["frat"],
             hs = data_dict["hs"]
         )
     elif data_dict["pt_cnt"] == 4:
-        base_object = Square(
+        base_object = SquareData(
             l = data_dict["xy_dim"],
             w = data_dict["xy_dim"] * data_dict["frat"],
             hs = data_dict["hs"]

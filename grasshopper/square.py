@@ -46,6 +46,8 @@ class Square:
         outline = rg.PolylineCurve(outline_pts)
         secundary_folds = self._folds() if self._extra_folds else []
 
+        print(position_optimization)
+
         w_angle, l_angle, area_angle, _ = optimal_rec(
             outline_pts,
             position_optimization["iterations"],
@@ -59,6 +61,9 @@ class Square:
             angle = l_angle
         else:
             angle = area_angle
+
+        print(w_angle, l_angle, area_angle)
+        print(angle)
 
         rot_matrix=rg.Transform.Rotation(angle, rg.Point3d(0,0,0) )
         trans_matrix=rg.Transform.Translation(rg.Vector3d(b_pt) )

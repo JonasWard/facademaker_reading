@@ -8,6 +8,8 @@ class Pyramid:
         self.triangle = Triangle([b_pts[0], c_pt, b_pts[-1] ], correction, side_interlock, mesh_correction, extra_folds)
         self.square = CenterTriangle(b_pts, c_pt, correction, side_interlock, mesh_correction = False, extra_folds = False)
 
+        self.triangle.flap_interlocking(side_interlock)
+
     def mesh(self, show_with_correction_val = 0.0):
         return [self.square.mesh(show_with_correction_val), self.triangle.mesh(show_with_correction_val)]
 
