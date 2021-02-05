@@ -1,206 +1,14 @@
 import Rhino.Geometry as rg
 import math
-
-arcs=[]
-
-def tangent_normal(pt_0, pt_1, negative=False):
-    t=rg.Vector3d(pt_1-pt_0)
-    t.Unitize()
-    if negative:
-        n=rg.Vector3d(-t.Y, t.X, 0.0)
-    else:
-        n=rg.Vector3d(t.Y, -t.X, 0.0)
-    return t, n
-
-def create_half_circle(pt, r, t, n):
-    pt_a=rg.Point3d(pt - rg.Point3d(t * r) )
-    pt_b=rg.Point3d(pt + rg.Point3d(n * r) )
-    pt_c=rg.Point3d(pt + rg.Point3d(t * r) )
-    global arcs
-    arc_crv=rg.ArcCurve(rg.Arc(pt_a, pt_b, pt_c) )
-    arcs.append(arc_crv)
-    return arc_crv
-
-def triangulate(pt_0, pt_1, dis_0, dis_1, negative=False):
-    t, n = tangent_normal(pt_0, pt_1, negative)
-
-    crv_0=create_half_circle(pt_0, dis_0, t, n)
-    crv_1=create_half_circle(pt_1, dis_1, t, n)
-
-    i_s=rg.Intersect.Intersection.CurveCurve(crv_0, crv_1, 0.001, 0.0)
-    final_pt=i_s[0].PointA
-    # print(final_pt)
-    return final_pt
-
-def bounding_rec(pts, angle=None):
-    xs, ys = [], []
-    
-    if angle is None:
-
-        for pt in pts:
-            xs.append(pt.X)
-            ys.append(pt.Y)
-
-        x_min, x_max = min(xs), max(xs)
-        y_min, y_max = min(ys), max(ys)
-
-        return rg.Point3d(x_min, y_min, 0.0), x_max-x_min, y_max-y_min
-
-    else:
-
-        r_tm=rg.Transform.Rotation(angle, rg.Point3d(0,0,0) )
-        loc_pts=[rg.Point3d(pt) for pt in pts]
-        [pt.Transform(r_tm) for pt in loc_pts]
-        return bounding_rec(loc_pts)
-
-def optimal_rec(pts, iterations=50, max_width=10000.0, max_length=10000.0):
-    delta=.5*math.pi/(iterations - 1)
-
-    data_dict={}
-    for i in range(iterations):
-        # duplicate pts
-        loc_pts=[rg.Point3d(pt) for pt in pts]
-        angle=i*delta
-        _, w, l=bounding_rec(loc_pts, angle)
-        if w < max_width and l < max_length:
-            data_dict[angle]={"width":w,"length":l,"area":w*l}
-
-    print(data_dict)
-
-    if any(data_dict):
-        min_width=min(data_dict, key=lambda k: data_dict[k]["width"])
-        min_length=min(data_dict, key=lambda k: data_dict[k]["length"])
-        min_area=min(data_dict, key=lambda k: data_dict[k]["area"])
-        return min_width, min_length, min_area, data_dict
-
-    else:
-        return None, None, None, None
-
-def transform_objs(objs, t_m):
-    [obj.Transform(t_m) for obj in objs]
-
-def centroid(pts):
-    centroid=rg.Point3d(pts[1])
-    for pt in pts[1:]:
-        centroid+=pt
-
-    centroid*=1.0/float(len(pts) )
-    return rg.Point3d(centroid)
-
-class Segment():
-    """ segment class, defined by two points ( a line ) two definitions:
-        - defined using orignal pts and new unfolded given: simple_side, complex_side
-        - defined using only the new unfolded given: simple_flap, portrusion """
-    def __init__(self, pt_0, pt_1):
-        self.pt_0=pt_0
-        self.pt_1=pt_1
-
-    @property
-    def t(self):
-        _t=rg.Vector3d(self.pt_1-self.pt_0)
-        _t.Unitize()
-
-        return _t
-
-    @property 
-    def n(self):
-        return rg.Vector3d(-self.t.Y, self.t.X, 0.0)
-
-    @property
-    def dis00(self):
-        return self.pt_0.Z
-
-    @property
-    def dis01(self):
-        return self.pt_0.DistanceTo(rg.Point3d(self.pt_1.X, self.pt_1.Y, 0.0) )
-
-    @property
-    def dis10(self):
-        return self.pt_1.DistanceTo(rg.Point3d(self.pt_0.X, self.pt_0.Y, 0.0) )
-
-    @property
-    def dis11(self):
-        return self.pt_1.Z
-
-    @property
-    def dis(self):
-        return self.pt_0.DistanceTo(self.pt_1)
-
-    def simple_side(self, pt_0, pt_1):
-        pt_0_1=triangulate(pt_0, pt_1, self.dis00, self.dis10, True)
-        pt_1_1=triangulate(pt_0, pt_1, self.dis01, self.dis11, True)
-
-        return [pt_0_1, pt_1_1], [rg.Line(pt_0, pt_1)]
-
-    def complex_side(self, pt_0, pt_1, h_max, pattern_type=(0,0) ):
-        new_pts, fold_a=self.simple_side(pt_0, pt_1)
-
-        n_s_0=Segment(new_pts[0], pt_0)
-        n_s_1=Segment(new_pts[1], pt_1)
-
-        seg_pts=[]
-        folds_b=[]
-
-        # n_s_0
-        loc_folds_b=[]
-        if pattern_type[0] == 0:
-            loc_seg_pts=[new_pts[0] ]
-        elif pattern_type[0] == 1:
-            loc_seg_pts, _ = n_s_0.portrusion(h_max, False)
-        else:
-            loc_seg_pts, loc_folds_b = n_s_0.portrusion(h_max, True)
-
-        loc_seg_pts.reverse()
-        seg_pts.extend(loc_seg_pts)
-        folds_b.extend(loc_folds_b)
-
-        # n_s_1
-        loc_folds_b=[]
-        if pattern_type[1] == 0:
-            loc_seg_pts=[new_pts[1] ]
-        elif pattern_type[1] == 1:
-            loc_seg_pts, loc_folds_b = n_s_1.portrusion(h_max, False)
-        else:
-            loc_seg_pts, _ = n_s_1.portrusion(h_max, True)
-
-        seg_pts.extend(loc_seg_pts)
-        folds_b.extend(loc_folds_b)
-
-        return seg_pts, fold_a, folds_b
-
-    def simple_flap(self, h, w, invert=False):
-        iv=-1.0 if invert else 1.0
-
-        mv=rg.Point3d(iv*self.t*w + self.n*h)
-        new_pts=[
-            self.pt_0+rg.Point3d(iv*self.t*w + self.n*h),
-            self.pt_1+rg.Point3d(-iv*self.t*w + self.n*h)
-        ]
-
-        fold_lines=[rg.Line(self.pt_0, self.pt_1)]
-
-        return new_pts, fold_lines
-
-    def portrusion(self, h_max, direction):
-        # print("creating a portrusion")
-        t, n = tangent_normal(self.pt_0, self.pt_1)
-        dir_val=1.0 if direction else -1.0
-
-        h=self.dis
-        if h < h_max:
-            pt_s=[self.pt_0+dir_val*n*h]
-        else:
-            pt_s=[
-                self.pt_0+dir_val*n*h_max,
-                self.pt_0+dir_val*n*h_max+t*(h-h_max)
-            ]
-
-        return pt_s, [rg.Line(self.pt_0, self.pt_1)]
+from geometrical_helpers import *
+from panel_sides import *
 
 class Base():
-    """ main geometric solution class allowing for a given set of boundary points
+    """Main geometric solution class allowing for a given set of boundary points
     to generate a mesh, unfolding it, adding flaps and calculating the sides, and
-    two different methods of incalculating tolerances """
+    two different methods of incalculating tolerances. All the function in this 
+    class are called in it's offspring classes."""
+
     def projected_pts(self, offset=False):
         """projects the input points onto the bottom surface
         stores those projected point into the class"""
@@ -208,13 +16,24 @@ class Base():
         return [rg.Point3d(pt.X, pt.Y, 0.0) for pt in pts]
 
     def start_run(self):
+        """initialization method"""
         self.has_graph=False
         self.has_offset=False
         self.has_holes=False
         self.ori_pts=[]
+        self._f_list=[]
+
+    @property
+    def f_list(self):
+        if any(self._f_list):
+            return self._f_list
+        else:
+            print("""face list has not been populated yet, either construct_graph hasn't
+            been initialized yet or it failed to construct.""")
 
     @property
     def count(self):
+        """method that returns the amount of corner points in this object"""
         return len(self.pts)
 
     def _pt_distance_mapping(self, pts, new_pt_list):
@@ -257,6 +76,9 @@ class Base():
         self.pts=new_pts
 
     def orient_pts(self, pts, start_idx=0):
+        """method that sorts all the points counter-clockwise around the
+        polygons centroid"""
+
         c_pt=centroid(pts)
         pt_copy=[pt-c_pt for pt in pts]
 
@@ -264,11 +86,10 @@ class Base():
         angles, pts=zip(*sorted(zip(angles, pts) ) )
         
         pts=list(pts)
-        # self.pts.reverse()
         return pts[start_idx:]+pts[:start_idx]
 
     def construct_graph(self):
-        # print("a graph with {} vertexes".format(len(self.pts)))
+        """method that constructs the connection graph of all the faces"""
 
         v_list=[i for i in range(self.count) ]
         v_list.pop(0)
@@ -279,8 +100,7 @@ class Base():
             f_list.append((0, v_a, v_list[0]))
 
         self.has_graph=True
-
-        return f_list
+        self._f_list = f_list
 
     def rhino_brep(self, offset=True, brep_offset=False, brep_offset_val=1.0):
         pts=self.ori_pts if (not(offset) and self.has_offset) else self.pts
@@ -478,7 +298,7 @@ class Base():
             pt_1_new=self.flat_pts[idx_1]
 
             outline_pts.append(pt_0_new)
-            pts, loc_folds = Segment(pt_0, pt_1).simple_side(pt_0_new, pt_1_new)
+            pts, loc_folds = PanelSideSegment(pt_0, pt_1).simple_side(pt_0_new, pt_1_new)
             outline_pts.extend(pts)
             folds.extend(loc_folds)
 
@@ -506,7 +326,7 @@ class Base():
 
             outline_pts.append(pt_0_new)
             if isinstance(pattern_type, tuple) or isinstance(pattern_type, list):
-                pts, loc_folds_a, loc_folds_b = Segment(pt_0, pt_1).complex_side(
+                pts, loc_folds_a, loc_folds_b = PanelSideSegment(pt_0, pt_1).complex_side(
                     pt_0_new,
                     pt_1_new,
                     h_max,
@@ -514,7 +334,7 @@ class Base():
                 )
             elif isinstance(pattern_type, int):
                 if pattern_type==3:
-                    pts, loc_folds_a = Segment(pt_0_new, pt_1_new).simple_flap(flap_h, flap_w, False)
+                    pts, loc_folds_a = PanelSideSegment(pt_0_new, pt_1_new).simple_flap(flap_h, flap_w, False)
                     loc_folds_b = []
                 else:
                     print("undifined pattern int: {}".format(pattern_type))
@@ -549,7 +369,7 @@ class Simple(Base):
         if orient:
             self.pts=self.orient_pts(pts, start_idx=idx%len(pts))
 
-        self.f_list=self.construct_graph()
+        self.construct_graph()
 
 class Center(Base):
     def __init__(self, boundary, center, orient=True):
@@ -559,7 +379,7 @@ class Center(Base):
             self.pts=self.orient_pts(self.pts, 0)
         self.pts=[center]+self.pts
 
-        self.f_list=self.construct_graph()
+        self.construct_graph()
 
 class ClosedPyramid(Base):
     def __init__(self, boundary, center, orient=True):
@@ -569,93 +389,6 @@ class ClosedPyramid(Base):
         self.pts=[center]+self.pts + [self.pts[0] ]
 
         self.f_list=self.construct_graph()
-
-class Pyramid():
-    def __init__(self, boundary, center):
-        self._count=len(boundary)
-
-        self.bottom_shape=Center(boundary, center, False)
-        self.top_triangle=Simple([boundary[0], center, boundary[-1]], False)
-
-    @property
-    def count(self):
-        return self._count
-
-    def pattern_maker(self, pattern):
-        pattern=[(2,2)] if pattern is None else pattern
-
-        return [pattern[i%len(pattern)] for i in range(self.count)]
-
-    def transformation(self, pts, folds_a, folds_b, w_l=(0.0, 0.0) ):
-        width_increase=10.0
-
-        crv=rg.PolylineCurve(pts)
-
-        c_pt, w_new, l_new=bounding_rec(pts)
-        mv_matrix=rg.Transform.Translation(
-            rg.Vector3d(-c_pt + rg.Point3d(w_l[0] + width_increase, w_l[1], 0.0) ) 
-        )
-
-        crv.Transform(mv_matrix)
-        transform_objs(folds_a, mv_matrix)
-        transform_objs(folds_b, mv_matrix)
-
-        return mv_matrix, (w_l[0]+w_new+width_increase,w_l[1]+l_new), crv
-
-    def add_simple_sides(self):
-        b_pts, b_folds_a, b_folds_b=self.bottom_shape.add_simple_sides()
-        t_pts, t_folds_a, t_folds_b=self.top_triangle.add_simple_sides()
-
-        self.mv_a, w_l, crv_a=self.transformation(b_pts, b_folds_a, b_folds_b)
-        self.mv_b, w_l, crv_b=self.transformation(t_pts, t_folds_a, t_folds_b, w_l)
-        
-        return (crv_a, crv_b), (b_folds_a, t_folds_a), (b_folds_b, t_folds_b)
-
-    def add_complex_sides(self, h_max=10.0, flap_h=20.0, flap_w=40.0, pattern=None):
-        pattern=self.pattern_maker(pattern)
-
-        b_pts, b_folds_a, b_folds_b=self.bottom_shape.add_complex_sides(
-            h_max, flap_h, flap_w, pattern=pattern[1:]
-        )
-        t_pts, t_folds_a, t_folds_b=self.top_triangle.add_complex_sides(
-            h_max, flap_h, flap_w, pattern=[3,pattern[0],3]
-        )
-
-        self.mv_a, w_l, crv_a=self.transformation(b_pts, b_folds_a, b_folds_b)
-        self.mv_b, w_l, crv_b=self.transformation(t_pts, t_folds_a, t_folds_b, w_l)
-        
-        return (crv_a, crv_b), (b_folds_a, t_folds_a), (b_folds_b, t_folds_b)
-
-    def unfolding(self):
-        self.bottom_shape.unfolding()
-        self.top_triangle.unfolding()
-
-    def polyline_correction(self, value):
-        self.bottom_shape.polyline_correction(value)
-        self.top_triangle.polyline_correction(value)
-
-    def mesh_correction(self, value):
-        self.bottom_shape.mesh_correction(value)
-        self.top_triangle.mesh_correction(value)
-
-    def rhino_mesh(self, offset=False):
-        return [
-            self.bottom_shape.rhino_mesh(offset),
-            self.top_triangle.rhino_mesh(offset)
-        ]
-
-    def rhino_brep(self, offset=True, brep_offset=False, brep_offset_val=1.0):
-        return [
-            self.bottom_shape.rhino_brep(offset, brep_offset, brep_offset_val),
-            self.top_triangle.rhino_brep(offset, brep_offset, brep_offset_val),
-        ]
-    def fold_lns(self):
-        b_lns, t_lns=self.bottom_shape.fold_lns(), self.top_triangle.fold_lns()
-
-        transform_objs(b_lns, self.mv_a)
-        transform_objs(t_lns, self.mv_b)
-
-        return ( b_lns, t_lns )
 
 class Unfolded():
     """container class for the unfolded objects,
