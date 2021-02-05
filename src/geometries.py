@@ -388,7 +388,7 @@ class ClosedPyramid(Base):
             self.pts=self.orient_pts(boundary,0)
         self.pts=[center]+self.pts + [self.pts[0] ]
 
-        self.f_list=self.construct_graph()
+        self.construct_graph()
 
 class Unfolded():
     """container class for the unfolded objects,

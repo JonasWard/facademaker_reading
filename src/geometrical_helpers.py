@@ -29,10 +29,10 @@ def triangulate(pt_0, pt_1, dis_0, dis_1, negative=False):
     return final_pt
 
 def bounding_rec(pts, angle=None):
+    """iterative function for calculating the bounding box of a given set of points"""
     xs, ys = [], []
     
     if angle is None:
-
         for pt in pts:
             xs.append(pt.X)
             ys.append(pt.Y)
@@ -43,10 +43,9 @@ def bounding_rec(pts, angle=None):
         return rg.Point3d(x_min, y_min, 0.0), x_max-x_min, y_max-y_min
 
     else:
-
-        r_tm=rg.Transform.Rotation(angle, rg.Point3d(0,0,0) )
-        loc_pts=[rg.Point3d(pt) for pt in pts]
-        [pt.Transform(r_tm) for pt in loc_pts]
+        r_tm=rg.Transform.Rotation(angle, rg.Point3d(0,0,0) )   # initializing a rotation matrix
+        loc_pts=[rg.Point3d(pt) for pt in pts]                  # initializing a copy
+        [pt.Transform(r_tm) for pt in loc_pts]                  # transforming the copied points
         return bounding_rec(loc_pts)
 
 def optimal_rec(pts, iterations=50, max_width=10000.0, max_length=10000.0):
