@@ -41,12 +41,13 @@ class PanelSideSegment():
         return self.pt_0.DistanceTo(self.pt_1)
 
     def simple_side(self, pt_0, pt_1):
+        """pattern logic that just create a flat (projected) side for this segment"""
         pt_0_1=triangulate(pt_0, pt_1, self.dis00, self.dis10, True)
         pt_1_1=triangulate(pt_0, pt_1, self.dis01, self.dis11, True)
 
         return [pt_0_1, pt_1_1], [rg.Line(pt_0, pt_1)]
 
-    def complex_side(self, pt_0, pt_1, h_max, pattern_type=(0,0) ):
+    def complex_side(self, pt_0, pt_1, h_max, pattern_type=["straight","straight"] ):
         new_pts, fold_a=self.simple_side(pt_0, pt_1)
 
         n_s_0=PanelSideSegment(new_pts[0], pt_0)
@@ -57,12 +58,14 @@ class PanelSideSegment():
 
         # n_s_0
         loc_folds_b=[]
-        if pattern_type[0] == 0:
+        if pattern_type[0]=="straight":
             loc_seg_pts=[new_pts[0] ]
-        elif pattern_type[0] == 1:
-            loc_seg_pts, _ = n_s_0.portrusion(h_max, False)
+        elif pattern_type[0]=="positive":
+            loc_seg_pts, _=n_s_0.portrusion(h_max, False)
+        elif pattern_type[0]=="negative":
+            loc_seg_pts, loc_folds_b=n_s_0.portrusion(h_max, True)
         else:
-            loc_seg_pts, loc_folds_b = n_s_0.portrusion(h_max, True)
+            print("this pattern type '{}' is not defined".format(pattern_type[0]))
 
         loc_seg_pts.reverse()
         seg_pts.extend(loc_seg_pts)
@@ -70,12 +73,14 @@ class PanelSideSegment():
 
         # n_s_1
         loc_folds_b=[]
-        if pattern_type[1] == 0:
+        if pattern_type[1]=="straight":
             loc_seg_pts=[new_pts[1] ]
-        elif pattern_type[1] == 1:
+        elif pattern_type[1]=="positive":
             loc_seg_pts, loc_folds_b = n_s_1.portrusion(h_max, False)
-        else:
+        elif pattern_type[1]=="negative":
             loc_seg_pts, _ = n_s_1.portrusion(h_max, True)
+        else:
+            print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
         seg_pts.extend(loc_seg_pts)
         folds_b.extend(loc_folds_b)
@@ -85,7 +90,7 @@ class PanelSideSegment():
     def simple_flap(self, h, w, invert=False):
         iv=-1.0 if invert else 1.0
 
-        mv=rg.Point3d(iv*self.t*w + self.n*h)
+        # mv=rg.Point3d(iv*self.t*w + self.n*h)
         new_pts=[
             self.pt_0+rg.Point3d(iv*self.t*w + self.n*h),
             self.pt_1+rg.Point3d(-iv*self.t*w + self.n*h)

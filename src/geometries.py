@@ -1,6 +1,7 @@
 import Rhino.Geometry as rg
 import math
 from geometrical_helpers import *
+from pattern_generator import simple_pattern_parser
 from panel_sides import *
 
 class Base():
@@ -8,6 +9,12 @@ class Base():
     to generate a mesh, unfolding it, adding flaps and calculating the sides, and
     two different methods of incalculating tolerances. All the function in this 
     class are called in it's offspring classes."""
+
+    DEFAULT_SIDE_PRODUCTION_PARAMETERS = {
+        "h_max"  : 5.,
+        "flap_h" : 20.,
+        "flap_w" : 40.
+    }
 
     def projected_pts(self, offset=False):
         """projects the input points onto the bottom surface
@@ -17,6 +24,8 @@ class Base():
 
     def start_run(self):
         """initialization method"""
+        self.pattern = simple_pattern_parser(cnt=len(self.pts))
+        self.s_p_p = dict(Base.DEFAULT_SIDE_PRODUCTION_PARAMETERS)
         self.has_graph=False
         self.has_offset=False
         self.has_holes=False
@@ -52,6 +61,7 @@ class Base():
         tolerance - more representative result
         input:
         value : float - amoun to offset with"""
+
         pts=self.projected_pts(False)
         n_pl=rg.PolylineCurve(pts+[pts[0]]).Offset(
             rg.Plane.WorldXY, -value, .001, rg.CurveOffsetCornerStyle.Sharp
@@ -73,6 +83,7 @@ class Base():
         with to compensate for folding tolerance - angle deformation susceptible
         input:
         value : float - amoun to offset with"""
+
         mesh_obj=self.rhino_mesh()
         offsetted=mesh_obj.Offset(value)
 
@@ -157,8 +168,6 @@ class Base():
 
         surface=rg.Brep.JoinBreps(surfaces, .001)[0]
 
-        print(surface)
-
         if brep_offset:
             surface_array=rg.Brep.CreateOffsetBrep(
                 brep=surface,
@@ -168,7 +177,6 @@ class Base():
                 tolerance=.01,
             )
 
-            print(surface_array)
             if any(surface_array[0]):
                 surface=surface_array[0][0]
                 print("offset success")
@@ -236,6 +244,10 @@ class Base():
         )
 
     def unfolding(self):
+        """method that unfolds the whole object
+        return:
+        self.flat_pts : list of points representing the outline of the geometry"""
+
         folded_list=dict((i, False) for i in range(self.count ) )
 
         loc_f_graph=self.f_list[:]
@@ -254,15 +266,10 @@ class Base():
                     else:
                         to_resolve_idx=idx
 
-                # print("fixed vertex count: ", fixed_vertex_count)
                 if fixed_vertex_count == 2:
-                    # print("I should continue now")
                     break
 
             current_face=loc_f_graph.pop(f_idx)
-
-            # print("faces: ", current_face)
-            # print("main idx: ", to_resolve_idx)
 
             self._unfold_vertex(
                 current_face[to_resolve_idx],
@@ -274,9 +281,23 @@ class Base():
 
         return self.flat_pts
 
+    @property
+    def h_max(self):
+        return self.s_p_p["h_max"]
+
+    @property
+    def flap_h(self):
+        return self.s_p_p["flap_h"]
+
+    @property
+    def flap_w(self):
+        return self.s_p_p["flap_w"]
+
     def fold_lns(self):
+        """method that returns all the main fold lines of the flattened top surface"""
         folds=[]
         flattened_graph=[]
+
         for f in self.f_list:
             flattened_graph.extend(f)
 
@@ -295,17 +316,8 @@ class Base():
 
         return folds
 
-    def pattern_maker(self, pattern):
-        pattern=[(2,2)] if pattern is None else pattern
-
-        if isinstance(self, Simple):
-            pattern=[pattern[i%len(pattern)] for i in range(self.count ) ]
-        elif isinstance(self, Center) or isinstance(self, ClosedPyramid) and not(pattern[0]==3 and pattern[-1]==3):
-            pattern=[3]+[pattern[i%len(pattern)] for i in range(self.count-2)]+[3]
-
-        return pattern
-
     def add_simple_sides(self):
+        """depreciated method for creating flat sides"""
         outline_pts=[]
         folds=[]
         for i in range(self.count ):
@@ -325,16 +337,18 @@ class Base():
 
         return outline_pts+[pt_1_new], folds, []
 
-    def add_complex_sides(self, h_max=5.0, flap_h=20.0, flap_w=40.0, pattern=None):
-        pattern=self.pattern_maker(pattern)
-        # print(flap_h, flap_w)
+    def add_sides(self):
+        """method that add sides to the unfolded object as defined in the pattern map
+        return:
+        unfolded_object : Unfolded - object containg all the relevant 2d data"""
 
         outline_pts=[]
         folds_a=[]
         folds_b=[]
+
         for i in range(self.count):
 
-            pattern_type=pattern[i]
+            loc_pattern=self.pattern[i]
 
             idx_0=i
             idx_1=(i + 1) % self.count
@@ -346,29 +360,32 @@ class Base():
             pt_1_new=self.flat_pts[idx_1]
 
             outline_pts.append(pt_0_new)
-            if isinstance(pattern_type, tuple) or isinstance(pattern_type, list):
+            if isinstance(loc_pattern, tuple) or isinstance(loc_pattern, list):
                 pts, loc_folds_a, loc_folds_b = PanelSideSegment(pt_0, pt_1).complex_side(
                     pt_0_new,
                     pt_1_new,
-                    h_max,
-                    pattern_type
+                    self.h_max,
+                    loc_pattern
                 )
-            elif isinstance(pattern_type, int):
-                if pattern_type==3:
-                    pts, loc_folds_a = PanelSideSegment(pt_0_new, pt_1_new).simple_flap(flap_h, flap_w, False)
+            elif isinstance(loc_pattern, str):
+                if loc_pattern=="flap":
+                    pts, loc_folds_a = PanelSideSegment(pt_0_new, pt_1_new).simple_flap(self.flap_h, self.flap_w, False)
                     loc_folds_b = []
                 else:
-                    print("undifined pattern int: {}".format(pattern_type))
+                    print("undifined simple type: {}".format(loc_pattern))
                     pts, loc_folds_a, loc_folds_b = [], [], []
             else:
-                print("undifined pattern type: {}".format(pattern_type))
+                print("undifined complex pattern type: {}".format(loc_pattern))
                 pts, loc_folds_a, loc_folds_b = [], [], []
 
             outline_pts.extend(pts)
             folds_a.extend(loc_folds_a)
             folds_b.extend(loc_folds_b)
 
-        return outline_pts+[pt_1_new], folds_a, folds_b
+        return Unfolded(
+
+        )
+        outline_pts+[pt_1_new], folds_a, folds_b
 
     def unfold_object(self, with_inner_folds=True):
         pass
@@ -381,7 +398,7 @@ class Base():
         # )
 
 class Simple(Base):
-    def __init__(self, pts, idx=0, orient=True):
+    def __init__(self, pts, pattern = None, idx=0, orient=True, production_parameters=None):
         self.start_run()
         if len(pts) < 3:
             print("You need to input more than 3 points")
@@ -390,79 +407,31 @@ class Simple(Base):
         if orient:
             self.pts=self.orient_pts(pts, start_idx=idx%len(pts))
 
+        if not(pattern is None):
+            self.pattern = pattern
+        else:
+            print("no pattern was given, a defaulat one has been assigned")
+
+        if not(production_parameters is None):
+            self.s_p_p = production_parameters
+
         self.construct_graph()
 
 class Center(Base):
-    def __init__(self, boundary, center, orient=True):
+    def __init__(self, boundary, center, pattern = None, orient=True, production_parameters=None):
         self.start_run()
         self.pts=boundary
+
         if orient:
             self.pts=self.orient_pts(self.pts, 0)
         self.pts=[center]+self.pts
 
+        if not(pattern is None):
+            self.pattern = pattern
+        else:
+            print("no pattern was given, a defaulat one has been assigned")
+
+        if not(production_parameters is None):
+            self.s_p_p = production_parameters
+
         self.construct_graph()
-
-class Unfolded():
-    """container class for the unfolded objects,
-        - used to check whether they fit on a sheet
-        - moving the objects around as a single group"""
-    def __init__(self, source, boundary, folds_flaps_a=[], folds_flaps_b=[], folds_inner=[], holes=[]):
-        self.b_pts=boundary
-        self.f_a=folds_flaps_a
-        self.f_b=folds_flaps_b
-        self.f_i=folds_inner
-        self.holes=holes
-
-        self.source=source
-
-        self.opt_a=0.0
-
-    def optimize(self, opt_type="width", iterations=10, panel_dimensions=(100000.0, 100000.0) ):
-
-        width_angle,length_angle,area_angle,data=optimal_rec(
-            self.boundary, iterations, panel_dimensions[0], panel_dimensions[1]
-        )
-
-        best_width=data[width_angle]["width"]
-        best_length=data[length_angle]["length"]
-        best_area=data[area_angle]["area"]
-
-        if opt_type=="width":
-            self.opt_a=width_angle
-        elif opt_type=="length":
-            self.opt_a=length_angle
-        else: # opt type == "area"
-            self.opt_a=area_angle
-
-        optimal_width=data[self.opt_a]["width"]
-        optimal_length=data[self.opt_a]["length"]
-        optimal_area=data[self.opt_a]["area"]
-
-        self.Transform(rg.Transform.Rotation(self.opt_a, centroid(self.b_pts) ) )
-
-        str_list=[]
-        for key, items in data.items():
-            str_list.append("for angle {}: \n  width: {}\n  length: {}\n  area: {}".format(key, items["width"], items["length"], items["area"]) )
-    
-        all_data='\n'.join(str_list)
-
-        return self.opt_a, optimal_width, optimal_length, optimal_area, all_data
-
-    def move_to_origin(self):
-        self.move_to_position(-centroid(self.b_pts) )
-
-    def move_to_position(self, pt):
-        self.Transform(rg.Transform.Translation(pt) )
-
-    def Transform(self, t_matrix):
-        transform_objs(self.b_pts, t_matrix)
-        transform_objs(self.f_a, t_matrix)
-        transform_objs(self.f_b, t_matrix)
-        transform_objs(self.f_i, t_matrix)
-        transform_objs(self.holes, t_matrix)
-
-    def outline_crv(self):
-        return rg.PolyCurve(self.b_pts + self.b_pts[0])
-
-    def rhino_objects(self):
-        return self.outline_crv(), self.f_a, self.f_b, self.f_i

@@ -28,18 +28,19 @@ def triangulate(pt_0, pt_1, dis_0, dis_1, negative=False):
     # print(final_pt)
     return final_pt
 
+def bounds(pts):
+    """function that gives you the min and max x,y coordinates of a set of points"""
+    xs, ys = [], []
+    for pt in pts:
+        xs.append(pt.X)
+        ys.append(pt.Y)
+
+    return (min(xs), min(ys)), (max(xs), max(ys))
+
 def bounding_rec(pts, angle=None):
     """iterative function for calculating the bounding box of a given set of points"""
-    xs, ys = [], []
-    
     if angle is None:
-        for pt in pts:
-            xs.append(pt.X)
-            ys.append(pt.Y)
-
-        x_min, x_max = min(xs), max(xs)
-        y_min, y_max = min(ys), max(ys)
-
+        (x_min, y_min), (x_max, y_max) = bounds(pts)
         return rg.Point3d(x_min, y_min, 0.0), x_max-x_min, y_max-y_min
 
     else:

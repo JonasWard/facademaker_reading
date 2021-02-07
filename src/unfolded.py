@@ -1,0 +1,94 @@
+import Rhino.Geometry as rg
+from geometrical_helpers import optimal_rec, centroid, bounds
+
+class Unfolded():
+    """container class for the unfolded objects,
+        - used to check whether they fit on a sheet
+        - moving the objects around as a single group"""
+    DEFAULT_SHEET_PARAMETERS={
+        "h":1800.,
+        "w":1000.
+    }
+    
+    def __init__(self, boundary, top_face_folds=[], body_flap_folds=[], intra_flap_folds=[], sheet_parameters=None):
+        self.b_pts=boundary
+        self.f_ff=top_face_folds
+        self.f_bf=body_flap_folds
+        self.f_if=intra_flap_folds
+
+        if sheet_parameters is None:
+            self.s_para = dict(Unfolded.DEFAULT_SHEET_PARAMETERS)
+        else:
+            self.s_para = sheet_parameters
+
+        self.optimal_area_angle = None
+        self.optimal_width_angle = None
+        self.optimal_length_angle = None
+
+    @property
+    def height(self):
+        return self.s_para["h"]
+
+    @height.setter
+    def height(self, value):
+        self.s_para["h"]=value
+
+    @property
+    def width(self):
+        return self.s_para["h"]
+
+    @width.setter
+    def width(self, value):
+        self.s_para["w"]=value
+
+    def optimize(self, opt_type="width", iterations=10):
+        """method for optimizing the position on the given sheet
+        input:
+        opt_type   : str ("width") - whether the optimization should be for minimum
+                                     "width", "length" or "area"
+        iterations : int (10) - how many different angles should be checked"""
+
+        width_angle,length_angle,area_angle,data=optimal_rec(
+            self.b_pts, iterations, self.height, self.width
+        )
+
+        self.optimal_width_angle=data[width_angle]["width"]
+        self.optimal_length_angle=data[length_angle]["length"]
+        self.optimal_area_angle=data[area_angle]["area"]
+
+        self.opt_a=data[opt_type]
+
+        # positioning the whole object in the ideal location
+        self.Transform(rg.Transform.Rotation(self.opt_a, centroid(self.b_pts) ) )
+        (x,y), _=bounds(self.b_pts)
+        self.move_to_position(rg.Point3d(-x, -y, 0.))
+
+    def move_to_position(self, pt):
+        self.Transform(rg.Transform.Translation(pt) )
+
+    def Transform(self, t_matrix):
+        """method that transforms all the objects in this class"""
+        [obj.Transform(t_matrix) for obj in self.b_pts]
+        [obj.Transform(t_matrix) for obj in self.f_ff]
+        [obj.Transform(t_matrix) for obj in self.f_bf]
+        [obj.Transform(t_matrix) for obj in self.f_if]
+
+    def outline_crv(self):
+        """method that returns the outline of the whole object"""
+        return rg.PolyCurve(self.b_pts + self.b_pts[0])
+
+    def top_face_folds(self):
+        """method that returns the top face folds"""
+        return self.f_ff
+
+    def body_flap_folds(self):
+        """method that returns the folds in between the main body and the flaps"""
+        return self.f_bf
+
+    def intra_flap_folds(self):
+        """method that returns the folds on the flaps overlapping with other flaps"""
+        return self.f_if
+
+    def panel(self):
+        """method that returns a representation of the panel"""
+        return rg.Rectangle(rg.Plane.WorldXY, self.width, self.height).ToNurbsCurve()

@@ -2,11 +2,11 @@
 
 p_b_set={
     "flat" : [["straight", "straight"]],
-    "clockwise" : [["positive", "negative"]],
-    "counter_clockwise" : [["negative", "positive"]],
+    "clockwise" : [["positive", "positive"]],
+    "counter_clockwise" : [["negative", "negative"]],
     "alternating_A" : [["negative", "negative"], ["positive", "positive"]],
     "alternating_B" : [["positive", "positive"], ["negative", "negative"]],
-    "flaps" : [["flap", "flap"]]
+    "flaps" : ["flap"]
 }
 
 def invert_pattern(value):
