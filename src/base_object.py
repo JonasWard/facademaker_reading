@@ -4,7 +4,12 @@ import Rhino.Geometry as rg
 
 class BaseObject:
     DEFAULT_PARAMETERS = {
-
+        "flap_h_max" : 30.,
+        "correction_val" : .7,
+        "flap_h" : 20.0,
+        "flap_w" : 40.0,
+        "mesh_correction_val" : False,
+        "show_correction_val" : True
     }
 
     """class used to encapsulate the different types
@@ -86,6 +91,7 @@ class BaseObject:
     def simple_square(pts, pattern_type = "flat", index = (0,0), other_parameters = None):
         """factory for simple square objects
         input:
+        pts              : boundary pts
         pattern_type     : the geometry of the side flaps
         index            : the index of this object in the grid (only used for naming)
         other_parameters : other parameters defining various aspects of the geometry"""
@@ -104,6 +110,12 @@ class BaseObject:
 
     @staticmethod
     def simple_triangle(pts, pattern_type = "flat", index = (0,0), other_parameters = None):
+        """factory for simple square objects
+        input:
+        pts              : boundary pts
+        pattern_type     : the geometry of the side flaps
+        index            : the index of this object in the grid (only used for naming)
+        other_parameters : other parameters defining various aspects of the geometry"""
         if other_parameters is None:
             other_parameters = BaseObject.DEFAULT_PARAMETERS
 
@@ -119,16 +131,47 @@ class BaseObject:
 
     @staticmethod
     def pyramid(pts, pt, pattern_type = "flat", index = (0,0), other_parameters = None):
+        """factory for two part pyramid object
+        input:
+        pts              : boundary pts
+        pt               : center point
+        pattern_type     : the geometry of the side flaps
+        index            : the index of this object in the grid (only used for naming)
+        other_parameters : other parameters defining various aspects of the geometry"""
+        if other_parameters is None:
+            other_parameters=BaseObject.DEFAULT_PARAMETERS
+
+        pentagon_pattern, triangle_pattern = pyramid_pattern_parser(pattern_type, len(pts) )
+        top_pentagon=Center(pts, pt, pentagon_pattern, other_parameters)
+        triangle=Simple([pts[0],pt,pts[-1]], triangle_pattern, other_parameters)
+
+        return BaseObject(
+            objs=[top_pentagon, triangle],
+            index=index,
+            type_name="diamond",
+            pattern_name=pattern_type
+        )
+
+    @staticmethod
+    def cube_group(ptss, pattern_type = "flat", index = (0,0), other_parameters = None):
+        """factory for group of square objects
+        input:
+        ptss             : list of boundary pts
+        pattern_type     : the geometry of the side flaps
+        index            : the index of this object in the grid (only used for naming)
+        other_parameters : other parameters defining various aspects of the geometry"""
         if other_parameters is None:
             other_parameters = BaseObject.DEFAULT_PARAMETERS
 
-        pentagon_pattern, triangle_pattern = diamond_pattern_parser(pattern_type, len(pts) )
-        top_pentagon = Center(pts, pt, pattern, other_parameters)
-        triangle = Simple(pts, pattern, other_parameters)
+        cube_group_patterns=cube_group_pattern_parser(pattern_type, (len(ptss[0]), len(ptss)))
+
+        objs = []
+        for i, pts in enumerate(ptss):
+            objs.append(Simple(pts, cube_group_patterns[i], other_parameters) )
 
         return BaseObject(
-            objs = [triangle],
-            index = index,
-            type_name = "simple_triangle",
-            pattern_name = pattern_type
+            objs=objs,
+            index=index,
+            type_name="cube_group",
+            pattern_name=pattern_type
         )

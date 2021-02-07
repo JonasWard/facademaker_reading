@@ -47,6 +47,11 @@ class Base():
         return new_pts
 
     def polyline_correction(self, value):
+        """offsetting the polyline composed of the projected boundary curve
+        to adjust the position of the vertexes with to compensate for folding
+        tolerance - more representative result
+        input:
+        value : float - amoun to offset with"""
         pts=self.projected_pts(False)
         n_pl=rg.PolylineCurve(pts+[pts[0]]).Offset(
             rg.Plane.WorldXY, -value, .001, rg.CurveOffsetCornerStyle.Sharp
@@ -64,6 +69,10 @@ class Base():
         self.pts=new_pts
 
     def mesh_correction(self, value):
+        """offsetting the mesh structure to adjust the position of the vertexes 
+        with to compensate for folding tolerance - angle deformation susceptible
+        input:
+        value : float - amoun to offset with"""
         mesh_obj=self.rhino_mesh()
         offsetted=mesh_obj.Offset(value)
 
@@ -103,6 +112,13 @@ class Base():
         self._f_list = f_list
 
     def rhino_brep(self, offset=True, brep_offset=False, brep_offset_val=1.0):
+        """method that returns a rhino brep representation of the object
+        input:
+        offset      : bool (True)  - whether to use the corrected pts for construction
+        brep_offset : bool (False) - whether you want to offset the brep representation
+        brep_offset : float (1.0)  - how much the brep offset value should be
+        output:
+        surface     : rg.Brep"""
         pts=self.ori_pts if (not(offset) and self.has_offset) else self.pts
         
         vertices=pts+self.projected_pts(offset)
@@ -162,6 +178,11 @@ class Base():
         return surface
 
     def rhino_mesh(self, offset=True):
+        """method that returns a rhino brep representation of the object
+        input:
+        offset      : bool (True)  - whether to use the corrected pts for construction
+        output:
+        mesh        : rg.Mesh"""
         mesh=rg.Mesh()
 
         pts=self.ori_pts if (not(offset) and self.has_offset) else self.pts
@@ -311,7 +332,7 @@ class Base():
         outline_pts=[]
         folds_a=[]
         folds_b=[]
-        for i in range(self.count ):
+        for i in range(self.count):
 
             pattern_type=pattern[i]
 
@@ -378,15 +399,6 @@ class Center(Base):
         if orient:
             self.pts=self.orient_pts(self.pts, 0)
         self.pts=[center]+self.pts
-
-        self.construct_graph()
-
-class ClosedPyramid(Base):
-    def __init__(self, boundary, center, orient=True):
-        self.start_run()
-        if orient:
-            self.pts=self.orient_pts(boundary,0)
-        self.pts=[center]+self.pts + [self.pts[0] ]
 
         self.construct_graph()
 
