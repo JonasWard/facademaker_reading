@@ -35,7 +35,7 @@ class BaseObject:
 
         self._call_count=0
 
-    def get_mesh(self, placement_plane):
+    def get_mesh(self, placement_plane=rg.Plane.WorldXY):
         """method that returns the 3d mesh representation of this object
         every time this function is called, call_count will be increased by 1
         input :
@@ -48,7 +48,7 @@ class BaseObject:
         msh_output = []
 
         for obj in self.objs:
-            msh = rg.Mesh(obj.get_mesh(self.parameters["show_correction_val"]) )
+            msh=obj.rhino_mesh(self.parameters["show_correction_val"])
             msh.Transform(t_matrix)
             msh_output.append(msh)
         
