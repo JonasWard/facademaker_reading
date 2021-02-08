@@ -428,8 +428,10 @@ class Simple(Base):
         self.pts=pts
 
         self.start_run()
+        print(self.s_p_p)
         if not(production_parameters is None):
-            self.s_p_p = production_parameters
+            self.s_p_p=production_parameters
+        print(self.s_p_p)
 
         fold_idx=self.s_p_p["fold_idx"]
 
