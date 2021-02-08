@@ -94,7 +94,7 @@ class Unfolded():
 
     def outline_crv(self):
         """method that returns the outline of the whole object"""
-        return rg.PolyCurve(self.b_pts + [self.b_pts[0]])
+        return rg.Polyline(self.b_pts + [self.b_pts[0]]).ToNurbsCurve()
 
     def top_face_folds(self):
         """method that returns the top face folds"""
