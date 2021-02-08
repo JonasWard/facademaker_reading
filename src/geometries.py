@@ -421,7 +421,7 @@ class Base():
         return self.unfolded
 
 class Simple(Base):
-    def __init__(self, pts, pattern = None, orient=True, production_parameters=None):
+    def __init__(self, pts, pattern = None, production_parameters=None):
         if len(pts) < 3:
             print("You need to input more than 3 boundary points")
             return None
@@ -429,13 +429,14 @@ class Simple(Base):
 
         self.start_run()
         print(self.s_p_p)
+        print(production_parameters)
         if not(production_parameters is None):
             self.s_p_p=production_parameters
         print(self.s_p_p)
 
         fold_idx=self.s_p_p["fold_idx"]
 
-        if orient:
+        if production_parameters["orient"]:
             self.pts=self.orient_pts(pts, start_idx=fold_idx%len(pts))
 
         if not(pattern is None):
@@ -446,7 +447,7 @@ class Simple(Base):
         self.construct_graph()
 
 class Center(Base):
-    def __init__(self, boundary, center, pattern = None, orient=True, production_parameters=None):
+    def __init__(self, boundary, center, pattern = None, production_parameters=None):
         if len(boundary) < 3:
             print("You need to input more than 3 boundary points")
             return None
@@ -456,7 +457,7 @@ class Center(Base):
         if not(production_parameters is None):
             self.s_p_p = production_parameters
 
-        if orient:
+        if production_parameters["orient"]:
             self.pts=self.orient_pts(self.pts, 0)
         self.pts=[center]+self.pts
 
