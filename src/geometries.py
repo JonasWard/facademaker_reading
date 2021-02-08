@@ -424,11 +424,13 @@ class Base():
 
 class Simple(Base):
     def __init__(self, pts, pattern = None, idx=0, orient=True, production_parameters=None):
-        self.start_run()
         if len(pts) < 3:
-            print("You need to input more than 3 points")
+            print("You need to input more than 3 boundary points")
             return None
         self.pts=pts
+
+        self.start_run()
+
         if orient:
             self.pts=self.orient_pts(pts, start_idx=idx%len(pts))
 
@@ -444,8 +446,12 @@ class Simple(Base):
 
 class Center(Base):
     def __init__(self, boundary, center, pattern = None, orient=True, production_parameters=None):
-        self.start_run()
+        if len(boundary) < 3:
+            print("You need to input more than 3 boundary points")
+            return None
         self.pts=boundary
+
+        self.start_run()
 
         if orient:
             self.pts=self.orient_pts(self.pts, 0)
