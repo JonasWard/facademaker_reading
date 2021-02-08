@@ -9,7 +9,8 @@ class BaseObject:
         "flap_h" : 20.0,
         "flap_w" : 40.0,
         "mesh_correction_val" : False,
-        "show_correction_val" : True
+        "show_correction_val" : True,
+        "fold_idx" : 0
     }
 
     """class used to encapsulate the different types
@@ -21,7 +22,7 @@ class BaseObject:
         type_name    : name of this geometry cluster (default None)
         pattern_name : pattern type that defines the interlocking pattern of the flaps (default None)"""
 
-        self.objs=[]
+        self.objs=objs
 
         self.name=type_name
         self.pattern=pattern_name

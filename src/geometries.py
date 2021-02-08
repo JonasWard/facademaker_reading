@@ -14,7 +14,8 @@ class Base():
     DEFAULT_SIDE_PRODUCTION_PARAMETERS = {
         "flap_h_max"        : 5.,
         "flap_h"            : 20.,
-        "flap_w"            : 40.
+        "flap_w"            : 40.,
+        "fold_idx"          : 0
     }
 
     def projected_pts(self, offset=False):
@@ -432,6 +433,8 @@ class Simple(Base):
         self.start_run()
         if not(production_parameters is None):
             self.s_p_p = production_parameters
+
+        print(self.s_p_p)
 
         fold_idx=self.s_p_p["fold_idx"]
 
