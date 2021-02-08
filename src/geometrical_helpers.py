@@ -113,7 +113,6 @@ def optimal_rec(pts, iterations=50, max_width=10000.0, max_length=10000.0):
         loc_pts=[rg.Point3d(pt) for pt in pts]
         angle=i*delta
         _, w, l=bounding_rec(loc_pts, angle)
-        print(w, l)
         if w < max_width and l < max_length:
             data_dict[angle]={"width":w,"length":l,"area":w*l}
 

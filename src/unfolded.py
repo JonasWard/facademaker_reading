@@ -92,7 +92,10 @@ class Unfolded():
 
     def outline_crv(self):
         """method that returns the outline of the whole object"""
-        return rg.Polyline(self.b_pts + [self.b_pts[0]]).ToNurbsCurve()
+        if len(self.b_pts)==0:
+            return None
+        else:
+            return rg.Polyline(self.b_pts + [self.b_pts[0]]).ToNurbsCurve()
 
     def top_face_folds(self):
         """method that returns the top face folds"""
@@ -121,3 +124,15 @@ class Unfolded():
             "body_flap_folds"  : self.body_flap_folds(),
             "intra_flap_folds" : self.intra_flap_folds()
         }
+
+    @staticmethod
+    def empty_object(b_pt, w, h):
+        """unfolded object initializer that only contains two lines, indicating it's empty"""
+        line0=rg.Line(rg.Point3d.Origin, rg.Point3d(w, h, 0.))
+        line1=rg.Line(rg.Point3d(0., h, 0.), rg.Point3d(w, 0., 0.))
+        empty_unfolded=Unfolded([], [line0, line1], [], [])
+        empty_unfolded.width=w
+        empty_unfolded.height=h
+        empty_unfolded.bottom_corner=b_pt
+
+        return empty_unfolded
