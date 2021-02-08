@@ -430,8 +430,10 @@ class Simple(Base):
         self.pts=pts
 
         self.start_run()
+        if not(production_parameters is None):
+            self.s_p_p = production_parameters
 
-        fold_idx=production_parameters["fold_idx"]
+        fold_idx=self.s_p_p["fold_idx"]
 
         if orient:
             self.pts=self.orient_pts(pts, start_idx=fold_idx%len(pts))
@@ -440,9 +442,6 @@ class Simple(Base):
             self.pattern = pattern
         else:
             print("no pattern was given, a default one has been assigned")
-
-        if not(production_parameters is None):
-            self.s_p_p = production_parameters
 
         self.construct_graph()
 
@@ -454,6 +453,8 @@ class Center(Base):
         self.pts=boundary
 
         self.start_run()
+        if not(production_parameters is None):
+            self.s_p_p = production_parameters
 
         if orient:
             self.pts=self.orient_pts(self.pts, 0)
@@ -463,8 +464,5 @@ class Center(Base):
             self.pattern = pattern
         else:
             print("no pattern was given, a default one has been assigned")
-
-        if not(production_parameters is None):
-            self.s_p_p = production_parameters
 
         self.construct_graph()
