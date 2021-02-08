@@ -111,7 +111,7 @@ def set_heights(data_dict, base_parameters = None, minimum_height = .2):
 
     data_dict["hs"] = hs
 
-    # checking whether the structure is compliant with the minimu height
+    # checking whether the structure is compliant with the minimum height
     h_offset = 0
     if data_dict["has_center"]:
         data_dict = top_height_setting(data_dict, base_parameters)
@@ -135,14 +135,14 @@ def gen_objects(data_dict):
     base_object = None
     if data_dict["pt_cnt"] == 3:
         base_object = TriangleData(
-            l = data_dict["xy_dim"],
-            w = data_dict["xy_dim"] * data_dict["frat"],
+            l = data_dict["xy_dim"]*data_dict["frat"],
+            w = data_dict["xy_dim"],
             hs = data_dict["hs"]
         )
     elif data_dict["pt_cnt"] == 4:
         base_object = SquareData(
-            l = data_dict["xy_dim"],
-            w = data_dict["xy_dim"] * data_dict["frat"],
+            l = data_dict["xy_dim"]*data_dict["frat"],
+            w = data_dict["xy_dim"],
             hs = data_dict["hs"]
         )
 

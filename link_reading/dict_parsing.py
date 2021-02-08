@@ -58,7 +58,7 @@ def string_to_pointsets(d_d, xy_dimension = 750, z_dimension = 100, def_h = .2):
     
     try:
         frat = d_d["frat"]
-        l, w = xy_dimension * frat, xy_dimension
+        l, w = xy_dimension, xy_dimension * frat
         print("w x l values set as: {} x {}".format(w, l) )
     except:
         l, w = xy_dimension, xy_dimension
