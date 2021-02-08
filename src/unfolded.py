@@ -81,7 +81,7 @@ class Unfolded():
 
     def move_to_position(self, pt):
         """method to translate all the objects in this class to a given point"""
-        self.Transform(rg.Transform.Translation(pt) )
+        self.Transform(rg.Transform.Translation(rg.Vector3d(pt) ) )
 
     def Transform(self, t_matrix):
         """method that transforms all the objects in this class according to a give t matrix"""
