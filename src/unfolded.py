@@ -94,7 +94,7 @@ class Unfolded():
 
     def outline_crv(self):
         """method that returns the outline of the whole object"""
-        return rg.PolyCurve(self.b_pts + self.b_pts[0])
+        return rg.PolyCurve(self.b_pts + [self.b_pts[0]])
 
     def top_face_folds(self):
         """method that returns the top face folds"""
@@ -113,3 +113,13 @@ class Unfolded():
         rec=rg.Rectangle(rg.Plane.WorldXY, self.width, self.height).ToNurbsCurve()
         rec.Translate(self._b_pt)
         return rec
+
+    def bake_dict(self):
+        """method that returns all the data structured in such a way that the objects
+        can be easily baked"""
+        return {
+            "outline_crv"      : self.outline_crv(),
+            "top_face_folds"   : self.top_face_folds(),
+            "body_flap_folds"  : self.body_flap_folds(),
+            "intra_flap_folds" : self.intra_flap_folds()
+        }

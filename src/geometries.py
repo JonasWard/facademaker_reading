@@ -111,7 +111,6 @@ class Base():
         pts=list(pts)
         return pts[start_idx:]+pts[:start_idx]
 
-    @property
     def is_coplanar(self):
         """method that check whether the original points are coplanar"""
         return rg.Point3d.ArePointsCoplanar(self.ori_pts, Base.COPLANAR_TOLERANCE)
