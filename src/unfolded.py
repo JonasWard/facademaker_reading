@@ -65,9 +65,9 @@ class Unfolded():
 
         angle_dict=optimal_rec(self.b_pts, iterations, self.height, self.width)
 
-        self.optimal_width_angle=angle_dict["width_angle"]
-        self.optimal_length_angle=angle_dict["length_angle"]
-        self.optimal_area_angle=angle_dict["area_angle"]
+        self.optimal_width_angle=angle_dict["width"]
+        self.optimal_length_angle=angle_dict["length"]
+        self.optimal_area_angle=angle_dict["area"]
 
         self.opt_a=angle_dict[opt_type]
 

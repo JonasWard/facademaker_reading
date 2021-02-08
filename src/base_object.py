@@ -69,11 +69,12 @@ class BaseObject:
         unfolded_objs           : list of unfolded objects"""
         
         unfolded_objs = []
+        print(optimization_parameters)
 
         for i, obj in enumerate(self.objs):
             b_pt=rg.Point3d(optimization_parameters["max_w"]*i, 0., 0.)
             unfolded_obj=obj.get_unfolded()
-            
+
             unfolded_obj.width=optimization_parameters["max_w"]
             unfolded_obj.height=optimization_parameters["max_l"]
             unfolded_obj.optimize(
