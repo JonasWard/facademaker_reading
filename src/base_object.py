@@ -11,10 +11,10 @@ class BaseObject:
         "flap_w" : 40.0,
         "mesh_correction_val" : False,
         "show_correction_val" : True,
-        "fold_idx" : 0,
+        "fold_idx" : 0,                 # front-end parameter
         "min_pt_height" : 50.,
-        "orient" : True,
-        "pattern" : "flat"
+        "orient" : True,                # legacy parameter
+        "pattern" : "flat"              
     }
 
     """class used to encapsulate the different types
@@ -71,7 +71,6 @@ class BaseObject:
         unfolded_objs           : list of unfolded objects"""
         
         unfolded_objs = []
-        print(optimization_parameters)
 
         for i, obj in enumerate(self.objs):
             b_pt=rg.Point3d(optimization_parameters["max_w"]*i, 0., 0.)

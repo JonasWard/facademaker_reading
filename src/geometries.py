@@ -428,12 +428,9 @@ class Simple(Base):
         self.pts=pts
 
         self.start_run()
-        print(self.s_p_p)
-        print(production_parameters)
         if not(production_parameters is None):
             self.s_p_p=production_parameters
-        print(self.s_p_p)
-
+            
         fold_idx=self.s_p_p["fold_idx"]
 
         if production_parameters["orient"]:
