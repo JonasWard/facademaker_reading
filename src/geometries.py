@@ -423,7 +423,7 @@ class Base():
         return self.unfolded
 
 class Simple(Base):
-    def __init__(self, pts, pattern = None, idx=0, orient=True, production_parameters=None):
+    def __init__(self, pts, pattern = None, orient=True, production_parameters=None):
         if len(pts) < 3:
             print("You need to input more than 3 boundary points")
             return None
@@ -431,8 +431,10 @@ class Simple(Base):
 
         self.start_run()
 
+        fold_idx=production_parameters["fold_idx"]
+
         if orient:
-            self.pts=self.orient_pts(pts, start_idx=idx%len(pts))
+            self.pts=self.orient_pts(pts, start_idx=fold_idx%len(pts))
 
         if not(pattern is None):
             self.pattern = pattern
