@@ -67,9 +67,9 @@ class Unfolded():
             self.b_pts, iterations, self.height, self.width
         )
 
-        self.optimal_width_angle=data[width_angle]["width"]
-        self.optimal_length_angle=data[length_angle]["length"]
-        self.optimal_area_angle=data[area_angle]["area"]
+        self.optimal_width_angle=width_angle
+        self.optimal_length_angle=length_angle
+        self.optimal_area_angle=area_angle
 
         self.opt_a=data[opt_type]
 

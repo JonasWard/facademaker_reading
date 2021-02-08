@@ -69,9 +69,18 @@ class BaseObject:
         unfolded_objs           : list of unfolded objects"""
         
         unfolded_objs = []
+
         for i, obj in enumerate(self.objs):
             b_pt=rg.Point3d(optimization_parameters["max_w"]*i, 0., 0.)
             unfolded_obj=obj.get_unfolded()
+            
+            unfolded_obj.width=optimization_parameters["max_w"]
+            unfolded_obj.height=optimization_parameters["max_l"]
+            unfolded_obj.optimize(
+                opt_type=optimization_parameters["preference"],
+                iterations=optimization_parameters["iterations"]
+            )
+
             unfolded_obj.bottom_corner=b_pt
 
             unfolded_objs.append(unfolded_obj)
@@ -103,6 +112,7 @@ class BaseObject:
         pattern_type     : the geometry of the side flaps
         index            : the index of this object in the grid (only used for naming)
         other_parameters : other parameters defining various aspects of the geometry"""
+
         if other_parameters is None:
             other_parameters=BaseObject.DEFAULT_PARAMETERS
 
@@ -152,6 +162,7 @@ class BaseObject:
         pattern_type     : the geometry of the side flaps
         index            : the index of this object in the grid (only used for naming)
         other_parameters : other parameters defining various aspects of the geometry"""
+
         if other_parameters is None:
             other_parameters=BaseObject.DEFAULT_PARAMETERS
 
@@ -177,6 +188,7 @@ class BaseObject:
         pattern_type     : the geometry of the side flaps
         index            : the index of this object in the grid (only used for naming)
         other_parameters : other parameters defining various aspects of the geometry"""
+
         if other_parameters is None:
             other_parameters=BaseObject.DEFAULT_PARAMETERS
 
@@ -194,4 +206,13 @@ class BaseObject:
             type_name="cube_group",
             pattern_name=pattern_type,
             parameters=other_parameters
+        )
+
+    @staticmethod
+    def null_object(index=(0,0)):
+        return BaseObject(
+            objs=[],
+            index=index,
+            type_name="empty_object",
+            pattern_name="null_pattern",
         )
