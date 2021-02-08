@@ -115,7 +115,7 @@ class BaseObject:
         return string
 
     @staticmethod
-    def simple_square(pts, index = (0,0), other_parameters = None):
+    def simple_square(pts, index = (0,0), other_parameters = None, fold_idx=None):
         """factory for simple square objects
         input:
         pts              : boundary pts
@@ -124,7 +124,12 @@ class BaseObject:
         other_parameters : other parameters defining various aspects of the geometry"""
 
         if other_parameters is None:
-            other_parameters=BaseObject.DEFAULT_PARAMETERS
+            other_parameters=dict(BaseObject.DEFAULT_PARAMETERS)
+        else:
+            other_parameters=dict(other_parameters)
+        
+        if not(fold_idx is None):
+            other_parameters["fold_idx"]=fold_idx
 
         fix_pts_heights(pts, other_parameters["min_pt_height"])
 

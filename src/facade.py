@@ -20,7 +20,8 @@ class FacademakerFacade:
             1: [[]]
         }
 
-        self.selection_pattern=[1]
+        self.objects_per_tile=1
+        self.selection_pattern=[[1]]
         self.layer_shift=0
 
     def update_objects(self, object_idx, object_lists):
@@ -31,20 +32,31 @@ class FacademakerFacade:
     def base_count(self):
         return self.dimension[0]*self.dimension[1]
 
+    def _o_p_t_rnd(self, value):
+        """internal method that return the index of the reference plane to be considered
+        for a given object"""
+        return int((value-value%self.objects_per_tile)/self.objects_per_tile)
+
+    def _sel_obj_idx(self, z_i, x_i):
+        """internal method that returns the obj value that should be used for a given cell"""
+        z_idx=z_i%len(self.selection_pattern)
+        x_idx=x_i%len(self.selection_pattern[0])
+        return self.selection_pattern[z_idx][x_idx]
+
     def populate(self):
-        """method that returns a mesh populatio of the whole facade with custom objects"""
+        """method that returns a mesh population of the whole facade with custom objects"""
         mshs=[]
 
         for i in range(self.z_cnt):
-            start_idx=i*self.layer_shift
+            start_idx=i*self.objects_per_tile*self.layer_shift
             for j in range(self.x_cnt):
                 b_pln=Plane(
-                    Point3d(j*self.x_dim, 0, i*self.z_dim),
+                    Point3d(self._o_p_t_rnd(j)*self.x_dim, 0, i*self.z_dim),
                     FacademakerFacade.X_VEC,
                     FacademakerFacade.Z_VEC
                 )
 
-                b_obj_idx=self.selection_pattern[(i*self.z_cnt+j)%len(self.selection_pattern)]
+                b_obj_idx=self._sel_obj_idx(i,j)
                 z_idx_obj=i%len(self.base_objs[b_obj_idx])
                 x_idx_obj=(start_idx+j)%len(self.base_objs[b_obj_idx][0])
                 obj=self.base_objs[b_obj_idx][z_idx_obj][x_idx_obj]
@@ -67,10 +79,10 @@ class FacademakerFacade:
                     all_b_objs.append(obj)
         return all_b_objs
 
-    def set_selection_pattern(self, selecion_pattern = [1], layer_shift=0):
+    def set_selection_pattern(self, selection_pattern = [[1]], layer_shift=0):
         """set the pattern with which should be used to fill the facade
         input:
-        selection_pattern   : list of key entries that will be used when populating
+        selection_pattern   : list of list of key entries that will be used when populating
         layer_shift         : when populating, at which index one should start in the respective row"""
         self.selection_pattern=selection_pattern
         self.layer_shift=layer_shift
@@ -103,6 +115,7 @@ class FacademakerFacade:
             ))
         self.base_objs[obj_idx]=[base_obj_row]
         self.set_dimension((1,j+1))
+        self.objects_per_tile=2
 
     def set_quad_block(self, ptss, other_parameters=None, obj_idx=1):
         """assign group of 4 point objects"""
@@ -112,7 +125,7 @@ class FacademakerFacade:
             other_parameters=other_parameters
         )]]
 
-    def set_multi_square(self, ptsss, other_parameters=None, obj_idx=1):
+    def set_multi_square(self, ptsss, other_parameters=None, obj_idx=1, fold_idxs=[[0]]):
         """assign a n.m list of 4 point objects"""
         self.base_objs[obj_idx]=[]
         for i, ptss in enumerate(ptsss):
@@ -121,7 +134,8 @@ class FacademakerFacade:
                 base_obj_row.append(BaseObject.simple_square(
                     pts=pts,
                     index=(i,j),
-                    other_parameters=other_parameters
+                    other_parameters=other_parameters,
+                    fold_idx=fold_idxs[i%len(fold_idxs)][j%len(fold_idxs[0])]
                 ))
             self.base_objs[obj_idx].append(base_obj_row)
         self.set_dimension((i+1,j+1))
@@ -141,7 +155,7 @@ class FacademakerFacade:
             self.base_objs[obj_idx].append(base_obj_row)
         self.set_dimension((i+1,j+1))
 
-    def set_multi_triangles(self, ptssss, other_parameters=None, obj_idx=1):
+    def set_multi_triangles(self, ptsss, other_parameters=None, obj_idx=1):
         """assign a n.m list of 4 point objects"""
         self.base_objs[obj_idx]=[]
         for i, ptss in enumerate(ptsss):
