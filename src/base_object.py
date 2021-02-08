@@ -67,9 +67,9 @@ class BaseObject:
         
         unfolded_objs = []
         for obj, i in enumerate(self.objs):
-            t_matrix = rg.Tranform.Translate(rg.Point3d(optimization_parameters["max_w"] * i, 0., 0.) )
-            unfolded_obj = obj.get_2d()
-            unfolded_obj.Transform(t_matrix)
+            b_pt=rg.Point3d(optimization_parameters["max_w"]*i, 0., 0.)
+            unfolded_obj=obj.get_unfolded()
+            unfolded_obj.bottom_corner=b_pt
 
             unfolded_objs.append(unfolded_obj)
 

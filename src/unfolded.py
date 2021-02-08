@@ -21,9 +21,11 @@ class Unfolded():
         else:
             self.s_para = sheet_parameters
 
-        self.optimal_area_angle = None
-        self.optimal_width_angle = None
-        self.optimal_length_angle = None
+        self.optimal_area_angle=None
+        self.optimal_width_angle=None
+        self.optimal_length_angle=None
+
+        self._b_pt=rg.Point3d.Origin
 
     @property
     def height(self):
@@ -40,6 +42,15 @@ class Unfolded():
     @width.setter
     def width(self, value):
         self.s_para["w"]=value
+        
+    @property
+    def bottom_corner(self):
+        return self._b_pt
+
+    @bottom_corner.setter
+    def bottom_corner(self, pt):
+        self.move_to_position(pt-self._bottom_corner())
+        self._b_pt=pt
 
     def update_sheet_parameters(self, s_para_dict):
         """method to update the sheet dimension dict. Should contain "w" and "h" value"""
@@ -64,8 +75,11 @@ class Unfolded():
 
         # positioning the whole object in the ideal location
         self.Transform(rg.Transform.Rotation(self.opt_a, centroid(self.b_pts) ) )
+        self.move_to_position(-self._bottom_corner())
+
+    def _bottom_corner(self):
         (x,y), _=bounds(self.b_pts)
-        self.move_to_position(rg.Point3d(-x, -y, 0.))
+        return rg.Point3d(x, y, 0.)
 
     def move_to_position(self, pt):
         """method to translate all the objects in this class to a given point"""
@@ -96,4 +110,6 @@ class Unfolded():
 
     def panel(self):
         """method that returns a representation of the panel"""
-        return rg.Rectangle(rg.Plane.WorldXY, self.width, self.height).ToNurbsCurve()
+        rec=rg.Rectangle(rg.Plane.WorldXY, self.width, self.height).ToNurbsCurve()
+        rec.Translate(self._b_pt)
+        return rec
