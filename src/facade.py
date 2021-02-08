@@ -1,7 +1,11 @@
 from base_object import BaseObject
+from Rhino.Geometry import Plane, Point3d, Vector3d
 
 class FacademakerFacade:
     """Facademaker Container Class"""
+    X_VEC=Vector3d(1.0,0,0)
+    Z_VEC=Vector3d(0,0,1.0)
+
     def __init__(self, x_count, z_count, x_spacing, z_spacing):
         """Initializing the facade with a give length and height"""
         self.x_cnt=x_count
@@ -16,7 +20,7 @@ class FacademakerFacade:
             1: [[]]
         }
 
-        self.culling_pattern=[1]
+        self.selection_pattern=[1]
         self.layer_shift=0
 
     def update_objects(self, object_idx, object_lists):
@@ -27,26 +31,27 @@ class FacademakerFacade:
     def base_count(self):
         return self.dimension[0]*self.dimension[1]
 
-    def populate(self, base_objs, obj_type = 1):
-        """populate the facade with custom objects
-        input
-            base_objs : single, list or nested list of objects
-            obj_type  : obj index (in case multiple objects are defined) - default 1
-        """
-        if isinstance(base_objs, list):
-            if isinstance(base_objs[0], list):
-                self.base_objs[obj_type] = base_objs
-            else:
-                self.base_objs[obj_type] = [base_objs]
-        else:
-            self.base_objs[obj_type] = [[base_objs]]
-        
-        if obj_type == 1:
-            self.dimension = (len(base_objs[0]), len(base_objs))
-            print("set a new dimension of the base facade building block: {} x {}".format(
-                self.dimension[0],
-                self.dimension[1]
-            ) )
+    def populate(self):
+        """method that returns a mesh populatio of the whole facade with custom objects"""
+        mshs=[]
+
+        for i in range(self.z_cnt):
+            start_idx=i*self.layer_shift
+            for j in range(self.x_cnt):
+                b_pln=Plane(
+                    Point3d(j*self.x_dim, 0, i*self.z_dim),
+                    FacademakerFacade.X_VEC,
+                    FacademakerFacade.Z_VEC
+                )
+
+                b_obj_idx=self.selection_pattern[(i*self.z_cnt+j)%len(self.selection_pattern)]
+                z_idx_obj=i%len(self.base_objs[b_obj_idx])
+                x_idx_obj=(start_idx+j)%len(self.base_objs[b_obj_idx][0])
+                obj=self.base_objs[b_obj_idx][z_idx_obj][x_idx_obj]
+
+                mshs.extend(obj.get_mesh(b_pln))
+
+        return mshs
 
     def set_dimension(self, dim_tuple):
         m,n=dim_tuple
@@ -62,9 +67,12 @@ class FacademakerFacade:
                     all_b_objs.append(obj)
         return all_b_objs
 
-    def set_culling_pattern(self, culling_pattern = [1], layer_shift=0):
-        """set the pattern with which the facade should be filled"""
-        self.culling_pattern=culling_pattern
+    def set_selection_pattern(self, selecion_pattern = [1], layer_shift=0):
+        """set the pattern with which should be used to fill the facade
+        input:
+        selection_pattern   : list of key entries that will be used when populating
+        layer_shift         : when populating, at which index one should start in the respective row"""
+        self.selection_pattern=selection_pattern
         self.layer_shift=layer_shift
 
     def set_square(self, pts, other_parameters=None, obj_idx=1):
@@ -127,6 +135,20 @@ class FacademakerFacade:
                 base_obj_row.append(BaseObject.pyramid(
                     pts=pts,
                     pt=c_ptss[i][j],
+                    index=(i,j),
+                    other_parameters=other_parameters
+                ))
+            self.base_objs[obj_idx].append(base_obj_row)
+        self.set_dimension((i+1,j+1))
+
+    def set_multi_triangles(self, ptssss, other_parameters=None, obj_idx=1):
+        """assign a n.m list of 4 point objects"""
+        self.base_objs[obj_idx]=[]
+        for i, ptss in enumerate(ptsss):
+            base_obj_row=[]
+            for j, pts in enumerate(ptss):
+                base_obj_row.append(BaseObject.simple_triangle(
+                    pts=pts,
                     index=(i,j),
                     other_parameters=other_parameters
                 ))
