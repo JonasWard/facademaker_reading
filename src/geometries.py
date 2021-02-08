@@ -31,7 +31,7 @@ class Base():
         self.has_graph=False
         self.has_offset=False
         self.has_holes=False
-        self.ori_pts=[]
+        self.ori_pts=self.pts[:]
         self._f_list=[]
         self._is_unfolded=False
         self._has_sides=False
@@ -79,7 +79,6 @@ class Base():
         for i, pt in enumerate(self.pts):
             new_pts[i].Z=pt.Z-abs(value)
 
-        self.ori_pts=self.pts[:]
         self.has_offset=True
         self.pts=new_pts
 
@@ -96,7 +95,6 @@ class Base():
 
         new_pts=self._pt_distance_mapping(self.pts, new_pt_list)
 
-        self.ori_pts=self.pts[:]
         self.has_offset=True
         self.pts=new_pts
 
@@ -433,8 +431,6 @@ class Simple(Base):
         self.start_run()
         if not(production_parameters is None):
             self.s_p_p = production_parameters
-
-        print(self.s_p_p)
 
         fold_idx=self.s_p_p["fold_idx"]
 
