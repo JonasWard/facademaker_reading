@@ -95,7 +95,7 @@ class Unfolded():
         if len(self.b_pts)==0:
             return None
         else:
-            return rg.Polyline(self.b_pts + [self.b_pts[0]]).ToNurbsCurve()
+            return rg.Polyline(self.b_pts+[self.b_pts[0]]).ToNurbsCurve()
 
     def top_face_folds(self):
         """method that returns the top face folds"""

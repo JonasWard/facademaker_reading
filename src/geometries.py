@@ -404,7 +404,7 @@ class Base():
             top_face_folds=[]
 
         self.unfolded=Unfolded(
-            boundary=outline_pts+[pt_1_new],
+            boundary=outline_pts,
             top_face_folds=top_face_folds,
             body_flap_folds=folds_a, 
             intra_flap_folds=folds_b
