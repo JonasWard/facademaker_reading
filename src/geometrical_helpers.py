@@ -116,16 +116,15 @@ def optimal_rec(pts, iterations=50, max_width=10000.0, max_length=10000.0):
         if w < max_width and l < max_length:
             data_dict[angle]={"width":w,"length":l,"area":w*l}
 
-    print(data_dict)
-
+    angle_dict={}
     if any(data_dict):
-        min_width=min(data_dict, key=lambda k: data_dict[k]["width"])
-        min_length=min(data_dict, key=lambda k: data_dict[k]["length"])
-        min_area=min(data_dict, key=lambda k: data_dict[k]["area"])
-        return min_width, min_length, min_area, data_dict
-
+        angle_dict["min_width"]=min(data_dict, key=lambda k: data_dict[k]["width"])
+        angle_dict["min_length"]=min(data_dict, key=lambda k: data_dict[k]["length"])
+        angle_dict["min_area"]=min(data_dict, key=lambda k: data_dict[k]["area"])
     else:
-        return None, None, None, None
+        print("trying to optimize this object, the constrains were reached")
+
+    return angle_dict
 
 def transform_objs(objs, t_m):
     [obj.Transform(t_m) for obj in objs]

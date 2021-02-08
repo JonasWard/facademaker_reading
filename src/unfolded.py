@@ -63,15 +63,13 @@ class Unfolded():
                                      "width", "length" or "area"
         iterations : int (10) - how many different angles should be checked"""
 
-        width_angle,length_angle,area_angle,data=optimal_rec(
-            self.b_pts, iterations, self.height, self.width
-        )
+        angle_dict=optimal_rec(self.b_pts, iterations, self.height, self.width)
 
-        self.optimal_width_angle=width_angle
-        self.optimal_length_angle=length_angle
-        self.optimal_area_angle=area_angle
+        self.optimal_width_angle=angle_dict["width_angle"]
+        self.optimal_length_angle=angle_dict["length_angle"]
+        self.optimal_area_angle=angle_dict["area_angle"]
 
-        self.opt_a=data[opt_type]
+        self.opt_a=angle_dict[opt_type]
 
         # positioning the whole object in the ideal location
         self.Transform(rg.Transform.Rotation(self.opt_a, centroid(self.b_pts) ) )
