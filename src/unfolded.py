@@ -41,6 +41,10 @@ class Unfolded():
     def width(self, value):
         self.s_para["w"]=value
 
+    def update_sheet_parameters(self, s_para_dict):
+        """method to update the sheet dimension dict. Should contain "w" and "h" value"""
+        self.s_para=s_para_dict
+
     def optimize(self, opt_type="width", iterations=10):
         """method for optimizing the position on the given sheet
         input:
@@ -64,10 +68,11 @@ class Unfolded():
         self.move_to_position(rg.Point3d(-x, -y, 0.))
 
     def move_to_position(self, pt):
+        """method to translate all the objects in this class to a given point"""
         self.Transform(rg.Transform.Translation(pt) )
 
     def Transform(self, t_matrix):
-        """method that transforms all the objects in this class"""
+        """method that transforms all the objects in this class according to a give t matrix"""
         [obj.Transform(t_matrix) for obj in self.b_pts]
         [obj.Transform(t_matrix) for obj in self.f_ff]
         [obj.Transform(t_matrix) for obj in self.f_bf]

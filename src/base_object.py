@@ -14,20 +14,25 @@ class BaseObject:
 
     """class used to encapsulate the different types
     all dimensions are defined in mm"""
-    def __init__(self, objs = [], index = None, type_name = None, pattern_name = None):
+    def __init__(self, objs=[], index=None, type_name=None, pattern_name=None, parameters=None):
         """input:
         objs         : list of objects defining this general object
         index        : uv coordinates of this object (default None)
         type_name    : name of this geometry cluster (default None)
         pattern_name : pattern type that defines the interlocking pattern of the flaps (default None)"""
 
-        self.objs = []
+        self.objs=[]
 
-        self.name = type_name
-        self.pattern = pattern_name
-        self.index = index
+        self.name=type_name
+        self.pattern=pattern_name
+        self.index=index
 
-        self._call_count = 0
+        if parameters is None:
+            self.parameters=dict(BaseObject.DEFAULT_PARAMETERS)
+        else:
+            self.parameters=parameters
+
+        self._call_count=0
 
     def get_mesh(self, placement_plane):
         """method that returns the 3d mesh representation of this object
@@ -42,8 +47,8 @@ class BaseObject:
         msh_output = []
 
         for obj in self.objs:
-            msh = rg.Mesh(obj.get_mesh() )  # making copy of the mesh
-            msh.Transform(t_matrix)         # transforming the mesh to the correct plane
+            msh = rg.Mesh(obj.get_mesh(self.parameters["show_correction_val"]) )
+            msh.Transform(t_matrix)
             msh_output.append(msh)
         
         return msh_output
@@ -79,11 +84,11 @@ class BaseObject:
         string = ''
 
         if not(self.name is None):
-            string += self.name
+            string+=self.name
         if not(self.pattern is None):
-            string += self.pattern
+            string+=self.pattern
         if not(self.index is None):
-            string += str(self.index)
+            string+=str(self.index)
 
         return string
 
@@ -96,20 +101,21 @@ class BaseObject:
         index            : the index of this object in the grid (only used for naming)
         other_parameters : other parameters defining various aspects of the geometry"""
         if other_parameters is None:
-            other_parameters = BaseObject.DEFAULT_PARAMETERS
+            other_parameters=BaseObject.DEFAULT_PARAMETERS
 
-        pattern = simple_pattern_parser(pattern_type, len(pts))
-        square = Simple(pts, pattern, other_parameters)
+        pattern=simple_pattern_parser(pattern_type, len(pts))
+        square=Simple(pts, pattern, other_parameters)
 
         return BaseObject(
-            objs = [square],
-            index = index,
-            type_name = "simple_square",
-            pattern_name = pattern_type
+            objs=[square],
+            index=index,
+            type_name="simple_square",
+            pattern_name=pattern_type,
+            parameters=other_parameters
         )
 
     @staticmethod
-    def simple_triangle(pts, pattern_type = "flat", index = (0,0), other_parameters = None):
+    def simple_triangle(pts, pattern_type="flat", index = (0,0), other_parameters=None):
         """factory for simple square objects
         input:
         pts              : boundary pts
@@ -117,20 +123,21 @@ class BaseObject:
         index            : the index of this object in the grid (only used for naming)
         other_parameters : other parameters defining various aspects of the geometry"""
         if other_parameters is None:
-            other_parameters = BaseObject.DEFAULT_PARAMETERS
+            other_parameters = dict(BaseObject.DEFAULT_PARAMETERS)
 
         pattern = simple_pattern_parser(pattern_type, len(pts))
         triangle = Simple(pts, pattern, other_parameters)
 
         return BaseObject(
-            objs = [triangle],
-            index = index,
-            type_name = "simple_triangle",
-            pattern_name = pattern_type
+            objs=[triangle],
+            index=index,
+            type_name="simple_triangle",
+            pattern_name=pattern_type,
+            parameters=other_parameters
         )
 
     @staticmethod
-    def pyramid(pts, pt, pattern_type = "flat", index = (0,0), other_parameters = None):
+    def pyramid(pts, pt, pattern_type="flat", index=(0,0), other_parameters=None):
         """factory for two part pyramid object
         input:
         pts              : boundary pts
@@ -141,7 +148,7 @@ class BaseObject:
         if other_parameters is None:
             other_parameters=BaseObject.DEFAULT_PARAMETERS
 
-        pentagon_pattern, triangle_pattern = pyramid_pattern_parser(pattern_type, len(pts) )
+        pentagon_pattern, triangle_pattern=pyramid_pattern_parser(pattern_type, len(pts) )
         top_pentagon=Center(pts, pt, pentagon_pattern, other_parameters)
         triangle=Simple([pts[0],pt,pts[-1]], triangle_pattern, other_parameters)
 
@@ -149,11 +156,12 @@ class BaseObject:
             objs=[top_pentagon, triangle],
             index=index,
             type_name="diamond",
-            pattern_name=pattern_type
+            pattern_name=pattern_type,
+            parameters=other_parameters
         )
 
     @staticmethod
-    def cube_group(ptss, pattern_type = "flat", index = (0,0), other_parameters = None):
+    def cube_group(ptss, pattern_type="flat", index=(0,0), other_parameters=None):
         """factory for group of square objects
         input:
         ptss             : list of boundary pts
@@ -161,11 +169,11 @@ class BaseObject:
         index            : the index of this object in the grid (only used for naming)
         other_parameters : other parameters defining various aspects of the geometry"""
         if other_parameters is None:
-            other_parameters = BaseObject.DEFAULT_PARAMETERS
+            other_parameters=BaseObject.DEFAULT_PARAMETERS
 
         cube_group_patterns=cube_group_pattern_parser(pattern_type, (len(ptss[0]), len(ptss)))
 
-        objs = []
+        objs=[]
         for i, pts in enumerate(ptss):
             objs.append(Simple(pts, cube_group_patterns[i], other_parameters) )
 
@@ -173,5 +181,6 @@ class BaseObject:
             objs=objs,
             index=index,
             type_name="cube_group",
-            pattern_name=pattern_type
+            pattern_name=pattern_type,
+            parameters=other_parameters
         )

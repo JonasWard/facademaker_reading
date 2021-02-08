@@ -1,6 +1,6 @@
 import Rhino.Geometry as rg
 import math
-from geometrical_helpers import *
+from unfolded import Unfolded
 from pattern_generator import simple_pattern_parser
 from panel_sides import *
 
@@ -10,10 +10,11 @@ class Base():
     two different methods of incalculating tolerances. All the function in this 
     class are called in it's offspring classes."""
 
+    COPLANAR_TOLERANCE=.5
     DEFAULT_SIDE_PRODUCTION_PARAMETERS = {
-        "h_max"  : 5.,
-        "flap_h" : 20.,
-        "flap_w" : 40.
+        "flap_h_max"        : 5.,
+        "flap_h"            : 20.,
+        "flap_w"            : 40.
     }
 
     def projected_pts(self, offset=False):
@@ -31,6 +32,9 @@ class Base():
         self.has_holes=False
         self.ori_pts=[]
         self._f_list=[]
+        self._is_unfolded=False
+        self._has_sides=False
+        self.unfolded=None
 
     @property
     def f_list(self):
@@ -60,7 +64,7 @@ class Base():
         to adjust the position of the vertexes with to compensate for folding
         tolerance - more representative result
         input:
-        value : float - amoun to offset with"""
+        value : float - amount to offset with"""
 
         pts=self.projected_pts(False)
         n_pl=rg.PolylineCurve(pts+[pts[0]]).Offset(
@@ -107,6 +111,11 @@ class Base():
         
         pts=list(pts)
         return pts[start_idx:]+pts[:start_idx]
+
+    @property
+    def is_coplanar(self):
+        """method that check whether the original points are coplanar"""
+        return rg.Point3d.ArePointsCoplanar(self.ori_pts, Base.COPLANAR_TOLERANCE)
 
     def construct_graph(self):
         """method that constructs the connection graph of all the faces"""
@@ -279,11 +288,12 @@ class Base():
 
             folded_list[current_face[to_resolve_idx] ] = True
 
+        self._is_unfolded=True
         return self.flat_pts
 
     @property
     def h_max(self):
-        return self.s_p_p["h_max"]
+        return self.s_p_p["flap_h_max"]
 
     @property
     def flap_h(self):
@@ -295,6 +305,9 @@ class Base():
 
     def fold_lns(self):
         """method that returns all the main fold lines of the flattened top surface"""
+        if not(self._is_unfolded):
+            self.unfolding()
+        
         folds=[]
         flattened_graph=[]
 
@@ -318,6 +331,10 @@ class Base():
 
     def add_simple_sides(self):
         """depreciated method for creating flat sides"""
+        
+        if not(self._is_unfolded):
+            self.unfolding()
+        
         outline_pts=[]
         folds=[]
         for i in range(self.count ):
@@ -338,13 +355,14 @@ class Base():
         return outline_pts+[pt_1_new], folds, []
 
     def add_sides(self):
-        """method that add sides to the unfolded object as defined in the pattern map
-        return:
-        unfolded_object : Unfolded - object containg all the relevant 2d data"""
+        """method that add sides to the unfolded object as defined in the pattern map"""
+
+        if not(self._is_unfolded):
+            self.unfolding()
 
         outline_pts=[]
-        folds_a=[]
-        folds_b=[]
+        folds_a=[] # main folds between flap and main body
+        folds_b=[] # folds on the flaps to be able to interlock them
 
         for i in range(self.count):
 
@@ -382,20 +400,27 @@ class Base():
             folds_a.extend(loc_folds_a)
             folds_b.extend(loc_folds_b)
 
-        return Unfolded(
+        if not(self.is_coplanar()):
+            top_face_folds=self.fold_lns()
+        else:
+            top_face_folds=[]
 
+        self.unfolded=Unfolded(
+            boundary=outline_pts+[pt_1_new],
+            top_face_folds=top_face_folds,
+            body_flap_folds=folds_a, 
+            intra_flap_folds=folds_b
         )
-        outline_pts+[pt_1_new], folds_a, folds_b
 
-    def unfold_object(self, with_inner_folds=True):
-        pass
-        # return Unfolded(
-        #     source=self,
-        #     boundary=self.pts,
-        #     folds_flaps_a=
-        #     folds_flaps_b=
-        #     holes=[]
-        # )
+        self._has_sides=True
+
+    def get_unfolded(self):
+        """method that returns the unfolded version of the object"""
+
+        if not(self._has_sides):
+            self.add_sides()
+        
+        return self.unfolded
 
 class Simple(Base):
     def __init__(self, pts, pattern = None, idx=0, orient=True, production_parameters=None):
@@ -410,7 +435,7 @@ class Simple(Base):
         if not(pattern is None):
             self.pattern = pattern
         else:
-            print("no pattern was given, a defaulat one has been assigned")
+            print("no pattern was given, a default one has been assigned")
 
         if not(production_parameters is None):
             self.s_p_p = production_parameters
@@ -429,7 +454,7 @@ class Center(Base):
         if not(pattern is None):
             self.pattern = pattern
         else:
-            print("no pattern was given, a defaulat one has been assigned")
+            print("no pattern was given, a default one has been assigned")
 
         if not(production_parameters is None):
             self.s_p_p = production_parameters
