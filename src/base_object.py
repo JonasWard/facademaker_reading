@@ -12,7 +12,9 @@ class BaseObject:
         "mesh_correction_val" : False,
         "show_correction_val" : True,
         "fold_idx" : 0,
-        "min_pt_height" : 50.
+        "min_pt_height" : 50.,
+        "orient" : True,
+        "pattern" : "flat"
     }
 
     """class used to encapsulate the different types
@@ -114,7 +116,7 @@ class BaseObject:
         return string
 
     @staticmethod
-    def simple_square(pts, pattern_type = "clockwise", index = (0,0), other_parameters = None):
+    def simple_square(pts, index = (0,0), other_parameters = None):
         """factory for simple square objects
         input:
         pts              : boundary pts
@@ -127,6 +129,7 @@ class BaseObject:
 
         fix_pts_heights(pts, other_parameters["min_pt_height"])
 
+        pattern_type=other_parameters["pattern"]
         pattern=simple_pattern_parser(pattern_type, len(pts))
         square=Simple(pts, pattern, other_parameters)
 
@@ -139,7 +142,7 @@ class BaseObject:
         )
 
     @staticmethod
-    def simple_triangle(pts, pattern_type="flat", index = (0,0), other_parameters=None):
+    def simple_triangle(pts, index = (0,0), other_parameters=None):
         """factory for simple square objects
         input:
         pts              : boundary pts
@@ -151,6 +154,7 @@ class BaseObject:
 
         fix_pts_heights(pts, other_parameters["min_pt_height"])
 
+        pattern_type=other_parameters["pattern"]
         pattern = simple_pattern_parser(pattern_type, len(pts))
         triangle = Simple(pts, pattern, other_parameters)
 
@@ -163,7 +167,7 @@ class BaseObject:
         )
 
     @staticmethod
-    def pyramid(pts, pt, pattern_type="flat", index=(0,0), other_parameters=None):
+    def pyramid(pts, pt, index=(0,0), other_parameters=None):
         """factory for two part pyramid object
         input:
         pts              : boundary pts
@@ -177,6 +181,7 @@ class BaseObject:
 
         fix_pts_heights(pts+[pt], other_parameters["min_pt_height"])
 
+        pattern_type=other_parameters["pattern"]
         pentagon_pattern, triangle_pattern=pyramid_pattern_parser(pattern_type, len(pts) )
         top_pentagon=Center(pts, pt, pentagon_pattern, other_parameters)
         triangle=Simple([pts[0],pt,pts[-1]], triangle_pattern, other_parameters)
@@ -190,7 +195,7 @@ class BaseObject:
         )
 
     @staticmethod
-    def cube_group(ptss, pattern_type="flat", index=(0,0), other_parameters=None):
+    def cube_group(ptss, index=(0,0), other_parameters=None):
         """factory for group of square objects
         input:
         ptss             : list of boundary pts
@@ -203,6 +208,7 @@ class BaseObject:
 
         fix_ptss_heights(ptss, other_parameters["min_pt_height"])
 
+        pattern_type=other_parameters["pattern"]
         cube_group_patterns=cube_group_pattern_parser(pattern_type, (len(ptss[0]), len(ptss)))
 
         objs=[]
