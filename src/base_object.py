@@ -54,7 +54,7 @@ class BaseObject:
         
         return msh_output
 
-    def get_2d(self, optimization_parameters = {"iterations":50, "max_w":1000, "max_l": 1800, "preference":"width"}):
+    def get_2d(self, optimization_parameters={"iterations":50, "max_w":1000, "max_l": 1800, "preference":"width"}):
         """method that returns the 2d unfoulded geometry of this objects
         input:
         optimization_parameters : dict used to position the geometry as good as possible for production
@@ -67,7 +67,7 @@ class BaseObject:
         unfolded_objs           : list of unfolded objects"""
         
         unfolded_objs = []
-        for obj, i in enumerate(self.objs):
+        for i, obj in enumerate(self.objs):
             b_pt=rg.Point3d(optimization_parameters["max_w"]*i, 0., 0.)
             unfolded_obj=obj.get_unfolded()
             unfolded_obj.bottom_corner=b_pt
