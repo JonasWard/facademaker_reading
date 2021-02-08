@@ -1,6 +1,61 @@
 import Rhino.Geometry as rg
 import math
 
+def pts_min_height(pts):
+    """function that finds the minimum height of a list of rg.Point3ds
+    return:
+    height: float"""
+    zs=[]
+    for pt in pts:
+        zs.append(pt.Z)
+
+    return min(zs)
+
+def ptss_increase(ptss, value):
+    [pts_increase(pts, value) for pts in ptss]
+
+def pts_increase(pts, value):
+    [pt_increase(pt, value) for pt in pts]
+
+def pt_increase(pt, value):
+    pt.Z+=value
+
+def fix_ptss_heights(ptss, treshold_height):
+    """function that tries to check whether the z value of a list of rg.Point3ds 
+    lists are larger than a given treshold value, if not, all the points 
+    z'height are increased until it reaches the treshold value"""
+
+    min_h=min([pts_min_height(pts) for pts in ptss])
+
+    if min_h<treshold_height:
+        h_delta=treshold_height-min_h
+        print("treshold height was not reached, heights were increased by {}".format(h_delta) )
+        ptss_increase(ptss, h_delta)
+    
+def fix_pts_heights(pts, treshold_height):
+    """function that tries to check whether the z value of a list of rg.Point3ds 
+    are larger than a given treshold value, if not, all the points z'height are
+    increased until it reaches the treshold value"""
+
+    min_h=pts_min_height(pts)
+
+    if min_h<treshold_height:
+        h_delta=treshold_height-min_h
+        print("treshold height was not reached, heights were increased by {}".format(h_delta) )
+        pts_increase(pts, h_delta)
+
+def fix_pt_height(pt, treshold_height):
+    """function that tries to check whether the z value of a rg.Point3ds is
+    larger than a given treshold value, if not, all the points z'height are
+    increased until it reaches the treshold value"""
+
+    min_h=pt.Z
+
+    if min_h<treshold_height:
+        h_delta=treshold_height-min_h
+        print("treshold height was not reached, height was increased by {}".format(h_delta) )
+        pt_increase(pt, h_delta)
+
 def tangent_normal(pt_0, pt_1, negative=False):
     t=rg.Vector3d(pt_1-pt_0)
     t.Unitize()

@@ -1,4 +1,5 @@
 from geometries import Simple, Center, Unfolded
+from geometrical_helpers import fix_pts_heights, fix_ptss_heights
 from pattern_generator import *
 import Rhino.Geometry as rg
 
@@ -10,7 +11,8 @@ class BaseObject:
         "flap_w" : 40.0,
         "mesh_correction_val" : False,
         "show_correction_val" : True,
-        "fold_idx" : 0
+        "fold_idx" : 0,
+        "min_pt_height" : 50.
     }
 
     """class used to encapsulate the different types
@@ -94,7 +96,7 @@ class BaseObject:
         return string
 
     @staticmethod
-    def simple_square(pts, pattern_type = "flat", index = (0,0), other_parameters = None):
+    def simple_square(pts, pattern_type = "clockwise", index = (0,0), other_parameters = None):
         """factory for simple square objects
         input:
         pts              : boundary pts
@@ -103,6 +105,8 @@ class BaseObject:
         other_parameters : other parameters defining various aspects of the geometry"""
         if other_parameters is None:
             other_parameters=BaseObject.DEFAULT_PARAMETERS
+
+        fix_pts_heights(pts, other_parameters["min_pt_height"])
 
         pattern=simple_pattern_parser(pattern_type, len(pts))
         square=Simple(pts, pattern, other_parameters)
@@ -125,6 +129,8 @@ class BaseObject:
         other_parameters : other parameters defining various aspects of the geometry"""
         if other_parameters is None:
             other_parameters = dict(BaseObject.DEFAULT_PARAMETERS)
+
+        fix_pts_heights(pts, other_parameters["min_pt_height"])
 
         pattern = simple_pattern_parser(pattern_type, len(pts))
         triangle = Simple(pts, pattern, other_parameters)
@@ -149,6 +155,8 @@ class BaseObject:
         if other_parameters is None:
             other_parameters=BaseObject.DEFAULT_PARAMETERS
 
+        fix_pts_heights(pts+[pt], other_parameters["min_pt_height"])
+
         pentagon_pattern, triangle_pattern=pyramid_pattern_parser(pattern_type, len(pts) )
         top_pentagon=Center(pts, pt, pentagon_pattern, other_parameters)
         triangle=Simple([pts[0],pt,pts[-1]], triangle_pattern, other_parameters)
@@ -171,6 +179,8 @@ class BaseObject:
         other_parameters : other parameters defining various aspects of the geometry"""
         if other_parameters is None:
             other_parameters=BaseObject.DEFAULT_PARAMETERS
+
+        fix_ptss_heights(ptss, other_parameters["min_pt_height"])
 
         cube_group_patterns=cube_group_pattern_parser(pattern_type, (len(ptss[0]), len(ptss)))
 
