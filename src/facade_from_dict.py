@@ -17,6 +17,8 @@ def facade_from_dict(data_dict, z_spacing=1000., y_delta=500.):
         z_count=data_dict['fgv'],
         z_spacing=data_dict["z_spacing"]
     )
+    
+    f.set_selection_pattern(data_dict["ftypo"])
 
     FUNCTION_MAP[FUNCTION_TYPES[data_dict['ft']]](f, data_dict)
 

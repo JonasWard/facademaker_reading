@@ -41,7 +41,11 @@ class FacademakerFacade:
         """internal method that returns the obj value that should be used for a given cell"""
         z_idx=z_i%len(self.selection_pattern)
         x_idx=x_i%len(self.selection_pattern[0])
-        return self.selection_pattern[z_idx][x_idx]
+
+        selection_idx=self.selection_pattern[z_idx][x_idx]
+        if selection_idx!=1:
+            print("selecting non standard selection_idx: {}".format(selection_idx))
+        return selection_idx
 
     def populate(self):
         """method that returns a mesh population of the whole facade with custom objects"""
