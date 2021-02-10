@@ -17,7 +17,7 @@ def facade_from_dict(data_dict, z_spacing=1000., y_delta=500.):
         z_count=data_dict['fgv'],
         z_spacing=data_dict["z_spacing"]
     )
-    
+
     f.set_selection_pattern(data_dict["ftypo"])
 
     FUNCTION_MAP[FUNCTION_TYPES[data_dict['ft']]](f, data_dict)
@@ -48,6 +48,9 @@ def triangle_function(facade, data_dict):
     facade.objects_per_tile=2
     apply_all_transformations(f_b_set, data_dict)
     
+    if data_dict["base_objects"]!=2:
+        facade.set_multi_triangles(f_b_set.flat_clone(),obj_idx=2)
+
     facade.set_multi_triangles(f_b_set.generate())
 
 def square_function(facade, data_dict):
@@ -60,6 +63,9 @@ def square_function(facade, data_dict):
     )
 
     apply_all_transformations(f_b_set, data_dict)
+
+    if data_dict["base_objects"]!=2:
+        facade.set_multi_squares(f_b_set.flat_clone(),obj_idx=2)
     
     facade.set_multi_squares(f_b_set.generate())
     pass

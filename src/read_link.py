@@ -66,6 +66,7 @@ def ftypo_handling(data_dict):
             break
     
     if not(found_key):
+        data_dict["base_objects"]=2
         print("no ftypo found, populated with all int 1")
         row=[ 1 for i in range( data_dict["fgh"])]
         data_dict["ftypo"]=[row[:] for i in range( data_dict["fgv"])]
@@ -81,7 +82,7 @@ def ftypo_handling(data_dict):
         else:
             key_remainder=int(key.replace("ftypo", ''))
 
-            data_dict["base_objects"]=2**key_remainder
+            data_dict["base_objects"]=int(2**key_remainder)
 
             ftypo=data_dict[key].split('_')
             ftypo=[baseconvert(int(chars, 36), 2**key_remainder) for chars in ftypo]
@@ -136,9 +137,10 @@ def string_reader(string):
         print("no mid tag present")
 
     hs = []
-    for h_tag in ["c00", "c01", "c10", "c11"]:
+    for h_tag in ["c01", "c11", "c10", "c00"]:
         try:
             hs.append(loc_dict[h_tag])
+
         except:
             print("no tag {} found in this data_dict".format(h_tag))
 

@@ -122,6 +122,15 @@ class FrontEndSet:
 
         return pt_sets
 
+    def flat_clone(self, height=0.):
+        clone_pt_sets=self.generate()
+        for ptss in clone_pt_sets:
+            for pts in ptss:
+                for pt in pts:
+                    pt.Z=height
+
+        return clone_pt_sets
+
 class TriangleSet(FrontEndSet):
     """class that allows you to manage triangle objects. Either this class
     should have 1x2 pt sets as an output, or it will have 2x4. hkon and vkon
