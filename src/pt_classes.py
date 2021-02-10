@@ -187,7 +187,7 @@ class PyramidPts(SquarePts):
         self.hs=hs
 
         self.a=a
-        self.b=a
+        self.b=b
         self.hc=hc
 
     def h_kon(self):

@@ -134,9 +134,9 @@ def string_reader(string):
                 coords[i]=float(c)
         loc_dict["mid"]=coords
         loc_dict["a"]=coords[0]
-        loc_dict["b"]=1.-coords[1]
+        loc_dict["b"]=1.-coords[1]  #transforming from negativly oriented to positive coordinate system
         loc_dict["hc_rel"]=coords[2]
-    except:
+    except: 
         print("no mid tag present")
 
     hs = []
