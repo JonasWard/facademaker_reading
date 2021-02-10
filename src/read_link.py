@@ -133,6 +133,9 @@ def string_reader(string):
             else:
                 coords[i]=float(c)
         loc_dict["mid"]=coords
+        loc_dict["a"]=coords[0]
+        loc_dict["b"]=1.-coords[1]
+        loc_dict["hc_rel"]=coords[2]
     except:
         print("no mid tag present")
 

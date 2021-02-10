@@ -122,6 +122,12 @@ class TrianglePts(PtSet):
 
         self.hs=hs
 
+    def h_kon(self):
+        self._hkon=False
+
+    def v_kon(self):
+        self._vkon=False
+
     def switch_heights(self):
         if self._hmir^self._vmir:
             pass
@@ -169,6 +175,60 @@ class TrianglePts(PtSet):
 
         return b_ptss
 
-class DiamondPts(PtSet):
-    def __init__(self, x, y, hs, a, b, s):
-        pass
+class PyramidPts(SquarePts):
+    def __init__(self, x, y, hs, a, b, hc, s):
+        self.pt_cnt=4
+        self.set_b_p()
+
+        self.x=x
+        self.y=y
+        self.s=s
+
+        self.hs=hs
+
+        self.a=a
+        self.b=a
+        self.hc=hc
+
+    def h_kon(self):
+        self._hkon=False
+
+    def v_kon(self):
+        self._vkon=False
+
+    def manage_ab(self):
+        """method to transform a & b"""
+        if self._rot==1:
+            self.a=1.-self.a
+        elif self._rot==2:
+            self.a=1.-self.a
+            self.b=1.-self.b
+        elif self._rot==3:
+            self.b=1.-self.b
+
+        if self._vmir:
+            self.b=1.-self.b
+
+        if self._hmir:
+            self.a=1.-self.a
+
+    @property
+    def x_vec(self):
+        return Point3d(self.x, 0., 0.)
+
+    @property
+    def y_vec(self):
+        s=-self.s if self._vmir else self.s
+        return Point3d(s, self.y, 0.)
+
+    def gen_c_pt(self):
+        """method to retrieve c_pt"""
+        self.manage_ab()
+
+        return self.a*self.x_vec+self.b*self.y_vec
+
+class DiamondPts(SquarePts):
+    pass
+
+class CubeGroupPts(PyramidPts):
+    pass

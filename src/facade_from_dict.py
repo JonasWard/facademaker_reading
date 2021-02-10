@@ -1,5 +1,5 @@
 from facade import FacademakerFacade
-from front_end_set import TriangleSet, SquareSet, DiamondSet
+from front_end_set import TriangleSet, SquareSet, PyramidSet, DiamondSet
 from facade_link_info import FUNCTION_TYPES, FUNCTION_SHIFT_VALUES
 
 def facade_from_dict(data_dict, z_spacing=1000., y_delta=500., other_parameters=None):
@@ -81,12 +81,36 @@ def square_function(facade, o_p, data_dict):
 
 def diamond_function(facade, o_p, data_dict):
     """function to parse diamonds with"""
-    print("parsing diamonds not yet implemented!")
+    print("parsing diamond")
     pass
-
+    
 def pyramid_function(facade, o_p, data_dict):
     """function to parse pyramids with"""
-    print("parsing pyramids")
+    data_dict["hc"]=data_dict["hc_rel"]*data_dict["y_delta"]
+
+    f_b_set=PyramidSet(
+        x=data_dict["x_spacing"],
+        y=data_dict["z_spacing"],
+        hs=data_dict["mapped_hs"],
+        a=data_dict["a"],
+        b=data_dict["b"],
+        hc=data_dict["hc"],
+        s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
+    )
+
+    apply_all_transformations(f_b_set, data_dict)
+
+    if data_dict["base_objects"]!=2:
+        facade.set_multi_squares(f_b_set.flat_clone(),obj_idx=2)
+    
+    ptsss=f_b_set.generate()
+    c_ptss=f_b_set.get_c_ptss()
+
+    facade.set_multi_pyramids(
+        ptsss=ptsss,
+        c_ptss=c_ptss,
+        other_parameters=o_p
+    )
     pass
 
 def quad_group_function(facade, o_p, data_dict):

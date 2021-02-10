@@ -1,4 +1,4 @@
-from pt_classes import TrianglePts, SquarePts, DiamondPts
+from pt_classes import TrianglePts, SquarePts, PyramidPts, DiamondPts, CubeGroupPts
 
 class FrontEndSet:
     """class that contains all the genral functions to opperate on all the
@@ -182,7 +182,6 @@ class TriangleSet(FrontEndSet):
     def populate(self):
         return self._gen_triangle()
 
-
 class SquareSet(FrontEndSet):
     """class that allows you to manage triangle objects. Either this class
     should have 1x1 pt sets as an output, or it will have 2x2, quad group
@@ -210,14 +209,17 @@ class SquareSet(FrontEndSet):
     def populate(self):
         return self._gen_square()
 
-class DiamondSet(FrontEndSet):
-    """class that allows you to manage diamond objects. Either this class
+class PyramidSet(FrontEndSet):
+    """class that allows you to manage pyramid objects. Either this class
     should have 1x1 pt sets as an output, or it will have 2x2"""
-    def __init__(self, x, y, hs, a=.5, b=.5, s=0.0, ss=None):
+    def __init__(self, x, y, hs, a=.5, b=.5, hc=0., s=0., ss=None):
         """input:
-        x:  float - height of the projected triangle
-        y:  float - width of the projected triangle
+        x:  float - height of the projected square
+        y:  float - width of the projected square
         hs: list of floats - heights of the points (should have length 4, outfits otherwise)
+        a:  float (default 0.5) - relative position x-vector
+        b:  float (default 0.5) - relative position y-vector
+        hc: float (default 0.0) - height of the center coordinate
         s:  float (default 0.0) - value indicating how much you shift the top point relative to the width
         ss: (optional) float (default: None) - if not none, will override s, and use a static shift for the top point"""
 
@@ -229,10 +231,53 @@ class DiamondSet(FrontEndSet):
 
         self.a=a
         self.b=b
+        self.hc=hc
 
         self.s=s*x
         if not(ss is None):
             self.s=ss
 
-    def duplicate(self):
-        return DiamondPts(self.x, self.y, self.hs, self.a, self.b, s=self.s)
+    def _gen_pyramid(self):
+        return PyramidPts(self.x, self.y, self.hs, self.a, self.b, self.hc, self.s)
+
+    def populate(self):
+        return self._gen_pyramid()
+
+    def get_c_ptss(self):
+        """method that gives you the center points of all the elements in this object"""
+        c_ptss=[]
+
+        for b_os in self.b_oss:
+            row=[]
+            for b_o in b_os:
+                row.append(b_o.gen_c_pt())
+            c_ptss.append(row)
+
+        return c_ptss
+
+class DiamondSet(FrontEndSet):
+    """class that allows you to manage diamond objects. Either this class
+    should have 1x1 pt sets as an output, or it will have 2x2"""
+    def __init__(self, x, y, hs, s=0., ss=None):
+        """input:
+        x:  float - height of the projected diamond
+        y:  float - width of the projected diamond
+        hs: list of floats - heights of the points (should have length 4, outfits otherwise)
+        s:  float (default 0.0) - value indicating how much you shift the top point relative to the width
+        ss: (optional) float (default: None) - if not none, will override s, and use a static shift for the top point"""
+
+        self.pt_cnt=4
+
+        self.set_b_p(hs)
+        self.x=x
+        self.y=y
+
+        self.s=s*x
+        if not(ss is None):
+            self.s=ss
+
+    def _gen_diamond(self):
+        return DiamondPts(self.x, self.y, self.hs, self.s)
+
+    def populate(self):
+        return self._gen_diamond()
