@@ -149,11 +149,11 @@ class TrianglePts(PtSet):
                 [
                     Point3d(0., self.y, 0.),
                     Point3d(self.s, 0., 0.),
-                    Point3d(self.x+self.s, self.y, 0.)
+                    Point3d(self.x, self.y, 0.)
                 ],[
                     Point3d(self.x+self.s, 0., 0.),
                     Point3d(self.x, self.y, 0.),
-                    Point3d(0., 0., 0.)
+                    Point3d(self.s, 0., 0.)
                 ]
             ]
 
