@@ -125,7 +125,7 @@ class FacademakerFacade:
             other_parameters=other_parameters
         )]]
 
-    def set_multi_square(self, ptsss, other_parameters=None, obj_idx=1, fold_idxs=[[0]]):
+    def set_multi_squares(self, ptsss, other_parameters=None, obj_idx=1, fold_idxs=[[0]]):
         """assign a n.m list of 4 point objects"""
         self.base_objs[obj_idx]=[]
         for i, ptss in enumerate(ptsss):
@@ -140,7 +140,7 @@ class FacademakerFacade:
             self.base_objs[obj_idx].append(base_obj_row)
         self.set_dimension((i+1,j+1))
 
-    def set_multi_pyramid(self, ptsss, c_ptss, other_parameters=None, obj_idx=1):
+    def set_multi_pyramids(self, ptsss, c_ptss, other_parameters=None, obj_idx=1):
         """assign a n.m list of 4 point pyramid objects"""
         self.base_objs[obj_idx]=[]
         for i, ptss in enumerate(ptsss):
@@ -169,7 +169,7 @@ class FacademakerFacade:
             self.base_objs[obj_idx].append(base_obj_row)
         self.set_dimension((i+1,j+1))
 
-    def set_multi_quad_block(self, ptssss, other_parameters=None, obj_idx=1):
+    def set_multi_quad_blocks(self, ptssss, other_parameters=None, obj_idx=1):
         """assign a n.m list of quad_block objects"""
         self.base_objs[obj_idx]=[]
         for i, ptsss in enumerate(ptssss):

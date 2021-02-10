@@ -1,5 +1,6 @@
 from facade import FacademakerFacade
-from facade_link_info import FUNCTION_TYPES
+from front_end_set import TriangleSet, SquareSet, DiamondSet
+from facade_link_info import FUNCTION_TYPES, FUNCTION_SHIFT_VALUES
 
 def facade_from_dict(data_dict, z_spacing=1000.):
     """function that returns a FacademakerObject based on a front-end data dict"""
@@ -19,14 +20,44 @@ def facade_from_dict(data_dict, z_spacing=1000.):
 
     return f
 
+def apply_all_transformations(f_b_set, data_dict):
+    if data_dict["mirrh"]:
+        f_b_set.h_mir()
+    if data_dict["mirrv"]:
+        f_b_set.v_mir()
+    if data_dict["konh"]:
+        f_b_set.h_kon()
+    if data_dict["konv"]:
+        f_b_set.v_kon()
+    f_b_set.h_rot(data_dict["roth"])
+    f_b_set.v_rot(data_dict["rotv"])
+
 def triangle_function(facade, data_dict):
     """function to parse triangles with"""
-    print("parsing triangle")
-    pass
+    f_b_set=TriangleSet(
+        x=data_dict["x_spacing"],
+        y=data_dict["z_spacing"],
+        hs=data_dict["hs"],
+        s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
+    )
+
+    facade.objects_per_tile=2
+    apply_all_transformations(f_b_set, data_dict)
+    
+    facade.set_multi_triangles(f_b_set.generate())
 
 def square_function(facade, data_dict):
     """function to parse squares with"""
-    print("parsing squares")
+    f_b_set=SquareSet(
+        x=data_dict["x_spacing"],
+        y=data_dict["z_spacing"],
+        hs=data_dict["hs"],
+        s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
+    )
+
+    apply_all_transformations(f_b_set, data_dict)
+    
+    facade.set_multi_squares(f_b_set.generate())
     pass
 
 def diamond_function(facade, data_dict):
