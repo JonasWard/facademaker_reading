@@ -13,7 +13,7 @@ class BaseObject:
         "show_correction_val" : True,
         "fold_idx" : 0,                 # front-end parameter
         "min_pt_height" : 50.,
-        "orient" : False,               # legacy parameter
+        "orient" : True,                # legacy parameter
         "pattern" : "flat"              
     }
 
@@ -128,14 +128,14 @@ class BaseObject:
         else:
             other_parameters=dict(other_parameters)
         
-        if not(fold_idx is None):
-            other_parameters["fold_idx"]=fold_idx
+        if fold_idx is None:
+            fold_idx=other_parameters["fold_idx"]
 
         fix_pts_heights(pts, other_parameters["min_pt_height"])
 
         pattern_type=other_parameters["pattern"]
         pattern=simple_pattern_parser(pattern_type, len(pts))
-        square=Simple(pts, pattern, other_parameters)
+        square=Simple(pts, pattern, other_parameters, fold_idx)
 
         return BaseObject(
             objs=[square],

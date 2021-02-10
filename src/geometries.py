@@ -127,7 +127,7 @@ class Base():
             f_list.append((0, v_a, v_list[0]))
 
         self.has_graph=True
-        self._f_list = f_list
+        self._f_list=f_list
 
     def rhino_brep(self, offset=True, brep_offset=False, brep_offset_val=1.0):
         """method that returns a rhino brep representation of the object
@@ -146,25 +146,25 @@ class Base():
             f_list.append([
                 (i+1)%self.count,
                 i,
-                self.count + i,
-                self.count + (i+1)%self.count
+                self.count+i,
+                self.count+(i+1)%self.count
             ])
 
         for f in self.f_list:
             f_list.append([
-                self.count + f[2],
-                self.count + f[1],
-                self.count + f[0]
+                self.count+f[2],
+                self.count+f[1],
+                self.count+f[0]
             ])
 
         # pt_list=[[vertices[f[0]], vertices[f[1]], vertices[f[2]]] for f in f_list]
         
         surfaces=[]
         for f in f_list:
-            if len(f) == 3:
+            if len(f)==3:
                 surfaces.append(
                     rg.Brep().CreateFromCornerPoints(
-                        vertices[f[0] ], vertices[f[1] ], vertices[f[2] ], .001
+                        vertices[f[0]], vertices[f[1]], vertices[f[2]], .001
                 ) )
 
             elif len(f) == 4:

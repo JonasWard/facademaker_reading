@@ -15,7 +15,7 @@ class PtSet:
         self._hmir=False
         self._vmir=False
 
-        self._base_fold_idx=0
+        self._base_fold_idx=1
 
     def rotate(self, value):
         self._rot+=value
@@ -153,7 +153,7 @@ class TrianglePts(PtSet):
                 ],[
                     Point3d(self.x+self.s, 0., 0.),
                     Point3d(self.x, self.y, 0.),
-                    Point3d(self.s, 0., 0.)
+                    Point3d(0., 0., 0.)
                 ]
             ]
 

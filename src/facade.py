@@ -135,11 +135,12 @@ class FacademakerFacade:
         for i, ptss in enumerate(ptsss):
             base_obj_row=[]
             for j, pts in enumerate(ptss):
+                fold_idx=fold_idxs[i%len(fold_idxs)][j%len(fold_idxs[0])]
                 base_obj_row.append(BaseObject.simple_square(
                     pts=pts,
                     index=(i,j),
                     other_parameters=other_parameters,
-                    fold_idx=fold_idxs[i%len(fold_idxs)][j%len(fold_idxs[0])]
+                    fold_idx=fold_idx
                 ))
             self.base_objs[obj_idx].append(base_obj_row)
         self.set_dimension((i+1,j+1))
