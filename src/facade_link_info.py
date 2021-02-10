@@ -9,6 +9,17 @@ FUNCTION_TYPES={
     't4': 'square',             # with shift
 }
 
+FUNCTION_SHIFT_VALUES={
+    'd2': 0.,
+    'q1lift': 0.,
+    'd4': 0.,
+    'q4': 0.,
+    't1': .5,
+    't2': 0.,
+    't3': 0.,
+    't4': .5,
+}
+
 DEFAULT_DICT={
     'ft': 't2',                                     # function type, defining the complexity and which objects to use
     'fgh': 7,                                       # amount of panels in horizontal direction
