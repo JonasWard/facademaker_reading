@@ -157,7 +157,7 @@ class Base():
                 self.count + f[0]
             ])
 
-        pt_list=[[vertices[f[0]], vertices[f[1]], vertices[f[2]]] for f in f_list]
+        # pt_list=[[vertices[f[0]], vertices[f[1]], vertices[f[2]]] for f in f_list]
         
         surfaces=[]
         for f in f_list:
@@ -421,7 +421,7 @@ class Base():
         return self.unfolded
 
 class Simple(Base):
-    def __init__(self, pts, pattern = None, production_parameters=None):
+    def __init__(self, pts, pattern = None, production_parameters=None, fold_idx=None):
         if len(pts) < 3:
             print("You need to input more than 3 boundary points")
             return None
@@ -431,7 +431,8 @@ class Simple(Base):
         if not(production_parameters is None):
             self.s_p_p=production_parameters
 
-        fold_idx=self.s_p_p["fold_idx"]
+        if fold_idx is None:
+            fold_idx=self.s_p_p["fold_idx"]
 
         if production_parameters["orient"]:
             print("Simple geometry: points have been oriented")

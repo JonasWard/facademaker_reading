@@ -2,7 +2,7 @@ from facade import FacademakerFacade
 from front_end_set import TriangleSet, SquareSet, DiamondSet
 from facade_link_info import FUNCTION_TYPES, FUNCTION_SHIFT_VALUES
 
-def facade_from_dict(data_dict, z_spacing=1000., y_delta=500.):
+def facade_from_dict(data_dict, z_spacing=1000., y_delta=500., other_parameters=None):
     """function that returns a FacademakerObject based on a front-end data dict"""
 
     data_dict["x_spacing"]=z_spacing*data_dict['frat']
@@ -20,7 +20,7 @@ def facade_from_dict(data_dict, z_spacing=1000., y_delta=500.):
 
     f.set_selection_pattern(data_dict["ftypo"])
 
-    FUNCTION_MAP[FUNCTION_TYPES[data_dict['ft']]](f, data_dict)
+    FUNCTION_MAP[FUNCTION_TYPES[data_dict['ft']]](f, other_parameters, data_dict)
 
     return f
 
@@ -36,7 +36,7 @@ def apply_all_transformations(f_b_set, data_dict):
     f_b_set.h_rot(data_dict["roth"])
     f_b_set.v_rot(data_dict["rotv"])
 
-def triangle_function(facade, data_dict):
+def triangle_function(facade, o_p, data_dict):
     """function to parse triangles with"""
     f_b_set=TriangleSet(
         x=data_dict["x_spacing"],
@@ -51,9 +51,12 @@ def triangle_function(facade, data_dict):
     if data_dict["base_objects"]!=2:
         facade.set_multi_triangles(f_b_set.flat_clone(),obj_idx=2)
 
-    facade.set_multi_triangles(f_b_set.generate())
+    facade.set_multi_triangles(
+        ptsss=f_b_set.generate(),
+        other_parameters=o_p
+    )
 
-def square_function(facade, data_dict):
+def square_function(facade, o_p, data_dict):
     """function to parse squares with"""
     f_b_set=SquareSet(
         x=data_dict["x_spacing"],
@@ -67,20 +70,26 @@ def square_function(facade, data_dict):
     if data_dict["base_objects"]!=2:
         facade.set_multi_squares(f_b_set.flat_clone(),obj_idx=2)
     
-    facade.set_multi_squares(f_b_set.generate())
-    pass
+    ptsss=f_b_set.generate()
+    fold_idxs=f_b_set.fold_idxs()
 
-def diamond_function(facade, data_dict):
+    facade.set_multi_squares(
+        ptsss=ptsss,
+        other_parameters=o_p, 
+        fold_idxs=fold_idxs
+    )
+
+def diamond_function(facade, o_p, data_dict):
     """function to parse diamonds with"""
     print("parsing diamonds not yet implemented!")
     pass
 
-def pyramid_function(facade, data_dict):
+def pyramid_function(facade, o_p, data_dict):
     """function to parse pyramids with"""
     print("parsing pyramids")
     pass
 
-def quad_group_function(facade, data_dict):
+def quad_group_function(facade, o_p, data_dict):
     """function to parse quad_group with"""
     print("parsing quad_group")
     pass

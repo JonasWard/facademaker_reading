@@ -99,7 +99,7 @@ def string_reader(string):
 
     for boolean_tag in ["mirrh", "mirrv", "konh", "konv"]:
         try:
-            loc_dict[boolean_tag]=bool(loc_dict[boolean_tag])
+            loc_dict[boolean_tag]=bool(int(loc_dict[boolean_tag]))
         except:
             try:
                 print("wrong boolean_tag {} : {}".format(boolean_tag, loc_dict[boolean_tag] ) )

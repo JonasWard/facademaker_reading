@@ -33,6 +33,23 @@ class PtSet:
     def v_kon(self):
         self._vkon=not(self._vkon)
 
+    def __repr__(self):
+        return """{} class with:
+        \t-pt_cnt:{}
+        \t-h_kon: {}
+        \t-v_kon: {}
+        \t-h_mir: {}
+        \t-v_mir: {}
+        \t-rot:   {}""".format(
+            self.__class__.__name__,
+            self.pt_cnt,
+            self._hkon,
+            self._vkon,
+            self._hmir,
+            self._vmir,
+            self._rot
+        )
+
 class SquarePts(PtSet):
     def __init__(self, x, y, hs, s):
         self.pt_cnt=4
@@ -62,6 +79,7 @@ class SquarePts(PtSet):
         return b_set
     
     def switch_heights(self):
+        print("switching heights")
         if self._rot!=0:
             self.hs=self.hs[self._rot:]+self.hs[:self._rot]
         
@@ -83,11 +101,13 @@ class SquarePts(PtSet):
         return f_idx%2
 
     def generate(self):
+        print(self)
         b_pts=self.gen_base_pts()
+        self.switch_heights()
         for i, b_pt in enumerate(b_pts):
             b_pt.Z=self.hs[i]
 
-        b_pts=b_pts[self.fold_idx:]+b_pts[:self.fold_idx]
+        # b_pts=b_pts[self.fold_idx:]+b_pts[:self.fold_idx]
 
         return [b_pts]
 
@@ -103,13 +123,13 @@ class TrianglePts(PtSet):
         self.hs=hs
 
     def switch_heights(self):
-        if self._rot!=0:
-            self.hs=self.hs[self._rot:]+self.hs[:self._rot]
-
         if self._hmir^self._vmir:
             pass
         else:
             self.hs=[self.hs[i] for i in [0, 2, 1]]
+
+        if self._rot!=0:
+            self.hs=self.hs[self._rot:]+self.hs[:self._rot]
 
     def gen_base_pts(self):
         if self._vmir^self._hmir:
@@ -140,7 +160,9 @@ class TrianglePts(PtSet):
         return b_set
 
     def generate(self):
+        print(self)
         b_ptss=self.gen_base_pts()
+        self.switch_heights()
         for b_pts in b_ptss:
             for i, b_pt in enumerate(b_pts):
                 b_pt.Z=self.hs[i]

@@ -24,6 +24,8 @@ class FrontEndSet:
 
     @property
     def is_complex(self):
+        self.b_oss=[[]]
+
         return (
             self._hrot!=0 or
             self._vrot!=0 or
@@ -75,9 +77,9 @@ class FrontEndSet:
     def populate(self):
         return None
 
-    def apply_all_transformations(self, b_oss):
+    def apply_all_transformations(self):
         if self.has_h:
-            for b_os in b_oss:
+            for b_os in self.b_oss:
                 for i in range(1, len(b_os), 2):
                     if self._hmir:
                         b_os[i].h_mir()
@@ -87,8 +89,8 @@ class FrontEndSet:
                         b_os[i].rotate(self._hrot)
 
         if self.has_v:
-            for i in range(1, len(b_oss), 2):
-                for b_o in b_oss[i]:
+            for i in range(1, len(self.b_oss), 2):
+                for b_o in self.b_oss[i]:
                     if self._vmir:
                         b_o.v_mir()
                     if self._vkon:
@@ -97,30 +99,43 @@ class FrontEndSet:
                         b_o.rotate(self._vrot)
 
     def generate(self):
-        """method that sets the base_objects and then transforms them into base_ptsss"""
+        """method that sets the base_objects, stores them and returns their base_ptsss"""
         if self.has_v:
-            b_oss=[[],[]]
+            self.b_oss=[[],[]]
         else:
-            b_oss=[[]]
+            self.b_oss=[[]]
 
         if self.has_h:
-            for b_os in b_oss:
+            for b_os in self.b_oss:
                 for _ in range(2):
                     b_os.append(self.populate())
         else:
-            for b_os in b_oss:
+            for b_os in self.b_oss:
                 b_os.append(self.populate())
 
-        self.apply_all_transformations(b_oss)
+        self.apply_all_transformations()
 
         pt_sets=[]
-        for b_os in b_oss:
+        for b_os in self.b_oss:
             row=[]
             for b_o in b_os:
                 row.extend(b_o.generate())
             pt_sets.append(row)
 
         return pt_sets
+
+    def fold_idxs(self):
+        """method that gives you the fold idxs of all the elements in this object
+        requires you to have called generate() before"""
+        fold_idxs=[]
+
+        for b_os in self.b_oss:
+            row=[]
+            for b_o in b_os:
+                row.append(b_o.fold_idx)
+            fold_idxs.append(row)
+
+        return fold_idxs
 
     def flat_clone(self, height=0.):
         clone_pt_sets=self.generate()
