@@ -430,10 +430,11 @@ class Simple(Base):
         self.start_run()
         if not(production_parameters is None):
             self.s_p_p=production_parameters
-            
+
         fold_idx=self.s_p_p["fold_idx"]
 
         if production_parameters["orient"]:
+            print("Simple geometry: points have been oriented")
             self.pts=self.orient_pts(pts, start_idx=fold_idx%len(pts))
 
         if not(pattern is None):
@@ -455,6 +456,7 @@ class Center(Base):
             self.s_p_p = production_parameters
 
         if production_parameters["orient"]:
+            print("Center geometry: points have been oriented")
             self.pts=self.orient_pts(self.pts, 0)
         self.pts=[center]+self.pts
 

@@ -13,7 +13,7 @@ class BaseObject:
         "show_correction_val" : True,
         "fold_idx" : 0,                 # front-end parameter
         "min_pt_height" : 50.,
-        "orient" : True,                # legacy parameter
+        "orient" : False,               # legacy parameter
         "pattern" : "flat"              
     }
 

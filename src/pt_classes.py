@@ -15,9 +15,7 @@ class PtSet:
         self._hmir=False
         self._vmir=False
 
-    def fold_idx(self):
-        #TODO write based on henning code
-        return 0
+        self._base_fold_idx=0
 
     def rotate(self, value):
         self._rot+=value
@@ -75,13 +73,22 @@ class SquarePts(PtSet):
 
     @property
     def fold_idx(self):
-        #TODO write based on henning code
-        return 0
+        f_idx=self._base_fold_idx
+        f_idx+=self._rot
+        f_idx+=int(self._hmir)
+        f_idx+=int(self._vmir)
+        f_idx+=int(self._hkon)
+        f_idx+=int(self._vkon)
+        print("unmodulated f_idx: {}, %2 f_idx: {}".format(f_idx, f_idx%2) )
+        return f_idx%2
 
     def generate(self):
         b_pts=self.gen_base_pts()
         for i, b_pt in enumerate(b_pts):
             b_pt.Z=self.hs[i]
+
+        b_pts=b_pts[self.fold_idx:]+b_pts[:self.fold_idx]
+
         return [b_pts]
 
 class TrianglePts(PtSet):
@@ -132,15 +139,12 @@ class TrianglePts(PtSet):
 
         return b_set
 
-    @property
-    def fold_idx(self):
-        return 0
-
     def generate(self):
         b_ptss=self.gen_base_pts()
         for b_pts in b_ptss:
             for i, b_pt in enumerate(b_pts):
                 b_pt.Z=self.hs[i]
+
         return b_ptss
 
 class DiamondPts(PtSet):
