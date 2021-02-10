@@ -49,7 +49,7 @@ class FacademakerFacade:
 
         for i in range(self.z_cnt):
             start_idx=i*self.objects_per_tile*self.layer_shift
-            for j in range(self.x_cnt):
+            for j in range(self.x_cnt*self.objects_per_tile):
                 b_pln=Plane(
                     Point3d(self._o_p_t_rnd(j)*self.x_dim, 0, i*self.z_dim),
                     FacademakerFacade.X_VEC,

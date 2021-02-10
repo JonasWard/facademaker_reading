@@ -2,11 +2,13 @@ from facade import FacademakerFacade
 from front_end_set import TriangleSet, SquareSet, DiamondSet
 from facade_link_info import FUNCTION_TYPES, FUNCTION_SHIFT_VALUES
 
-def facade_from_dict(data_dict, z_spacing=1000.):
+def facade_from_dict(data_dict, z_spacing=1000., y_delta=500.):
     """function that returns a FacademakerObject based on a front-end data dict"""
 
     data_dict["x_spacing"]=z_spacing*data_dict['frat']
     data_dict["z_spacing"]=z_spacing
+    data_dict["y_delta"]=y_delta
+    data_dict["mapped_hs"]=[h*data_dict["y_delta"] for h in data_dict["hs"]]
 
     global FUNCTION_MAP, FUNCTION_TYPES
     f=FacademakerFacade(
@@ -37,7 +39,7 @@ def triangle_function(facade, data_dict):
     f_b_set=TriangleSet(
         x=data_dict["x_spacing"],
         y=data_dict["z_spacing"],
-        hs=data_dict["hs"],
+        hs=data_dict["mapped_hs"],
         s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
     )
 
@@ -51,7 +53,7 @@ def square_function(facade, data_dict):
     f_b_set=SquareSet(
         x=data_dict["x_spacing"],
         y=data_dict["z_spacing"],
-        hs=data_dict["hs"],
+        hs=data_dict["mapped_hs"],
         s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
     )
 
