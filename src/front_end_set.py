@@ -1,4 +1,4 @@
-from pt_classes import TrianglePts, SquarePts, PyramidPts, DiamondPts, CubeGroupPts
+from pt_classes import TrianglePts, SquarePts, PyramidPts, DiamondPts, QuadGroupPts
 
 class FrontEndSet:
     """class that contains all the genral functions to opperate on all the
@@ -324,5 +324,50 @@ class DiamondSet(FrontEndSet):
 
     def populate(self):
         return self._gen_diamond()
+
+class QuadGroupSet(FrontEndSet):
+    """class that allows you to manage pyramid objects. Either this class
+    should have 1x1 pt sets as an output, or it will have 2x2"""
+    def __init__(self, x, y, hs, a=.5, b=.5, s=0., ss=None):
+        """input:
+        x:  float - height of the projected square
+        y:  float - width of the projected square
+        hs: list of floats - heights of the points (should have length 4, outfits otherwise)
+        a:  float (default 0.5) - relative position x-vector
+        b:  float (default 0.5) - relative position y-vector
+        s:  float (default 0.0) - value indicating how much you shift the top point relative to the width
+        ss: (optional) float (default: None) - if not none, will override s, and use a static shift for the top point"""
+
+        self.pt_cnt=4
+
+        self.set_b_p(hs)
+        self.x=x
+        self.y=y
+
+        self.a=a
+        self.b=b
+
+        self.s=s*x
+        if not(ss is None):
+            self.s=ss
+
+    def _gen_quad_group(self):
+        return QuadGroupPts(self.x, self.y, self.hs, self.a, self.b, self.s)
+
+    def populate(self):
+        return self._gen_quad_group()
+
+    def generate(self):
+        ptsss=self.generate_b_pts()
+
+        shifted_ptsss=[]
+        for ptss in ptsss:
+            row=[]
+            for pts in ptss:
+                pts=pts[1:]+pts[:1]
+            row.append(pts)
+        shifted_ptsss.append(row)
+
+        return shifted_ptsss
 
 

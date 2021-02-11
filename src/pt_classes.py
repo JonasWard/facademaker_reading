@@ -325,7 +325,7 @@ class DiamondPts(SquarePts):
         if self._vmir:
             self.hs=[self.hs[i] for i in [3, 2, 1, 0]]
 
-class CubeGroupPts(PyramidPts):
+class QuadGroupPts(PyramidPts):
     def __init__(self, x, y, hs, a, b, s):
         self.pt_cnt=4
         self.set_b_p()

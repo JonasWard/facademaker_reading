@@ -1,5 +1,5 @@
 from facade import FacademakerFacade
-from front_end_set import TriangleSet, SquareSet, PyramidSet, DiamondSet, CubeGroupPts
+from front_end_set import TriangleSet, SquareSet, PyramidSet, DiamondSet, QuadGroupSet
 from facade_link_info import FUNCTION_TYPES, FUNCTION_SHIFT_VALUES
 
 def facade_from_dict(data_dict, z_spacing=1000., y_delta=500., other_parameters=None):
@@ -138,13 +138,12 @@ def pyramid_function(facade, o_p, data_dict):
 def quad_group_function(facade, o_p, data_dict):
     """function to parse quad_group with"""
 
-    f_b_set=CubeGroupPts(
+    f_b_set=QuadGroupSet(
         x=data_dict["x_spacing"],
         y=data_dict["z_spacing"],
         hs=data_dict["mapped_hs"],
         a=data_dict["a"],
         b=data_dict["b"],
-        hc=data_dict["hc"],
         s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
     )
 
@@ -162,11 +161,9 @@ def quad_group_function(facade, o_p, data_dict):
         facade.set_multi_squares(f_b_2.flat_clone(),obj_idx=2)
     
     ptsss=f_b_set.generate()
-    c_ptss=f_b_set.get_c_ptss()
 
     facade.set_multi_squares(
         ptsss=ptsss,
-        c_ptss=c_ptss,
         other_parameters=o_p
     )
 
