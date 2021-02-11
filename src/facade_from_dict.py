@@ -81,8 +81,27 @@ def square_function(facade, o_p, data_dict):
 
 def diamond_function(facade, o_p, data_dict):
     """function to parse diamonds with"""
-    print("parsing diamond")
-    pass
+    data_dict["hc"]=data_dict["hc_rel"]*data_dict["y_delta"]
+
+    f_b_set=DiamondSet(
+        x=data_dict["x_spacing"],
+        y=data_dict["z_spacing"],
+        hs=data_dict["mapped_hs"],
+    )
+
+    apply_all_transformations(f_b_set, data_dict)
+
+    if data_dict["base_objects"]!=2:
+        facade.set_multi_squares(f_b_set.flat_clone(),obj_idx=2)
+    
+    ptsss=f_b_set.generate()
+    fold_idxs=f_b_set.fold_idxs()
+
+    facade.set_multi_squares(
+        ptsss=ptsss,
+        other_parameters=o_p, 
+        fold_idxs=fold_idxs
+    )
     
 def pyramid_function(facade, o_p, data_dict):
     """function to parse pyramids with"""

@@ -74,8 +74,6 @@ def ftypo_handling(data_dict):
     else:
         if key == "ftypo":
             ftypo=str(bin(int(data_dict["ftypo"], 32)))[2:]
-            ftypo=[ftypo[i * data_dict["fgh"] : (i+1)*data_dict["fgh"]] for i in range(data_dict["fgv"])]
-            ftypo=[[int(c) for c in chars] for chars in ftypo]
 
             data_dict["base_objects"]=2
 
@@ -85,8 +83,17 @@ def ftypo_handling(data_dict):
             data_dict["base_objects"]=int(2**key_remainder)
 
             ftypo=data_dict[key].split('_')
-            ftypo=[baseconvert(int(chars, 36), 2**key_remainder) for chars in ftypo]
-            ftypo=[[int(c) for c in str(number)] for number in ftypo]
+            ftypo2=[baseconvert(int(chars, 36), 2**key_remainder) for chars in ftypo]
+            ftypo2=[[int(c) for c in str(number)] for number in ftypo2]
+            ftypo=[]
+            for ftp in ftypo2:
+                ftypo.extend(ftp)
+
+        # cutting into segments according to list
+        ftypo=[ftypo[i * data_dict["fgv"] : (i+1)*data_dict["fgv"]] for i in range(data_dict["fgh"])]
+        ftypo=list(zip(*ftypo)) # transposing
+        ftypo.reverse()         # turn to positive coordinate system
+        ftypo=[[int(c) for c in chars] for chars in ftypo]
 
     data_dict["ftypo"]=ftypo
 

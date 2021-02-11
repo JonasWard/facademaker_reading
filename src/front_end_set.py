@@ -295,6 +295,33 @@ class DiamondSet(FrontEndSet):
     def _gen_diamond(self):
         return DiamondPts(self.x, self.y, self.hs, self.s)
 
+    def generate_b_pts(self):
+        """method that sets the base_objects, stores them and returns their base_ptsss"""
+        if self.has_v:
+            self.b_oss=[[],[]]
+        else:
+            self.b_oss=[[]]
+
+        if self.has_h:
+            for b_os in self.b_oss:
+                for _ in range(2):
+                    b_os.append(self.populate())
+        else:
+            for b_os in self.b_oss:
+                b_os.append(self.populate())
+
+        self.apply_all_transformations()
+
+        pt_sets=[]
+        for i, b_os in enumerate(self.b_oss):
+            row=[]
+            for b_o in b_os:
+                b_o.index_input(i)
+                row.extend(b_o.generate())
+            pt_sets.append(row)
+
+        return pt_sets
+
     def populate(self):
         return self._gen_diamond()
 

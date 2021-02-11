@@ -175,6 +175,61 @@ class TrianglePts(PtSet):
 
         return b_ptss
 
+class HenningTriangles(TrianglePts):
+    def __init__(self, x, y, hs, s):
+        self.pt_cnt=4
+        self.set_b_p()
+
+        self.x=x
+        self.y=y
+        self.s=s
+
+        self.hs=hs
+        self.dir=1.0
+
+    def h_kon(self):
+        self._hkon=False
+
+    def v_kon(self):
+        self._vkon=False
+
+    def switch_heights(self):
+        if self._hmir^self._vmir:
+            pass
+        else:
+            self.hs=[self.hs[i] for i in [0, 2, 1]]
+
+        if self._rot!=0:
+            self.hs=self.hs[self._rot:]+self.hs[:self._rot]
+
+    def gen_base_pts(self):
+        if self._vmir:
+            b_set=[
+                [
+                    Point3d(0., 0., 0.),
+                    Point3d(self.x, 0., 0.),
+                    Point3d(self.s, self.y, 0.)
+                ],[
+                    Point3d(self.s+self.x, self.y, 0.),
+                    Point3d(self.s, self.y, 0.),
+                    Point3d(self.x, 0., 0.)
+                ]
+            ]
+        else:
+            b_set=[
+                [
+                    Point3d(0., self.y, 0.),
+                    Point3d(self.s, 0., 0.),
+                    Point3d(self.x, self.y, 0.)
+                ],[
+                    Point3d(self.x+self.s, 0., 0.),
+                    Point3d(self.x, self.y, 0.),
+                    Point3d(self.s, 0., 0.)
+                ]
+            ]
+
+        return b_set
+
 class PyramidPts(SquarePts):
     def __init__(self, x, y, hs, a, b, hc, s):
         self.pt_cnt=4
@@ -224,11 +279,51 @@ class PyramidPts(SquarePts):
     def gen_c_pt(self):
         """method to retrieve c_pt"""
         self.manage_ab()
+        pt=self.a*self.x_vec+self.b*self.y_vec
+        pt.Z=self.hc
 
-        return self.a*self.x_vec+self.b*self.y_vec
+        return pt
 
 class DiamondPts(SquarePts):
-    pass
+    def __init__(self, x, y, hs, s=0.):
+        self.pt_cnt=4
+        self.set_b_p()
+
+        self.x=x
+        self.y=y
+        self.s=s
+
+        self._bt=False
+
+        self.hs=hs
+
+    def index_input(self, idx):
+        self._bt=(idx%2==0)
+
+    def gen_base_pts(self):
+        b_set=[
+            Point3d(-self.x, 0., 0.),
+            Point3d(0., -self.y, 0.),
+            Point3d(self.x, 0., 0.),
+            Point3d(0., self.y, 0.),
+        ]
+
+        if self._bt:
+            for pt in b_set:
+                pt.Y+=self.y
+
+        return b_set
+    
+    def switch_heights(self):
+        print("switching heights")
+        if self._rot!=0:
+            self.hs=self.hs[self._rot:]+self.hs[:self._rot]
+        
+        if self._hmir:
+            self.hs=[self.hs[i] for i in [1, 0, 3, 2]]
+
+        if self._vmir:
+            self.hs=[self.hs[i] for i in [3, 2, 1, 0]]
 
 class CubeGroupPts(PyramidPts):
     pass
