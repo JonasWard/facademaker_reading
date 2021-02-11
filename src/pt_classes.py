@@ -326,4 +326,59 @@ class DiamondPts(SquarePts):
             self.hs=[self.hs[i] for i in [3, 2, 1, 0]]
 
 class CubeGroupPts(PyramidPts):
-    pass
+    def __init__(self, x, y, hs, a, b, s):
+        self.pt_cnt=4
+        self.set_b_p()
+
+        self.x=x
+        self.y=y
+        self.s=s
+
+        self.hs=hs
+
+        self.a=a
+        self.b=b
+
+    def gen_base_pts(self):
+        if self._vmir:
+            b_pt=Point3d(self.s, 0., 0.)
+        else:
+            b_pt=Point3d(0., 0., 0.)
+
+        b_ptsss=[]
+
+        b_pt_00=b_pt
+        row=[]
+        for i,j in range([(0.,0.),(self.a,0.),(self.a,self.b),(0.,self.b)]):
+            row.append(b_pt_00+i*self.x_vec+j*self.y_vec)
+        b_ptsss.append(row)
+
+        b_pt_10=b_pt+self.a*self.x_vec+self.b*self.y_vec
+        row=[]
+        for i,j in range([(0.,0.),(1.-self.a,0.),(1.-self.a,self.b),(0.,self.b)]):
+            row.append(b_pt_10+i*self.x_vec+j*self.y_vec)
+        b_ptsss.append(row)
+
+        b_pt_11=b_pt+self.a*self.x_vec
+        row=[]
+        for i,j in range([(0.,0.),(1.-self.a,0.),(1.-self.a,1.-self.b),(0.,1.-self.b)]):
+            row.append(b_pt_11+i*self.x_vec+j*self.y_vec)
+        b_ptsss.append(row)
+
+        b_pt_01=b_pt+self.b*self.y_vec
+        row=[]
+        for i,j in range([(0.,0.),(self.a,0.),(self.a,1.-self.b),(0.,1.-self.b)]):
+            row.append(b_pt_01+i*self.x_vec+j*self.y_vec)
+        b_ptsss.append(row)
+
+        return b_ptsss
+
+    def generate(self):
+        print(self)
+        b_ptss=self.gen_base_pts()
+        self.switch_heights()
+        for i, b_pts in enumerate(b_ptss):
+            for b_pt in b_pts:
+                b_pt.Z=self.hs[i]
+
+        return b_ptss

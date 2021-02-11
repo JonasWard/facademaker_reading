@@ -1,9 +1,14 @@
 from facade import FacademakerFacade
-from front_end_set import TriangleSet, SquareSet, PyramidSet, DiamondSet
+from front_end_set import TriangleSet, SquareSet, PyramidSet, DiamondSet, CubeGroupPts
 from facade_link_info import FUNCTION_TYPES, FUNCTION_SHIFT_VALUES
 
 def facade_from_dict(data_dict, z_spacing=1000., y_delta=500., other_parameters=None):
     """function that returns a FacademakerObject based on a front-end data dict"""
+
+    try:
+        data_dict["hc"]=data_dict["hc_rel"]*data_dict["y_delta"]
+    except:
+        print("no hc_rel defined")
 
     data_dict["x_spacing"]=z_spacing*data_dict['frat']
     data_dict["z_spacing"]=z_spacing
@@ -81,7 +86,6 @@ def square_function(facade, o_p, data_dict):
 
 def diamond_function(facade, o_p, data_dict):
     """function to parse diamonds with"""
-    data_dict["hc"]=data_dict["hc_rel"]*data_dict["y_delta"]
 
     f_b_set=DiamondSet(
         x=data_dict["x_spacing"],
@@ -105,7 +109,6 @@ def diamond_function(facade, o_p, data_dict):
     
 def pyramid_function(facade, o_p, data_dict):
     """function to parse pyramids with"""
-    data_dict["hc"]=data_dict["hc_rel"]*data_dict["y_delta"]
 
     f_b_set=PyramidSet(
         x=data_dict["x_spacing"],
@@ -134,8 +137,38 @@ def pyramid_function(facade, o_p, data_dict):
 
 def quad_group_function(facade, o_p, data_dict):
     """function to parse quad_group with"""
-    print("parsing quad_group")
-    pass
+
+    f_b_set=CubeGroupPts(
+        x=data_dict["x_spacing"],
+        y=data_dict["z_spacing"],
+        hs=data_dict["mapped_hs"],
+        a=data_dict["a"],
+        b=data_dict["b"],
+        hc=data_dict["hc"],
+        s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
+    )
+
+    f_b_2=SquareSet(
+        x=data_dict["x_spacing"],
+        y=data_dict["z_spacing"],
+        hs=data_dict["mapped_hs"],
+        s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
+    )
+
+    apply_all_transformations(f_b_set, data_dict)
+    apply_all_transformations(f_b_2, data_dict)
+
+    if data_dict["base_objects"]!=2:
+        facade.set_multi_squares(f_b_2.flat_clone(),obj_idx=2)
+    
+    ptsss=f_b_set.generate()
+    c_ptss=f_b_set.get_c_ptss()
+
+    facade.set_multi_squares(
+        ptsss=ptsss,
+        c_ptss=c_ptss,
+        other_parameters=o_p
+    )
 
 FUNCTION_MAP={
     'triangle':   triangle_function,
