@@ -98,7 +98,7 @@ class FrontEndSet:
                     if self._vrot!=0:
                         b_o.rotate(self._vrot)
 
-    def generate(self):
+    def generate_b_pts(self):
         """method that sets the base_objects, stores them and returns their base_ptsss"""
         if self.has_v:
             self.b_oss=[[],[]]
@@ -123,6 +123,9 @@ class FrontEndSet:
             pt_sets.append(row)
 
         return pt_sets
+
+    def generate(self):
+        return self.generate_b_pts()
 
     def fold_idxs(self):
         """method that gives you the fold idxs of all the elements in this object
@@ -255,6 +258,19 @@ class PyramidSet(FrontEndSet):
 
         return c_ptss
 
+    def generate(self):
+        ptsss=self.generate_b_pts()
+
+        shifted_ptsss=[]
+        for ptss in ptsss:
+            row=[]
+            for pts in ptss:
+                pts=pts[1:]+pts[:1]
+            row.append(pts)
+        shifted_ptsss.append(row)
+
+        return shifted_ptsss
+
 class DiamondSet(FrontEndSet):
     """class that allows you to manage diamond objects. Either this class
     should have 1x1 pt sets as an output, or it will have 2x2"""
@@ -281,3 +297,5 @@ class DiamondSet(FrontEndSet):
 
     def populate(self):
         return self._gen_diamond()
+
+

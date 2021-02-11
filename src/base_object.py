@@ -183,6 +183,8 @@ class BaseObject:
         if other_parameters is None:
             other_parameters=BaseObject.DEFAULT_PARAMETERS
 
+        other_parameters["orient"]=False
+
         fix_pts_heights(pts+[pt], other_parameters["min_pt_height"])
 
         pattern_type=other_parameters["pattern"]
