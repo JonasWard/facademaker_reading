@@ -298,19 +298,19 @@ class DiamondPts(SquarePts):
         self.hs=hs
 
     def index_input(self, idx):
-        self._bt=(idx%2==0)
+        self._bt=(idx%2==1)
 
     def gen_base_pts(self):
         b_set=[
-            Point3d(-self.x, 0., 0.),
+            Point3d(-self.x*.5, 0., 0.),
             Point3d(0., -self.y, 0.),
-            Point3d(self.x, 0., 0.),
+            Point3d(self.x*.5, 0., 0.),
             Point3d(0., self.y, 0.),
         ]
 
         if self._bt:
             for pt in b_set:
-                pt.Y+=self.y
+                pt.X-=self.x*.5
 
         return b_set
     
@@ -339,6 +339,12 @@ class QuadGroupPts(PyramidPts):
         self.a=a
         self.b=b
 
+    def _row_function(self, b_pt, pos_a, pos_b):
+        row=[]
+        for i,j in [(0.,0.),(pos_a,0.),(pos_a,pos_b),(0.,pos_b)]:
+            row.append(b_pt+i*self.x_vec+j*self.y_vec)
+        return row
+
     def gen_base_pts(self):
         if self._vmir:
             b_pt=Point3d(self.s, 0., 0.)
@@ -346,30 +352,17 @@ class QuadGroupPts(PyramidPts):
             b_pt=Point3d(0., 0., 0.)
 
         b_ptsss=[]
-
         b_pt_00=b_pt
-        row=[]
-        for i,j in range([(0.,0.),(self.a,0.),(self.a,self.b),(0.,self.b)]):
-            row.append(b_pt_00+i*self.x_vec+j*self.y_vec)
-        b_ptsss.append(row)
+        b_ptsss.append(self._row_function(b_pt_00,self.a,self.b) )
 
         b_pt_10=b_pt+self.a*self.x_vec+self.b*self.y_vec
-        row=[]
-        for i,j in range([(0.,0.),(1.-self.a,0.),(1.-self.a,self.b),(0.,self.b)]):
-            row.append(b_pt_10+i*self.x_vec+j*self.y_vec)
-        b_ptsss.append(row)
+        b_ptsss.append(self._row_function(b_pt_10,1.-self.a,self.b) )
 
         b_pt_11=b_pt+self.a*self.x_vec
-        row=[]
-        for i,j in range([(0.,0.),(1.-self.a,0.),(1.-self.a,1.-self.b),(0.,1.-self.b)]):
-            row.append(b_pt_11+i*self.x_vec+j*self.y_vec)
-        b_ptsss.append(row)
+        b_ptsss.append(self._row_function(b_pt_11,1.-self.a,1.-self.b) )
 
         b_pt_01=b_pt+self.b*self.y_vec
-        row=[]
-        for i,j in range([(0.,0.),(self.a,0.),(self.a,1.-self.b),(0.,1.-self.b)]):
-            row.append(b_pt_01+i*self.x_vec+j*self.y_vec)
-        b_ptsss.append(row)
+        b_ptsss.append(self._row_function(b_pt_01,self.a,1.-self.b) )
 
         return b_ptsss
 
