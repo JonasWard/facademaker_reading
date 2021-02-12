@@ -360,14 +360,17 @@ class QuadGroupSet(FrontEndSet):
     def generate(self):
         ptsss=self.generate_b_pts()
 
-        shifted_ptsss=[]
-        for ptss in ptsss:
-            row=[]
-            for pts in ptss:
-                pts=pts[1:]+pts[:1]
-            row.append(pts)
-        shifted_ptsss.append(row)
+        # print("QuadGroupPts.generate():\n")
+        # print(ptsss)
 
-        return shifted_ptsss
+        # shifted_ptsss=[]
+        # for ptss in ptsss:
+        #     row=[]
+        #     for pts in ptss:
+        #         pts=pts[1:]+pts[:1]
+        #     row.append(pts)
+        # shifted_ptsss.append(row)
+
+        return [ptsss]
 
 

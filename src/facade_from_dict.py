@@ -162,8 +162,8 @@ def quad_group_function(facade, o_p, data_dict):
     
     ptsss=f_b_set.generate()
 
-    facade.set_multi_squares(
-        ptsss=ptsss,
+    facade.set_multi_quad_blocks(
+        ptssss=ptsss,
         other_parameters=o_p
     )
 
