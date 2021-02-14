@@ -105,8 +105,7 @@ class FrontEndSet:
         else:
             self.b_oss=[[]]
 
-        self.apply_all_transformations()
-
+        # initializing all the objects
         if self.has_h:
             for b_os in self.b_oss:
                 for _ in range(2):
@@ -115,6 +114,10 @@ class FrontEndSet:
             for b_os in self.b_oss:
                 b_os.append(self.populate())
 
+        # applying the correct transformations to all the objects
+        self.apply_all_transformations()
+
+        # generating the correct point lists
         pt_sets=[]
         for b_os in self.b_oss:
             row=[]

@@ -245,30 +245,6 @@ class PyramidPts(SquarePts):
         self.b=b
         self.hc=hc
 
-    @property
-    def a(self):
-        return self._a
-
-    @a.setter
-    def a(self, value):
-        self._a=value
-
-    def update_a(self):
-        print("switched a")
-        self._a=1.-self._a
-
-    @property
-    def b(self):
-        return self._b
-
-    @b.setter
-    def b(self, value):
-        self._b=value
-
-    def update_b(self):
-        print("switched b")
-        self._b=1.-self._b
-
     def h_kon(self):
         self._hkon=False
 
@@ -278,18 +254,18 @@ class PyramidPts(SquarePts):
     def manage_ab(self):
         """method to transform a & b"""
         if self._rot==1:
-            self.update_a()
+            self.a=1.-self.a
         elif self._rot==2:
-            self.update_a()
-            self.update_b()
+            self.a=1.-self.a
+            self.b=1.-self.b
         elif self._rot==3:
-            self.update_b()
+            self.b=1.-self.b
 
         if self._vmir:
-            self.update_b()
+            self.b=1.-self.b
 
         if self._hmir:
-            self.update_a()
+            self.a=1.-self.a
 
     @property
     def x_vec(self):
