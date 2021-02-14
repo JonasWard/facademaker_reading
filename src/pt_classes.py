@@ -351,6 +351,8 @@ class QuadGroupPts(PyramidPts):
         else:
             b_pt=Point3d(0., 0., 0.)
 
+        self.switch_heights()
+
         b_ptsss=[]
         b_pt_00=b_pt
         b_ptsss.append(self._row_function(b_pt_00,self.a,self.b) )
@@ -369,7 +371,6 @@ class QuadGroupPts(PyramidPts):
     def generate(self):
         print(self)
         b_ptss=self.gen_base_pts()
-        self.switch_heights()
         for i, b_pts in enumerate(b_ptss):
             for b_pt in b_pts:
                 b_pt.Z=self.hs[i]
