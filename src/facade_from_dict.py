@@ -170,9 +170,12 @@ def quad_group_function(facade, o_p, data_dict):
         ptssss=ptssss,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         other_parameters=o_p,
         obj_idx=1
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         other_parameters=o_p

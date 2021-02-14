@@ -25,7 +25,11 @@ def ptsss_min_height(ptsss):
     height: float"""
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     return min([ptss_min_height(pts) for pts in ptss])
+=======
+    return min([ptss_min_height(ptss) for ptss in ptsss])
+>>>>>>> Stashed changes
 =======
     return min([ptss_min_height(ptss) for ptss in ptsss])
 >>>>>>> Stashed changes

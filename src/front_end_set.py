@@ -376,8 +376,11 @@ class QuadGroupSet(FrontEndSet):
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         return ptsss
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         # initializing all the objects
@@ -420,6 +423,9 @@ class QuadGroupSet(FrontEndSet):
     def generate(self):
         ptsss=self.generate_b_pts()
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
