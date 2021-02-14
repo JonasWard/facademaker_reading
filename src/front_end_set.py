@@ -1,5 +1,4 @@
 from pt_classes import TrianglePts, SquarePts, PyramidPts, DiamondPts, QuadGroupPts
-from debugging_tools import list_counter
 
 class FrontEndSet:
     """class that contains all the genral functions to opperate on all the
@@ -106,7 +105,6 @@ class FrontEndSet:
         else:
             self.b_oss=[[]]
 
-        # initializing all the objects
         if self.has_h:
             for b_os in self.b_oss:
                 for _ in range(2):
@@ -115,18 +113,14 @@ class FrontEndSet:
             for b_os in self.b_oss:
                 b_os.append(self.populate())
 
-        # applying the correct transformations to all the objects
         self.apply_all_transformations()
 
-        # generating the correct point lists
         pt_sets=[]
         for b_os in self.b_oss:
             row=[]
             for b_o in b_os:
-                row.append(b_o.generate())
+                row.extend(b_o.generate())
             pt_sets.append(row)
-
-        # print("FES.generate_b_pts")
 
         return pt_sets
 
@@ -148,14 +142,10 @@ class FrontEndSet:
 
     def flat_clone(self, height=0.):
         clone_pt_sets=self.generate()
-
-        print(list_counter(clone_pt_sets))
-
-        # for ptsss in clone_pt_sets:
         for ptss in clone_pt_sets:
             for pts in ptss:
                 for pt in pts:
-                        pt.Z=height
+                    pt.Z=height
 
         return clone_pt_sets
 
@@ -327,7 +317,7 @@ class DiamondSet(FrontEndSet):
             row=[]
             for b_o in b_os:
                 b_o.index_input(i)
-                row.append(b_o.generate())
+                row.extend(b_o.generate())
             pt_sets.append(row)
 
         return pt_sets
@@ -398,21 +388,8 @@ class QuadGroupSet(FrontEndSet):
 
         return pt_sets
 
-    def flat_clone(self, height=0.):
-        clone_pt_sets=self.generate()
-
-        print(list_counter(clone_pt_sets))
-
-        # for ptsss in clone_pt_sets:
-        for ptss in clone_pt_sets:
-            for pts in ptss:
-                for pt in pts:
-                        pt.Z=height
-
-        return clone_pt_sets
-
     def generate(self):
-        ptsss=self.generate_b_pts()
+        ptssss=self.generate_b_pts()
 
-        return ptsss
+        return ptssss
 
