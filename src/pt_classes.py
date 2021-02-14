@@ -379,7 +379,7 @@ class QuadGroupPts(PyramidPts):
         return b_ptsss
 
     def generate(self):
-        print(self)
+        # print(self)
         b_ptss=self.gen_base_pts()
         self.switch_heights()
         for i, b_pts in enumerate(b_ptss):
