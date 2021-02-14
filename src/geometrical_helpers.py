@@ -23,7 +23,11 @@ def ptsss_min_height(ptsss):
     rg.Point3ds
     return:
     height: float"""
+<<<<<<< Updated upstream
     return min([ptss_min_height(pts) for pts in ptss])
+=======
+    return min([ptss_min_height(ptss) for ptss in ptsss])
+>>>>>>> Stashed changes
 
 def pt_increase(pt, value):
     pt.Z+=value

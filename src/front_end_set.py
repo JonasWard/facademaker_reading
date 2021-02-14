@@ -367,9 +367,56 @@ class QuadGroupSet(FrontEndSet):
     def populate(self):
         return self._gen_quad_group()
 
+    def generate_b_pts(self):
+        """method that sets the base_objects, stores them and returns their base_ptsss"""
+        if self.has_v:
+            self.b_oss=[[],[]]
+        else:
+            self.b_oss=[[]]
+
+<<<<<<< Updated upstream
+        return ptsss
+=======
+        # initializing all the objects
+        if self.has_h:
+            for b_os in self.b_oss:
+                for _ in range(2):
+                    b_os.append(self.populate())
+        else:
+            for b_os in self.b_oss:
+                b_os.append(self.populate())
+
+        # applying the correct transformations to all the objects
+        self.apply_all_transformations()
+
+        # generating the correct point lists
+        pt_sets=[]
+        for b_os in self.b_oss:
+            row=[]
+            for b_o in b_os:
+                row.append(b_o.generate())
+            pt_sets.append(row)
+
+        # print("FES.generate_b_pts")
+
+        return pt_sets
+
+    def flat_clone(self, height=0.):
+        clone_pt_sets=self.generate()
+
+        print(list_counter(clone_pt_sets))
+
+        # for ptsss in clone_pt_sets:
+        for ptss in clone_pt_sets:
+            for pts in ptss:
+                for pt in pts:
+                        pt.Z=height
+
+        return clone_pt_sets
+
     def generate(self):
         ptsss=self.generate_b_pts()
+>>>>>>> Stashed changes
 
         return ptsss
-
 

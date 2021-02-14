@@ -307,6 +307,7 @@ class DiamondPts(SquarePts):
         self.hs=hs
 
     def index_input(self, idx):
+        print("setting index: {}, is {}".format(idx, (idx%2==1)))
         self._bt=(idx%2==1)
 
     def gen_base_pts(self):
