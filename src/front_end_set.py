@@ -1,4 +1,5 @@
 from pt_classes import TrianglePts, SquarePts, PyramidPts, DiamondPts, QuadGroupPts
+from debugging_tools import list_counter
 
 class FrontEndSet:
     """class that contains all the genral functions to opperate on all the
@@ -125,8 +126,7 @@ class FrontEndSet:
                 row.append(b_o.generate())
             pt_sets.append(row)
 
-        print("FES.generate_b_pts")
-        print(pt_sets)
+        # print("FES.generate_b_pts")
 
         return pt_sets
 
@@ -148,10 +148,13 @@ class FrontEndSet:
 
     def flat_clone(self, height=0.):
         clone_pt_sets=self.generate()
-        for ptsss in clone_pt_sets:
-            for ptss in ptsss:
-                for pts in ptss:
-                    for pt in pts:
+
+        print(list_counter(clone_pt_sets))
+
+        # for ptsss in clone_pt_sets:
+        for ptss in clone_pt_sets:
+            for pts in ptss:
+                for pt in pts:
                         pt.Z=height
 
         return clone_pt_sets
@@ -366,17 +369,6 @@ class QuadGroupSet(FrontEndSet):
 
     def generate(self):
         ptsss=self.generate_b_pts()
-
-        # print("QuadGroupPts.generate():\n")
-        # print(ptsss)
-
-        # shifted_ptsss=[]
-        # for ptss in ptsss:
-        #     row=[]
-        #     for pts in ptss:
-        #         pts=pts[1:]+pts[:1]
-        #     row.append(pts)
-        # shifted_ptsss.append(row)
 
         return ptsss
 

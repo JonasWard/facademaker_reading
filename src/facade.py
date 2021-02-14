@@ -137,7 +137,7 @@ class FacademakerFacade:
             for j, pts in enumerate(ptss):
                 fold_idx=fold_idxs[i%len(fold_idxs)][j%len(fold_idxs[0])]
                 base_obj_row.append(BaseObject.simple_square(
-                    pts=pts,
+                    pts=pts[0],
                     index=(i,j),
                     other_parameters=other_parameters,
                     fold_idx=fold_idx
@@ -152,7 +152,7 @@ class FacademakerFacade:
             base_obj_row=[]
             for j, pts in enumerate(ptss):
                 base_obj_row.append(BaseObject.pyramid(
-                    pts=pts,
+                    pts=pts[0],
                     pt=c_ptss[i][j],
                     index=(i,j),
                     other_parameters=other_parameters
@@ -167,7 +167,7 @@ class FacademakerFacade:
             base_obj_row=[]
             for j, pts in enumerate(ptss):
                 base_obj_row.append(BaseObject.simple_triangle(
-                    pts=pts,
+                    pts=pts[0],
                     index=(i,j),
                     other_parameters=other_parameters
                 ))

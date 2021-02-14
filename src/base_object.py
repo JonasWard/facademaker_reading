@@ -1,5 +1,5 @@
 from geometries import Simple, Center, Unfolded
-from geometrical_helpers import fix_ptss_heights #, fix_pts_heights
+from geometrical_helpers import fix_ptsss_heights, fix_ptss_heights, fix_pts_heights
 from pattern_generator import *
 import Rhino.Geometry as rg
 
@@ -12,7 +12,7 @@ class BaseObject:
         "mesh_correction_val" : False,
         "show_correction_val" : True,
         "fold_idx" : 0,                 # front-end parameter
-        "min_pt_height" : 50.,
+        "min_ pt_height" : 50.,
         "orient" : True,                # legacy parameter
         "pattern" : "flat"              
     }
@@ -134,7 +134,7 @@ class BaseObject:
         if fold_idx is None:
             fold_idx=other_parameters["fold_idx"]
 
-        fix_ptss_heights(pts, other_parameters["min_pt_height"])
+        fix_ptsss_heights(pts, other_parameters["min_pt_height"])
 
         pattern_type=other_parameters["pattern"]
         pattern=simple_pattern_parser(pattern_type, len(pts))

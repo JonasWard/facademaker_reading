@@ -96,7 +96,11 @@ def diamond_function(facade, o_p, data_dict):
     apply_all_transformations(f_b_set, data_dict)
 
     if data_dict["base_objects"]!=2:
-        facade.set_multi_squares(f_b_set.flat_clone(),obj_idx=2)
+        facade.set_multi_squares(
+            ptsss=f_b_set.flat_clone(),
+            other_parameters=o_p,
+            obj_idx=2
+        )
     
     ptsss=f_b_set.generate()
     fold_idxs=f_b_set.fold_idxs()

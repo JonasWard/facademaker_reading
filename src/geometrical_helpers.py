@@ -1,5 +1,6 @@
 import Rhino.Geometry as rg
 import math
+from debugging_tools import list_counter
 
 def pts_min_height(pts):
     """function that finds the minimum height of a list of rg.Point3ds
@@ -10,27 +11,43 @@ def pts_min_height(pts):
         zs.append(pt.Z)
 
     return min(zs)
+    
+def ptss_min_height(ptss):
+    """function that finds the minimum height of a list of a list of rg.Point3ds
+    return:
+    height: float"""
+    return min([pts_min_height(pts) for pts in ptss])
 
-def ptss_increase(ptss, value):
-    [pts_increase(pts, value) for pts in ptss]
-
-def pts_increase(pts, value):
-    [pt_increase(pt, value) for pt in pts]
+def ptsss_min_height(ptsss):
+    """function that finds the minimum height of a list of a list of a list of 
+    rg.Point3ds
+    return:
+    height: float"""
+    return min([ptss_min_height(pts) for pts in ptss])
 
 def pt_increase(pt, value):
     pt.Z+=value
 
-def fix_ptss_heights(ptss, treshold_height):
-    """function that tries to check whether the z value of a list of rg.Point3ds 
-    lists are larger than a given treshold value, if not, all the points 
-    z'height are increased until it reaches the treshold value"""
+def pts_increase(pts, value):
+    [pt_increase(pt, value) for pt in pts]
 
-    min_h=min([pts_min_height(pts) for pts in ptss])
+def ptss_increase(ptss, value):
+    [pts_increase(pts, value) for pts in ptss]
+
+def ptsss_increase(ptsss, value):
+    [ptss_increase(ptss, value) for ptss in ptsss]
+
+def fix_pt_height(pt, treshold_height):
+    """function that tries to check whether the z value of a rg.Point3ds is
+    larger than a given treshold value, if not, all the points z'height are
+    increased until it reaches the treshold value"""
+
+    min_h=pt.Z
 
     if min_h<treshold_height:
         h_delta=treshold_height-min_h
-        print("treshold height was not reached, heights were increased by {}".format(h_delta) )
-        ptss_increase(ptss, h_delta)
+        print("treshold height was not reached, height was increased by {}".format(h_delta) )
+        pt_increase(pt, h_delta)
     
 def fix_pts_heights(pts, treshold_height):
     """function that tries to check whether the z value of a list of rg.Point3ds 
@@ -44,17 +61,31 @@ def fix_pts_heights(pts, treshold_height):
         print("treshold height was not reached, heights were increased by {}".format(h_delta) )
         pts_increase(pts, h_delta)
 
-def fix_pt_height(pt, treshold_height):
-    """function that tries to check whether the z value of a rg.Point3ds is
-    larger than a given treshold value, if not, all the points z'height are
-    increased until it reaches the treshold value"""
+def fix_ptss_heights(ptss, treshold_height):
+    """function that tries to check whether the z value of a list of rg.Point3ds 
+    lists are larger than a given treshold value, if not, all the points 
+    z'height are increased until it reaches the treshold value"""
 
-    min_h=pt.Z
+    # print(list_counter(ptss))
+    min_h=ptss_min_height(ptss)
 
     if min_h<treshold_height:
         h_delta=treshold_height-min_h
-        print("treshold height was not reached, height was increased by {}".format(h_delta) )
-        pt_increase(pt, h_delta)
+        print("treshold height was not reached, heights were increased by {}".format(h_delta) )
+        ptss_increase(ptss, h_delta)
+
+def fix_ptsss_heights(ptsss, treshold_height):
+    """function that tries to check whether the z value of a list of rg.Point3ds 
+    lists are larger than a given treshold value, if not, all the points 
+    z'height are increased until it reaches the treshold value"""
+
+    # print(list_counter(ptss))
+    min_h=ptsss_min_height(ptsss)
+
+    if min_h<treshold_height:
+        h_delta=treshold_height-min_h
+        print("treshold height was not reached, heights were increased by {}".format(h_delta) )
+        ptsss_increase(ptsss, h_delta)
 
 def tangent_normal(pt_0, pt_1, negative=False):
     t=rg.Vector3d(pt_1-pt_0)

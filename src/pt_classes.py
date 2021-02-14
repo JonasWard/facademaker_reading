@@ -1,4 +1,5 @@
 from Rhino.Geometry import Point3d
+from debugging_tools import list_counter
 
 class PtSet:
     """class that does pt set generation for FrontEndSet objects"""
@@ -79,7 +80,7 @@ class SquarePts(PtSet):
         return b_set
     
     def switch_heights(self):
-        print("switching heights")
+        print("switching Square heights")
         if self._rot!=0:
             self.hs=self.hs[self._rot:]+self.hs[:self._rot]
         
@@ -103,13 +104,18 @@ class SquarePts(PtSet):
     def generate(self):
         print(self)
         b_pts=self.gen_base_pts()
+
+        print(list_counter(b_pts))
+
         self.switch_heights()
+        # for b_ptss in b_ptsss:
+        #     for b_pts in b_ptss:
         for i, b_pt in enumerate(b_pts):
             b_pt.Z=self.hs[i]
 
         # b_pts=b_pts[self.fold_idx:]+b_pts[:self.fold_idx]
 
-        return [b_pts]
+        return b_pts
 
 class TrianglePts(PtSet):
     def __init__(self, x, y, hs, s):
@@ -129,6 +135,7 @@ class TrianglePts(PtSet):
         self._vkon=False
 
     def switch_heights(self):
+        print("switching Triangle heights")
         if self._hmir^self._vmir:
             pass
         else:
@@ -168,6 +175,7 @@ class TrianglePts(PtSet):
     def generate(self):
         print(self)
         b_ptss=self.gen_base_pts()
+        
         self.switch_heights()
         for b_pts in b_ptss:
             for i, b_pt in enumerate(b_pts):
@@ -194,6 +202,7 @@ class HenningTriangles(TrianglePts):
         self._vkon=False
 
     def switch_heights(self):
+        print("switch HenningTrial heights")
         if self._hmir^self._vmir:
             pass
         else:
@@ -315,7 +324,7 @@ class DiamondPts(SquarePts):
         return b_set
     
     def switch_heights(self):
-        print("switching heights")
+        print("switching Diamond heights")
         if self._rot!=0:
             self.hs=self.hs[self._rot:]+self.hs[:self._rot]
         
@@ -351,7 +360,7 @@ class QuadGroupPts(PyramidPts):
         else:
             b_pt=Point3d(0., 0., 0.)
 
-        self.switch_heights()
+        self.manage_ab()
 
         b_ptsss=[]
         b_pt_00=b_pt
@@ -371,6 +380,7 @@ class QuadGroupPts(PyramidPts):
     def generate(self):
         print(self)
         b_ptss=self.gen_base_pts()
+        self.switch_heights()
         for i, b_pts in enumerate(b_ptss):
             for b_pt in b_pts:
                 b_pt.Z=self.hs[i]
