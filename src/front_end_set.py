@@ -388,28 +388,8 @@ class QuadGroupSet(FrontEndSet):
 
         return pt_sets
 
-    def flat_clone(self, height=0.):
-        clone_pt_sets=self.generate()
-
-        # for ptsss in clone_pt_sets:
-        for ptss in clone_pt_sets:
-            for pts in ptss:
-                for pt in pts:
-                    pt.Z=height
-
-        return clone_pt_sets
-
     def generate(self):
-        ptsss=self.generate_b_pts()
+        ptssss=self.generate_b_pts()
 
-        shifted_ptsss=[]
-        for ptss in ptsss:
-            row=[]
-            for pts in ptss:
-                pts=pts[1:]+pts[:1]
-            row.append(pts)
-        shifted_ptsss.append(row)
-
-        return shifted_ptsss
-
+        return ptssss
 

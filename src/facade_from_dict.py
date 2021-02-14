@@ -155,7 +155,7 @@ def quad_group_function(facade, o_p, data_dict):
     )
 
     apply_all_transformations(f_b_set, data_dict)
-    apply_all_transformations(f_b_2, data_dict)
+    # apply_all_transformations(f_b_2, data_dict)
 
     if data_dict["base_objects"]!=2:
         facade.set_multi_squares(f_b_2.flat_clone(),obj_idx=2)
