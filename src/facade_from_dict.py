@@ -160,10 +160,10 @@ def quad_group_function(facade, o_p, data_dict):
     if data_dict["base_objects"]!=2:
         facade.set_multi_squares(f_b_2.flat_clone(),obj_idx=2)
     
-    ptsss=f_b_set.generate()
+    ptssss=f_b_set.generate()
 
-    facade.set_multi_squares(
-        ptsss=ptsss,
+    facade.set_multi_quad_blocks(
+        ptssss=ptssss,
         other_parameters=o_p
     )
 

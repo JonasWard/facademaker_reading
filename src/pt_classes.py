@@ -351,23 +351,25 @@ class QuadGroupPts(PyramidPts):
         else:
             b_pt=Point3d(0., 0., 0.)
 
+        self.manage_ab()
+
         b_ptsss=[]
         b_pt_00=b_pt
         b_ptsss.append(self._row_function(b_pt_00,self.a,self.b) )
 
-        b_pt_10=b_pt+self.a*self.x_vec+self.b*self.y_vec
-        b_ptsss.append(self._row_function(b_pt_10,1.-self.a,self.b) )
+        b_pt_01=b_pt+self.a*self.x_vec
+        b_ptsss.append(self._row_function(b_pt_01,1.-self.a,self.b) )
 
-        b_pt_11=b_pt+self.a*self.x_vec
+        b_pt_11=b_pt+self.a*self.x_vec+self.b*self.y_vec
         b_ptsss.append(self._row_function(b_pt_11,1.-self.a,1.-self.b) )
 
-        b_pt_01=b_pt+self.b*self.y_vec
-        b_ptsss.append(self._row_function(b_pt_01,self.a,1.-self.b) )
+        b_pt_10=b_pt+self.b*self.y_vec
+        b_ptsss.append(self._row_function(b_pt_10,self.a,1.-self.b) )
 
         return b_ptsss
 
     def generate(self):
-        print(self)
+        # print(self)
         b_ptss=self.gen_base_pts()
         self.switch_heights()
         for i, b_pts in enumerate(b_ptss):
