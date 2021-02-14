@@ -1,5 +1,5 @@
 from geometries import Simple, Center, Unfolded
-from geometrical_helpers import fix_pts_heights, fix_ptss_heights
+from geometrical_helpers import fix_ptss_heights #, fix_pts_heights
 from pattern_generator import *
 import Rhino.Geometry as rg
 
@@ -114,6 +114,9 @@ class BaseObject:
 
         return string
 
+    def __repr__(self):
+        return self.get_name()+str(" with {} objects in it.".format(self.get_count()))
+
     @staticmethod
     def simple_square(pts, index = (0,0), other_parameters = None, fold_idx=None):
         """factory for simple square objects
@@ -131,7 +134,7 @@ class BaseObject:
         if fold_idx is None:
             fold_idx=other_parameters["fold_idx"]
 
-        fix_pts_heights(pts, other_parameters["min_pt_height"])
+        fix_ptss_heights(pts, other_parameters["min_pt_height"])
 
         pattern_type=other_parameters["pattern"]
         pattern=simple_pattern_parser(pattern_type, len(pts))
@@ -156,7 +159,7 @@ class BaseObject:
         if other_parameters is None:
             other_parameters = dict(BaseObject.DEFAULT_PARAMETERS)
 
-        fix_pts_heights(pts, other_parameters["min_pt_height"])
+        fix_ptss_heights(pts, other_parameters["min_pt_height"])
 
         pattern_type=other_parameters["pattern"]
         pattern = simple_pattern_parser(pattern_type, len(pts))
@@ -185,7 +188,7 @@ class BaseObject:
 
         other_parameters["orient"]=False
 
-        fix_pts_heights(pts+[pt], other_parameters["min_pt_height"])
+        fix_ptss_heights(pts+[pt], other_parameters["min_pt_height"])
 
         pattern_type=other_parameters["pattern"]
         pentagon_pattern, triangle_pattern=pyramid_pattern_parser(pattern_type, len(pts) )

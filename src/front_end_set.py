@@ -105,6 +105,8 @@ class FrontEndSet:
         else:
             self.b_oss=[[]]
 
+        self.apply_all_transformations()
+
         if self.has_h:
             for b_os in self.b_oss:
                 for _ in range(2):
@@ -113,14 +115,15 @@ class FrontEndSet:
             for b_os in self.b_oss:
                 b_os.append(self.populate())
 
-        self.apply_all_transformations()
-
         pt_sets=[]
         for b_os in self.b_oss:
             row=[]
             for b_o in b_os:
-                row.extend(b_o.generate())
+                row.append(b_o.generate())
             pt_sets.append(row)
+
+        print("FES.generate_b_pts")
+        print(pt_sets)
 
         return pt_sets
 
@@ -142,10 +145,11 @@ class FrontEndSet:
 
     def flat_clone(self, height=0.):
         clone_pt_sets=self.generate()
-        for ptss in clone_pt_sets:
-            for pts in ptss:
-                for pt in pts:
-                    pt.Z=height
+        for ptsss in clone_pt_sets:
+            for ptss in ptsss:
+                for pts in ptss:
+                    for pt in pts:
+                        pt.Z=height
 
         return clone_pt_sets
 
@@ -317,7 +321,7 @@ class DiamondSet(FrontEndSet):
             row=[]
             for b_o in b_os:
                 b_o.index_input(i)
-                row.extend(b_o.generate())
+                row.append(b_o.generate())
             pt_sets.append(row)
 
         return pt_sets
@@ -371,6 +375,6 @@ class QuadGroupSet(FrontEndSet):
         #     row.append(pts)
         # shifted_ptsss.append(row)
 
-        return [ptsss]
+        return ptsss
 
 
