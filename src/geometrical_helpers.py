@@ -136,7 +136,7 @@ def bounding_rec(pts, angle=None):
         [pt.Transform(r_tm) for pt in loc_pts]                  # transforming the copied points
         return bounding_rec(loc_pts)
 
-def optimal_rec(pts, iterations=50, max_width=10000.0, max_length=10000.0):
+def optimal_rec(pts, iterations=50, max_width=10000.0, max_height=10000.0):
     delta=.5*math.pi/(iterations - 1)
 
     data_dict={}
@@ -145,7 +145,7 @@ def optimal_rec(pts, iterations=50, max_width=10000.0, max_length=10000.0):
         loc_pts=[rg.Point3d(pt) for pt in pts]
         angle=i*delta
         _, w, l=bounding_rec(loc_pts, angle)
-        if w < max_width and l < max_length:
+        if w < max_width and l < max_height:
             data_dict[angle]={"width":w,"length":l,"area":w*l}
 
     angle_dict={}

@@ -63,7 +63,7 @@ class Unfolded():
                                      "width", "length" or "area"
         iterations : int (10) - how many different angles should be checked"""
 
-        angle_dict=optimal_rec(self.b_pts, iterations, self.height, self.width)
+        angle_dict=optimal_rec(self.b_pts, iterations, self.width, self.height)
 
         self.optimal_width_angle=angle_dict["width"]
         self.optimal_length_angle=angle_dict["length"]
