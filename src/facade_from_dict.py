@@ -70,10 +70,18 @@ def square_function(facade, o_p, data_dict):
         s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
     )
 
+    f_b_2=SquareSet(
+        x=data_dict["x_spacing"],
+        y=data_dict["z_spacing"],
+        hs=data_dict["mapped_hs"],
+        s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
+    )
+
+
     apply_all_transformations(f_b_set, data_dict)
 
     if data_dict["base_objects"]!=2:
-        facade.set_multi_squares(f_b_set.flat_clone(),obj_idx=2)
+        facade.set_multi_squares(f_b_2.flat_clone(),obj_idx=2)
     
     ptsss=f_b_set.generate()
     fold_idxs=f_b_set.fold_idxs()
