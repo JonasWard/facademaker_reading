@@ -154,7 +154,7 @@ class Unfolded():
         line0=rg.Line(rg.Point3d.Origin, rg.Point3d(self.width, self.height, 0.))
         line1=rg.Line(rg.Point3d(0., self.height, 0.), rg.Point3d(self.width, 0., 0.))
         f_if=[line0, line1]
-        t_m=rg.Transform.Translation(rg.Vector3d(self.bottom_corner) )
-        [obj.Transform(t_m) for obj in f_if]
+        # t_m=rg.Transform.Translation(rg.Vector3d(self.bottom_corner) )
+        # [obj.Transform(t_m) for obj in f_if]
 
         return f_if
