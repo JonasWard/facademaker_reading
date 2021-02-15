@@ -19,17 +19,9 @@ def filling_pattern(p_name, cnt = 4, fix = True):
     global p_b_set
 
     full_pattern_list=[p_b_set[p_name][i%len(p_b_set[p_name])][:] for i in range(cnt)]
-    print("before alteration")
-    print(full_pattern_list)
-    print(p_b_set)
-    
-    if (p_name=="alternating_A" or p_name=="alternating_B") and (cnt%2==1) and fix:
-        print("alternation based pattern adjustments")
-        full_pattern_list[0][0]=full_pattern_list[-1][-1]
 
-    print("after alteration")
-    print(full_pattern_list)
-    print(p_b_set)
+    if (p_name=="alternating_A" or p_name=="alternating_B") and (cnt%2==1) and fix:
+        full_pattern_list[0][0]=full_pattern_list[-1][-1]
 
     return full_pattern_list
 
