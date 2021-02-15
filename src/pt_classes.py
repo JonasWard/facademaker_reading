@@ -137,20 +137,14 @@ class TrianglePts(PtSet):
         if self._rot!=0:
             self.hs=self.hs[self._rot:]+self.hs[:self._rot]
 
+    def has_ortogonal_angle(self):
+        return abs(self.s)<.001
+
     def gen_base_pts(self):
-        if self._vmir^self._hmir:
-            b_set=[
-                [
-                    Point3d(0., 0., 0.),
-                    Point3d(self.x, 0., 0.),
-                    Point3d(self.s, self.y, 0.)
-                ],[
-                    Point3d(self.s+self.x, self.y, 0.),
-                    Point3d(self.s, self.y, 0.),
-                    Point3d(self.x, 0., 0.)
-                ]
-            ]
-        else:
+        if (
+            not(self._vmir^self._hmir) and self.has_ortogonal_angle() or 
+            (self._vmir and not(self.has_ortogonal_angle()))
+        ):
             b_set=[
                 [
                     Point3d(0., self.y, 0.),
@@ -160,6 +154,18 @@ class TrianglePts(PtSet):
                     Point3d(self.x+self.s, 0., 0.),
                     Point3d(self.x, self.y, 0.),
                     Point3d(self.s, 0., 0.)
+                ]
+            ]
+        else:
+            b_set=[
+                [
+                    Point3d(0., 0., 0.),
+                    Point3d(self.x, 0., 0.),
+                    Point3d(self.s, self.y, 0.)
+                ],[
+                    Point3d(self.s+self.x, self.y, 0.),
+                    Point3d(self.s, self.y, 0.),
+                    Point3d(self.x, 0., 0.)
                 ]
             ]
 
