@@ -148,7 +148,7 @@ def optimal_rec(pts, iterations=50, max_width=10000.0, max_height=10000.0):
         if w < max_width and l < max_height:
             data_dict[angle]={"width":w,"length":l,"area":w*l}
 
-    angle_dict={}
+    angle_dict={"width":None, "length": None, "area": None}
     if any(data_dict):
         angle_dict["width"]=min(data_dict, key=lambda k: data_dict[k]["width"])
         angle_dict["length"]=min(data_dict, key=lambda k: data_dict[k]["length"])

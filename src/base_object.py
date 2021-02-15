@@ -76,24 +76,16 @@ class BaseObject:
             b_pt=rg.Point3d(optimization_parameters["max_w"]*i, 0., 0.)
             unfolded_obj=obj.get_unfolded()
 
-            try:
-                unfolded_obj.width=optimization_parameters["max_w"]
-                unfolded_obj.height=optimization_parameters["max_l"]
-                unfolded_obj.optimize(
-                    opt_type=optimization_parameters["preference"],
-                    iterations=optimization_parameters["iterations"]
-                )
+            unfolded_obj.width=optimization_parameters["max_w"]
+            unfolded_obj.height=optimization_parameters["max_l"]
+            unfolded_obj.optimize(
+                opt_type=optimization_parameters["preference"],
+                iterations=optimization_parameters["iterations"]
+            )
 
-                unfolded_obj.bottom_corner=b_pt
+            unfolded_obj.bottom_corner=b_pt
 
-                unfolded_objs.append(unfolded_obj)
-            except:
-                print("failted to optimize an object, added a placeholder")
-                unfolded_objs.append(Unfolded.empty_object(
-                    b_pt=b_pt,
-                    w=optimization_parameters["max_w"],
-                    h=optimization_parameters["max_l"]
-                ))
+            unfolded_objs.append(unfolded_obj)
 
         return unfolded_objs
 
