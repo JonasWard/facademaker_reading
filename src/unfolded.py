@@ -111,14 +111,14 @@ class Unfolded():
 
     def panel(self):
         """method that returns a representation of the panel"""
-        rec=rg.Rectangle(rg.Plane.WorldXY, self.width, self.height).ToNurbsCurve()
-        rec.Translate(self._b_pt)
+        rec=rg.Rectangle3d(rg.Plane.WorldXY, self.width, self.height).ToNurbsCurve()
+        rec.Translate(rg.Vector3d(self._b_pt))
         return rec
 
-    def bake_dict(self, b_pln=rg.WorldXY):
+    def bake_dict(self, b_pln=rg.Plane.WorldXY):
         """method that returns all the data structured in such a way that the objects
         can be easily baked"""
-        tr_m=rg.Transform.PlaneToPlane(b_pln)
+        tr_m=rg.Transform.PlaneToPlane(rg.Plane.WorldXY, b_pln)
 
         panel=self.panel()
         outline_crv=self.outline_crv()
