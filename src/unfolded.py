@@ -115,14 +115,26 @@ class Unfolded():
         rec.Translate(self._b_pt)
         return rec
 
-    def bake_dict(self):
+    def bake_dict(self, b_pln=rg.WorldXY):
         """method that returns all the data structured in such a way that the objects
         can be easily baked"""
+        tr_m=rg.Transform.PlaneToPlane(b_pln)
+
+        panel=self.panel()
+        outline_crv=self.outline_crv()
+        top_face_folds=self.top_face_folds()
+        body_flap_folds=self.body_flap_folds()
+        intra_flap_folds=self.intra_flap_folds()
+        objs=[panel]+[outline_crv]+top_face_folds+body_flap_folds+intra_flap_folds
+
+        [obj.Transform(tr_m) for obj in objs]
+
         return {
-            "outline_crv"      : self.outline_crv(),
-            "top_face_folds"   : self.top_face_folds(),
-            "body_flap_folds"  : self.body_flap_folds(),
-            "intra_flap_folds" : self.intra_flap_folds()
+            "panel"            : panel,
+            "outline_crv"      : outline_crv,
+            "top_face_folds"   : top_face_folds,
+            "body_flap_folds"  : body_flap_folds,
+            "intra_flap_folds" : intra_flap_folds
         }
 
     @staticmethod

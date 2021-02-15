@@ -103,16 +103,19 @@ class BaseObject:
 
     def get_name(self):
         """method that returns the compound name if parameters were set"""
-        string = ''
+        string_list=[]
 
         if not(self.name is None):
-            string+=self.name
+            string_list.append(self.name)
         if not(self.pattern is None):
-            string+=self.pattern
+            string_list.append(self.pattern)
         if not(self.index is None):
-            string+=str(self.index)
+            string_list.append(str(self.index))
 
-        return string
+        return ' '.join(string_list)
+
+    def __repr__(self):
+        return self.get_name()+' with {} panels in it'.format(self.get_count())
 
     @staticmethod
     def simple_square(pts, index = (0,0), other_parameters = None, fold_idx=None):
