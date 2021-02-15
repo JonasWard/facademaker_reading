@@ -30,10 +30,19 @@ def simple_pattern_parser(name = "flat", cnt = 4):
 def pyramid_pattern_parser(name = "flat", cnt = 4):
     global p_b_set
 
+    print(name)
     pentagon_set=filling_pattern(name, cnt-1)
-    triangle_set=[invert_pattern(v) for v in [[pentagon_set[0][0], pentagon_set[-1][-1]]]]
-    triangle_set=p_b_set["flaps"]+triangle_set+p_b_set["flaps"]
-    pentagon_set+=2*p_b_set["flaps"]
+    if (name is "alternating_A" or name is "alternating_B"):
+        print("alternation based pattern adjustments")
+        triangle_set=[[invert_pattern(v) for v in ([pentagon_set[-1][-1], pentagon_set[0][0]])]]
+    else:
+        triangle_set=[[pentagon_set[0][0], pentagon_set[-1][-1]]]
+    triangle_set=p_b_set["flaps"]+p_b_set["flaps"]+triangle_set
+    pentagon_set=p_b_set["flaps"]+pentagon_set+p_b_set["flaps"]
+
+    print("generating pyramid pattern parser")
+    print(triangle_set)
+    print(pentagon_set)
 
     return pentagon_set, triangle_set
 
