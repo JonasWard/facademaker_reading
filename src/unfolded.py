@@ -1,4 +1,5 @@
 import Rhino.Geometry as rg
+from copy import deepcopy as dc
 from geometrical_helpers import optimal_rec, centroid, bounds
 
 class Unfolded():
@@ -104,15 +105,15 @@ class Unfolded():
 
     def top_face_folds(self):
         """method that returns the top face folds"""
-        return self.f_ff
+        return dc(self.f_ff)
 
     def body_flap_folds(self):
         """method that returns the folds in between the main body and the flaps"""
-        return self.f_bf
+        return dc(self.f_bf)
 
     def intra_flap_folds(self):
         """method that returns the folds on the flaps overlapping with other flaps"""
-        return self.f_if
+        return dc(self.f_if)
 
     def panel(self):
         """method that returns a representation of the panel"""
