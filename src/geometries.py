@@ -70,6 +70,8 @@ class Base():
         to adjust the position of the vertexes with to compensate for folding
         tolerance - more representative result"""
 
+        print("calling polyline correction")
+
         pts=self.projected_pts(False)
         n_pl=rg.PolylineCurve(pts+[pts[0]]).Offset(
             rg.Plane.WorldXY, -self.cor_val, .001, rg.CurveOffsetCornerStyle.Sharp
@@ -448,6 +450,9 @@ class Simple(Base):
         print(str(self)+" has cor_val: {} and will {}be shown with it".format(
             self.cor_val, ["not ", ""][int(self.with_cor_val_3d)]))
 
+        if self.with_cor_val_3d:
+            self.polyline_correction()
+
 class Center(Base):
     def __init__(self, boundary, center, pattern = None, production_parameters=None):
         if len(boundary) < 3:
@@ -474,3 +479,6 @@ class Center(Base):
 
         print(str(self)+" has cor_val: {} and will {}be shown with it".format(
             self.cor_val, ["not ", ""][int(self.with_cor_val_3d)]))
+
+        if self.with_cor_val_3d:
+            self.polyline_correction()
