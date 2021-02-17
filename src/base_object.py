@@ -1,22 +1,10 @@
 from geometries import Simple, Center, Unfolded
 from geometrical_helpers import fix_pts_heights, fix_ptss_heights
 from pattern_generator import *
+from facade_link_info import DEFAULT_CONSTRUCTION_PARAMETERS
 import Rhino.Geometry as rg
 
 class BaseObject:
-    DEFAULT_PARAMETERS = {
-        "flap_h_max" : 30.,
-        "correction_val" : .7,
-        "flap_h" : 20.0,
-        "flap_w" : 40.0,
-        "mesh_correction_val" : False,
-        "show_correction_val" : True,
-        "fold_idx" : 0,                 # front-end parameter
-        "min_pt_height" : 50.,
-        "orient" : True,                # legacy parameter
-        "pattern" : "flat"              
-    }
-
     """class used to encapsulate the different types
     all dimensions are defined in mm"""
     def __init__(self, objs=[], index=None, type_name=None, pattern_name=None, parameters=None):
@@ -33,7 +21,8 @@ class BaseObject:
         self.index=index
 
         if parameters is None:
-            self.parameters=dict(BaseObject.DEFAULT_PARAMETERS)
+            global DEFAULT_CONSTRUCTION_PARAMETERS
+            self.parameters=dict(DEFAULT_CONSTRUCTION_PARAMETERS)
         else:
             self.parameters=parameters
 
@@ -119,7 +108,8 @@ class BaseObject:
         other_parameters : other parameters defining various aspects of the geometry"""
 
         if other_parameters is None:
-            other_parameters=dict(BaseObject.DEFAULT_PARAMETERS)
+            global DEFAULT_CONSTRUCTION_PARAMETERS
+            other_parameters=dict(DEFAULT_CONSTRUCTION_PARAMETERS)
         else:
             other_parameters=dict(other_parameters)
         
@@ -149,7 +139,8 @@ class BaseObject:
         index            : the index of this object in the grid (only used for naming)
         other_parameters : other parameters defining various aspects of the geometry"""
         if other_parameters is None:
-            other_parameters = dict(BaseObject.DEFAULT_PARAMETERS)
+            global DEFAULT_CONSTRUCTION_PARAMETERS
+            other_parameters=dict(DEFAULT_CONSTRUCTION_PARAMETERS)
 
         fix_pts_heights(pts, other_parameters["min_pt_height"])
 
@@ -176,7 +167,8 @@ class BaseObject:
         other_parameters : other parameters defining various aspects of the geometry"""
 
         if other_parameters is None:
-            other_parameters=BaseObject.DEFAULT_PARAMETERS
+            global DEFAULT_CONSTRUCTION_PARAMETERS
+            other_parameters=dict(DEFAULT_CONSTRUCTION_PARAMETERS)
 
         other_parameters["orient"]=False
 
@@ -205,7 +197,8 @@ class BaseObject:
         other_parameters : other parameters defining various aspects of the geometry"""
 
         if other_parameters is None:
-            other_parameters=BaseObject.DEFAULT_PARAMETERS
+            global DEFAULT_CONSTRUCTION_PARAMETERS
+            other_parameters=dict(DEFAULT_CONSTRUCTION_PARAMETERS)
 
         fix_ptss_heights(ptss, other_parameters["min_pt_height"])
 

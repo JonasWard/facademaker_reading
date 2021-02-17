@@ -2,7 +2,7 @@ import Rhino.Geometry as rg
 import math
 from unfolded import Unfolded
 from pattern_generator import simple_pattern_parser
-from base_object import BaseObject
+from facade_link_info import DEFAULT_CONSTRUCTION_PARAMETERS
 from panel_sides import *
 
 class Base():
@@ -21,8 +21,10 @@ class Base():
 
     def start_run(self):
         """initialization method"""
+        global DEFAULT_CONSTRUCTION_PARAMETERS
+
         self.pattern = simple_pattern_parser(cnt=len(self.pts))
-        self.s_p_p = dict(BaseObject.DEFAULT_PARAMETERS)
+        self.s_p_p = dict(DEFAULT_CONSTRUCTION_PARAMETERS)
         self.has_graph=False
         self.has_offset=False
         self.has_holes=False

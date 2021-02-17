@@ -47,3 +47,16 @@ DEFAULT_DICT={
     'hs': [0.0, 0.0, 0.69999999999999996],          # list of all heights, clockwise
     'mat': '',                                      # material tag - not used
 }
+
+DEFAULT_CONSTRUCTION_PARAMETERS={
+    "flap_h_max" : 30.,
+    "correction_val" : .7,
+    "flap_h" : 20.0,
+    "flap_w" : 40.0,
+    "mesh_correction_val" : False,
+    "show_correction_val" : True,
+    "fold_idx" : 0,                 # front-end parameter
+    "min_pt_height" : 50.,
+    "orient" : True,                # legacy parameter
+    "pattern" : "flat"              
+}
