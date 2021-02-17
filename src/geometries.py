@@ -2,6 +2,7 @@ import Rhino.Geometry as rg
 import math
 from unfolded import Unfolded
 from pattern_generator import simple_pattern_parser
+from base_object import BaseObject
 from panel_sides import *
 
 class Base():
@@ -11,12 +12,6 @@ class Base():
     class are called in it's offspring classes."""
 
     COPLANAR_TOLERANCE=.5
-    DEFAULT_SIDE_PRODUCTION_PARAMETERS = {
-        "flap_h_max"        : 5.,
-        "flap_h"            : 20.,
-        "flap_w"            : 40.,
-        "fold_idx"          : 0
-    }
 
     def projected_pts(self, offset=False):
         """projects the input points onto the bottom surface
@@ -27,7 +22,7 @@ class Base():
     def start_run(self):
         """initialization method"""
         self.pattern = simple_pattern_parser(cnt=len(self.pts))
-        self.s_p_p = dict(Base.DEFAULT_SIDE_PRODUCTION_PARAMETERS)
+        self.s_p_p = dict(BaseObject.DEFAULT_PARAMETERS)
         self.has_graph=False
         self.has_offset=False
         self.has_holes=False
@@ -36,6 +31,9 @@ class Base():
         self._is_unfolded=False
         self._has_sides=False
         self.unfolded=None
+
+        self.cor_val=0.0
+        self.with_cor_val_3d=False
 
     @property
     def f_list(self):
@@ -50,6 +48,14 @@ class Base():
         """method that returns the amount of corner points in this object"""
         return len(self.pts)
 
+    @property
+    def cor_val(self):
+        return self.s_p_p["correction_val"]
+
+    @property
+    def with_cor_val_3d(self):
+        return self.s_p_p["show_correction_val"]
+
     def _pt_distance_mapping(self, pts, new_pt_list):
         new_pts=[]
         for pt in pts:
@@ -60,16 +66,14 @@ class Base():
 
         return new_pts
 
-    def polyline_correction(self, value):
+    def polyline_correction(self):
         """offsetting the polyline composed of the projected boundary curve
         to adjust the position of the vertexes with to compensate for folding
-        tolerance - more representative result
-        input:
-        value : float - amount to offset with"""
+        tolerance - more representative result"""
 
         pts=self.projected_pts(False)
         n_pl=rg.PolylineCurve(pts+[pts[0]]).Offset(
-            rg.Plane.WorldXY, -value, .001, rg.CurveOffsetCornerStyle.Sharp
+            rg.Plane.WorldXY, -self.cor_val, .001, rg.CurveOffsetCornerStyle.Sharp
         )[0]
 
         new_pt_list=list(n_pl.ToPolyline() )[:-1]
@@ -77,19 +81,17 @@ class Base():
         new_pts=self._pt_distance_mapping(pts, new_pt_list)
 
         for i, pt in enumerate(self.pts):
-            new_pts[i].Z=pt.Z-abs(value)
+            new_pts[i].Z=pt.Z-abs(self.cor_val)
 
         self.has_offset=True
         self.pts=new_pts
 
-    def mesh_correction(self, value):
+    def mesh_correction(self):
         """offsetting the mesh structure to adjust the position of the vertexes 
-        with to compensate for folding tolerance - angle deformation susceptible
-        input:
-        value : float - amoun to offset with"""
+        with to compensate for folding tolerance - angle deformation susceptible"""
 
         mesh_obj=self.rhino_mesh()
-        offsetted=mesh_obj.Offset(value)
+        offsetted=mesh_obj.Offset(self.cor_val)
 
         new_pt_list=[rg.Point3d(v.X,v.Y,v.Z) for v in list(offsetted.Vertices)]
 
@@ -129,7 +131,7 @@ class Base():
         self.has_graph=True
         self._f_list=f_list
 
-    def rhino_brep(self, offset=True, brep_offset=False, brep_offset_val=1.0):
+    def rhino_brep(self):
         """method that returns a rhino brep representation of the object
         input:
         offset      : bool (True)  - whether to use the corrected pts for construction
@@ -137,9 +139,9 @@ class Base():
         brep_offset : float (1.0)  - how much the brep offset value should be
         output:
         surface     : rg.Brep"""
-        pts=self.ori_pts if (not(offset) and self.has_offset) else self.pts
+        pts=self.ori_pts if (not(self.with_cor_val_3d) and self.has_offset) else self.pts
         
-        vertices=pts+self.projected_pts(offset)
+        vertices=pts+self.projected_pts(self.cor_val)
         f_list=self.f_list[:]
 
         for i in range(self.count ):
@@ -175,32 +177,30 @@ class Base():
 
         surface=rg.Brep.JoinBreps(surfaces, .001)[0]
 
-        if brep_offset:
-            surface_array=rg.Brep.CreateOffsetBrep(
-                brep=surface,
-                distance=brep_offset_val,
-                solid=False,
-                extend=False,
-                tolerance=.01,
-            )
+        # if brep_offset:
+        #     surface_array=rg.Brep.CreateOffsetBrep(
+        #         brep=surface,
+        #         distance=self.cor_val,
+        #         solid=False,
+        #         extend=False,
+        #         tolerance=.01,
+        #     )
 
-            if any(surface_array[0]):
-                surface=surface_array[0][0]
-                print("offset success")
-            else:
-                print("offset failed")
+        #     if any(surface_array[0]):
+        #         surface=surface_array[0][0]
+        #         print("offset success")
+        #     else:
+        #         print("offset failed")
 
         return surface
 
-    def rhino_mesh(self, offset=True):
+    def rhino_mesh(self):
         """method that returns a rhino brep representation of the object
-        input:
-        offset      : bool (True)  - whether to use the corrected pts for construction
         output:
         mesh        : rg.Mesh"""
         mesh=rg.Mesh()
 
-        pts=self.ori_pts if (not(offset) and self.has_offset) else self.pts
+        pts=self.ori_pts if (not(self.with_cor_val_3d) and self.has_offset) else self.pts
 
         # top faces
         for pt in pts:
@@ -209,7 +209,7 @@ class Base():
             mesh.Faces.AddFace(f[0], f[1], f[2])
 
         # bottom vertices
-        for pt in self.projected_pts(offset):
+        for pt in self.projected_pts(pts):
             mesh.Vertices.Add(pt.X, pt.Y, pt.Z)
         # side faces
         for i in range(self.count ):
