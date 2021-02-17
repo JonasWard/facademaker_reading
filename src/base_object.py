@@ -21,6 +21,7 @@ class BaseObject:
         self.index=index
 
         if parameters is None:
+            print("when creating this base_object had to resort to default construction parameters")
             global DEFAULT_CONSTRUCTION_PARAMETERS
             self.parameters=dict(DEFAULT_CONSTRUCTION_PARAMETERS)
         else:
@@ -108,6 +109,7 @@ class BaseObject:
         other_parameters : other parameters defining various aspects of the geometry"""
 
         if other_parameters is None:
+            print("when creating this simple_square had to resort to default construction parameters")
             global DEFAULT_CONSTRUCTION_PARAMETERS
             other_parameters=dict(DEFAULT_CONSTRUCTION_PARAMETERS)
         else:
@@ -139,6 +141,7 @@ class BaseObject:
         index            : the index of this object in the grid (only used for naming)
         other_parameters : other parameters defining various aspects of the geometry"""
         if other_parameters is None:
+            print("when creating this simple_triangle had to resort to default construction parameters")
             global DEFAULT_CONSTRUCTION_PARAMETERS
             other_parameters=dict(DEFAULT_CONSTRUCTION_PARAMETERS)
 
@@ -167,6 +170,7 @@ class BaseObject:
         other_parameters : other parameters defining various aspects of the geometry"""
 
         if other_parameters is None:
+            print("when creating this pyramid had to resort to default construction parameters")
             global DEFAULT_CONSTRUCTION_PARAMETERS
             other_parameters=dict(DEFAULT_CONSTRUCTION_PARAMETERS)
 
@@ -197,6 +201,7 @@ class BaseObject:
         other_parameters : other parameters defining various aspects of the geometry"""
 
         if other_parameters is None:
+            print("when creating this cube_group had to resort to default construction parameters")
             global DEFAULT_CONSTRUCTION_PARAMETERS
             other_parameters=dict(DEFAULT_CONSTRUCTION_PARAMETERS)
 

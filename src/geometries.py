@@ -34,9 +34,6 @@ class Base():
         self._has_sides=False
         self.unfolded=None
 
-        self.cor_val=0.0
-        self.with_cor_val_3d=False
-
     @property
     def f_list(self):
         if any(self._f_list):
@@ -431,6 +428,7 @@ class Simple(Base):
 
         self.start_run()
         if not(production_parameters is None):
+            print("Simple geometry got custom production_parameters")
             self.s_p_p=production_parameters
 
         if fold_idx is None:
@@ -447,6 +445,9 @@ class Simple(Base):
 
         self.construct_graph()
 
+        print(str(self)+" has cor_val: {} and will {}be shown with it".format(
+            self.cor_val, ["not ", ""][int(self.with_cor_val_3d)]))
+
 class Center(Base):
     def __init__(self, boundary, center, pattern = None, production_parameters=None):
         if len(boundary) < 3:
@@ -456,6 +457,7 @@ class Center(Base):
 
         self.start_run()
         if not(production_parameters is None):
+            print("Center geometry got custom production_parameters")
             self.s_p_p = production_parameters
 
         if production_parameters["orient"]:
@@ -469,3 +471,6 @@ class Center(Base):
             print("no pattern was given, a default one has been assigned")
 
         self.construct_graph()
+
+        print(str(self)+" has cor_val: {} and will {}be shown with it".format(
+            self.cor_val, ["not ", ""][int(self.with_cor_val_3d)]))

@@ -25,6 +25,12 @@ def facade_from_dict(data_dict, z_spacing=1000., y_delta=500., other_parameters=
 
     f.set_selection_pattern(data_dict["ftypo"])
 
+    if other_parameters is None:
+        print("facade_from_dict other_parameters is None")
+    else:
+        print("facade_from_dict has other_parameters")
+        print(other_parameters)
+
     FUNCTION_MAP[FUNCTION_TYPES[data_dict['ft']]](f, other_parameters, data_dict)
 
     return f
@@ -43,6 +49,7 @@ def apply_all_transformations(f_b_set, data_dict):
 
 def triangle_function(facade, o_p, data_dict):
     """function to parse triangles with"""
+    print("=== triangle function ===")
     f_b_set=TriangleSet(
         x=data_dict["x_spacing"],
         y=data_dict["z_spacing"],
@@ -52,10 +59,16 @@ def triangle_function(facade, o_p, data_dict):
 
     facade.objects_per_tile=2
     apply_all_transformations(f_b_set, data_dict)
+
+    print("=== creating flat objects ===")
     
     if data_dict["base_objects"]!=2:
-        facade.set_multi_triangles(f_b_set.flat_clone(),obj_idx=2)
+        facade.set_multi_triangles(
+            f_b_set.flat_clone(),
+            other_parameters=o_p,
+            obj_idx=2)
 
+    print("=== multi triangles ===")
     facade.set_multi_triangles(
         ptsss=f_b_set.generate(),
         other_parameters=o_p
@@ -81,7 +94,11 @@ def square_function(facade, o_p, data_dict):
     apply_all_transformations(f_b_set, data_dict)
 
     if data_dict["base_objects"]!=2:
-        facade.set_multi_squares(f_b_2.flat_clone(),obj_idx=2)
+        facade.set_multi_squares(
+            f_b_2.flat_clone(),
+            other_parameters=o_p,
+            obj_idx=2
+        )
     
     ptsss=f_b_set.generate()
     fold_idxs=f_b_set.fold_idxs()
@@ -104,7 +121,11 @@ def diamond_function(facade, o_p, data_dict):
     apply_all_transformations(f_b_set, data_dict)
 
     if data_dict["base_objects"]!=2:
-        facade.set_multi_squares(f_b_set.flat_clone(),obj_idx=2)
+        facade.set_multi_squares(
+            f_b_set.flat_clone(),
+            other_parameters=o_p,
+            obj_idx=2
+        )
     
     ptsss=f_b_set.generate()
     fold_idxs=f_b_set.fold_idxs()
@@ -131,7 +152,11 @@ def pyramid_function(facade, o_p, data_dict):
     apply_all_transformations(f_b_set, data_dict)
 
     if data_dict["base_objects"]!=2:
-        facade.set_multi_squares(f_b_set.flat_clone(),obj_idx=2)
+        facade.set_multi_squares(
+            f_b_set.flat_clone(),
+            other_parameters=o_p,
+            obj_idx=2
+        )
     
     ptsss=f_b_set.generate()
     c_ptss=f_b_set.get_c_ptss()
@@ -166,7 +191,11 @@ def quad_group_function(facade, o_p, data_dict):
     # apply_all_transformations(f_b_2, data_dict)
 
     if data_dict["base_objects"]!=2:
-        facade.set_multi_squares(f_b_2.flat_clone(),obj_idx=2)
+        facade.set_multi_squares(
+            f_b_2.flat_clone(),
+            other_parameters=o_p,
+            obj_idx=2
+        )
     
     ptssss=f_b_set.generate()
 
