@@ -41,7 +41,7 @@ class BaseObject:
         msh_output = []
 
         for obj in self.objs:
-            msh=obj.rhino_mesh(self.parameters["show_correction_val"])
+            msh=obj.rhino_mesh()
             msh.Transform(t_matrix)
             msh_output.append(msh)
         

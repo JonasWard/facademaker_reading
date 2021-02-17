@@ -297,8 +297,7 @@ class DiamondSet(FrontEndSet):
 
     def generate_b_pts(self):
         """method that sets the base_objects, stores them and returns their base_ptsss"""
-        if self.has_v:
-            self.b_oss=[[],[]]
+        self.b_oss=[[],[]]
 
         if self.has_h:
             for b_os in self.b_oss:
