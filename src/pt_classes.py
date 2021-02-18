@@ -317,6 +317,15 @@ class DiamondPts(SquarePts):
                 pt.X-=self.x*.5
 
         return b_set
+
+    @property
+    def fold_idx(self):
+        f_idx=self._base_fold_idx
+        f_idx+=self._rot
+        f_idx+=int(self._hkon)
+        f_idx+=int(self._vkon)
+        print("unmodulated f_idx: {}, %2 f_idx: {}".format(f_idx, f_idx%2) )
+        return f_idx%2
     
     def switch_heights(self):
         print("switching heights")
