@@ -1,7 +1,6 @@
 from facade import FacademakerFacade
 from front_end_set import TriangleSet, SquareSet, PyramidSet, DiamondSet, QuadGroupSet
 from facade_link_info import FUNCTION_TYPES, FUNCTION_SHIFT_VALUES
-from debugging_tools import list_counter
 
 def facade_from_dict(data_dict, x_spacing=None, z_spacing=1000., y_delta=500., other_parameters=None):
     """function that returns a FacademakerObject based on a front-end data dict
@@ -61,7 +60,6 @@ def apply_all_transformations(f_b_set, data_dict):
 
 def triangle_function(facade, o_p, data_dict):
     """function to parse triangles with"""
-    print("=== triangle function ===")
     f_b_set=TriangleSet(
         x=data_dict["x_spacing"],
         y=data_dict["z_spacing"],
@@ -71,8 +69,6 @@ def triangle_function(facade, o_p, data_dict):
 
     facade.objects_per_tile=2
     apply_all_transformations(f_b_set, data_dict)
-
-    print("=== creating flat objects ===")
     
     if data_dict["base_objects"]!=2:
         facade.set_multi_triangles(
@@ -80,7 +76,6 @@ def triangle_function(facade, o_p, data_dict):
             other_parameters=o_p,
             obj_idx=2)
 
-    print("=== multi triangles ===")
     facade.set_multi_triangles(
         ptsss=f_b_set.generate(),
         other_parameters=o_p
@@ -171,9 +166,6 @@ def pyramid_function(facade, o_p, data_dict):
     
     ptsss=f_b_set.generate()
     c_ptss=f_b_set.get_c_ptss()
-
-    print("=== pyramid_function f_b_set.generate() ===")
-    print(list_counter(ptsss))
 
     facade.set_multi_pyramids(
         ptsss=ptsss,

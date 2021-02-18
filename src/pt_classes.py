@@ -274,9 +274,11 @@ class PyramidPts(SquarePts):
 
     def manage_hc(self):
         if self._hkon^self._vkon:
-            return self.hc
-        else:
+            print("used negative hc")
             return -self.hc
+        else:
+            print("used positive hc")
+            return self.hc
 
     def gen_c_pt(self):
         """method to retrieve c_pt"""
@@ -340,6 +342,12 @@ class QuadGroupPts(PyramidPts):
 
         self.a=a
         self.b=b
+
+    def h_kon(self):
+        self._hkon=False
+
+    def v_kon(self):
+        self._vkon=False
 
     def _row_function(self, b_pt, pos_a, pos_b):
         row=[]
