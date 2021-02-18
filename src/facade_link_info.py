@@ -20,6 +20,17 @@ FUNCTION_SHIFT_VALUES={
     't4': .5,
 }
 
+HORIZONTAL_COUNT_MULTIPLIER={
+    'd2': 1,
+    'q1lift': 1,
+    'd4': 1,
+    'q4': 1,
+    't1': 2,
+    't2': 2,
+    't3': 1,
+    't4': 1,
+}
+
 DEFAULT_DICT={
     'ft': 't2',                                     # function type, defining the complexity and which objects to use
     'fgh': 7,                                       # amount of panels in horizontal direction

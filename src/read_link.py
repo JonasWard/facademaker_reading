@@ -1,3 +1,5 @@
+from facade_link_info import HORIZONTAL_COUNT_MULTIPLIER
+
 def baseconvert(n, base):
     """function that converts positive decimal integer n to equivalent into
     another give base (2-36)"""
@@ -58,13 +60,25 @@ def ftypo_handling(data_dict):
     a base 36 is assumed otherwise 32, as well as the amount of base object
     types (2, 4, 8). Afterwards the values are sliced into nested lists, similar
     to the building facade n.m position matrix"""
+    global HORIZONTAL_COUNT_MULTIPLIER
+
+    # dealing with henning triangles
+    try:
+        loc_fgh=data_dict["fgh"]*HORIZONTAL_COUNT_MULTIPLIER[data_dict["ft"]]
+        print("multiplied horizontal count by: {}".format(
+            HORIZONTAL_COUNT_MULTIPLIER[data_dict["ft"]]
+        ))
+    except:
+        loc_fgh=data_dict["fgh"]
+    
+    
     found_key=False
     for key in data_dict.keys():
         if "ftypo" in key:
             found_key=True
             ftypo=data_dict[key]
             break
-    
+
     if not(found_key):
         data_dict["base_objects"]=2
         print("no ftypo found, populated with all int 1")
@@ -90,7 +104,7 @@ def ftypo_handling(data_dict):
                 ftypo.extend(ftp)
 
         # cutting into segments according to list
-        ftypo=[ftypo[i * data_dict["fgv"] : (i+1)*data_dict["fgv"]] for i in range(data_dict["fgh"])]
+        ftypo=[ftypo[i * data_dict["fgv"] : (i+1)*data_dict["fgv"]] for i in range(loc_fgh)]
         ftypo=list(zip(*ftypo)) # transposing
         ftypo.reverse()         # turn to positive coordinate system
         ftypo=[[int(c) for c in chars] for chars in ftypo]
@@ -101,7 +115,6 @@ def ftypo_handling(data_dict):
 
 def string_reader(string):
     """function that reads the string and turns it into a readable dict"""
-
     loc_dict=string_to_dict(string)
 
     for boolean_tag in ["mirrh", "mirrv", "konh", "konv"]:
