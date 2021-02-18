@@ -247,12 +247,6 @@ class PyramidPts(SquarePts):
         self.b=b
         self.hc=hc
 
-    def h_kon(self):
-        self._hkon=False
-
-    def v_kon(self):
-        self._vkon=False
-
     def manage_ab(self):
         """method to transform a & b"""
         if self._rot==1:
@@ -278,11 +272,17 @@ class PyramidPts(SquarePts):
         s=-self.s if self._vmir else self.s
         return Point3d(s, self.y, 0.)
 
+    def manage_hc(self):
+        if self._hkon^self._vkon:
+            return self.hc
+        else:
+            return -self.hc
+
     def gen_c_pt(self):
         """method to retrieve c_pt"""
         self.manage_ab()
         pt=self.a*self.x_vec+self.b*self.y_vec
-        pt.Z=self.hc
+        pt.Z=self.manage_hc()
 
         return pt
 

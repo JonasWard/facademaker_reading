@@ -1,4 +1,5 @@
 from pt_classes import TrianglePts, SquarePts, PyramidPts, DiamondPts, QuadGroupPts
+from debugging_tools import list_counter
 
 class FrontEndSet:
     """class that contains all the genral functions to opperate on all the
@@ -116,11 +117,19 @@ class FrontEndSet:
         self.apply_all_transformations()
 
         pt_sets=[]
+
+        print(list_counter(self.b_oss))
         for b_os in self.b_oss:
             row=[]
             for b_o in b_os:
+                print("++++ b_os.generate() ++++")
+                print(list_counter(b_o.generate()))
                 row.extend(b_o.generate())
+            print("+++ row +++")
+            print(list_counter(row))
             pt_sets.append(row)
+        print("++ row ++")
+        print(list_counter(pt_sets))
 
         return pt_sets
 
@@ -258,18 +267,18 @@ class PyramidSet(FrontEndSet):
 
         return c_ptss
 
-    def generate(self):
-        ptsss=self.generate_b_pts()
+    # def generate(self):
+    #     ptsss=self.generate_b_pts()
 
-        shifted_ptsss=[]
-        for ptss in ptsss:
-            row=[]
-            for pts in ptss:
-                pts=pts[1:]+pts[:1]
-            row.append(pts)
-        shifted_ptsss.append(row)
+    #     shifted_ptsss=[]
+    #     for ptss in ptsss:
+    #         row=[]
+    #         for pts in ptss:
+    #             pts=pts[1:]+pts[:1]
+    #         row.append(pts)
+    #     shifted_ptsss.append(row)
 
-        return shifted_ptsss
+    #     return shifted_ptsss
 
 class DiamondSet(FrontEndSet):
     """class that allows you to manage diamond objects. Either this class

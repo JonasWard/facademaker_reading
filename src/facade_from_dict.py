@@ -1,6 +1,7 @@
 from facade import FacademakerFacade
 from front_end_set import TriangleSet, SquareSet, PyramidSet, DiamondSet, QuadGroupSet
 from facade_link_info import FUNCTION_TYPES, FUNCTION_SHIFT_VALUES
+from debugging_tools import list_counter
 
 def facade_from_dict(data_dict, x_spacing=None, z_spacing=1000., y_delta=500., other_parameters=None):
     """function that returns a FacademakerObject based on a front-end data dict
@@ -170,6 +171,9 @@ def pyramid_function(facade, o_p, data_dict):
     
     ptsss=f_b_set.generate()
     c_ptss=f_b_set.get_c_ptss()
+
+    print("=== pyramid_function f_b_set.generate() ===")
+    print(list_counter(ptsss))
 
     facade.set_multi_pyramids(
         ptsss=ptsss,
