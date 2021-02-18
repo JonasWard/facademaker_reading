@@ -1,5 +1,6 @@
 from pt_classes import TrianglePts, SquarePts, PyramidPts, DiamondPts, QuadGroupPts
 from debugging_tools import list_counter
+from geometrical_helpers import ptsss_increase, ptss_increase
 
 class FrontEndSet:
     """class that contains all the genral functions to opperate on all the
@@ -118,18 +119,11 @@ class FrontEndSet:
 
         pt_sets=[]
 
-        print(list_counter(self.b_oss))
         for b_os in self.b_oss:
             row=[]
             for b_o in b_os:
-                print("++++ b_os.generate() ++++")
-                print(list_counter(b_o.generate()))
                 row.extend(b_o.generate())
-            print("+++ row +++")
-            print(list_counter(row))
             pt_sets.append(row)
-        print("++ row ++")
-        print(list_counter(pt_sets))
 
         return pt_sets
 
@@ -255,6 +249,9 @@ class PyramidSet(FrontEndSet):
     def populate(self):
         return self._gen_pyramid()
 
+    def has_negative(self):
+        return self._hkon^self._vkon
+
     def get_c_ptss(self):
         """method that gives you the center points of all the elements in this object"""
         c_ptss=[]
@@ -265,20 +262,26 @@ class PyramidSet(FrontEndSet):
                 row.append(b_o.gen_c_pt())
             c_ptss.append(row)
 
+        if self.has_negative():
+            ptss_increase(c_ptss, self.hc)
+
         return c_ptss
 
-    # def generate(self):
-    #     ptsss=self.generate_b_pts()
+    def generate(self):
+        ptsss=self.generate_b_pts()
 
-    #     shifted_ptsss=[]
-    #     for ptss in ptsss:
-    #         row=[]
-    #         for pts in ptss:
-    #             pts=pts[1:]+pts[:1]
-    #         row.append(pts)
-    #     shifted_ptsss.append(row)
+        shifted_ptsss=[]
+        for ptss in ptsss:
+            row=[]
+            for pts in ptss:
+                loc_pts=pts[1:]+pts[:1]
+                row.append(loc_pts)
+        shifted_ptsss.append(row)
 
-    #     return shifted_ptsss
+        if self.has_negative():
+            ptsss_increase(shifted_ptsss, self.hc)
+
+        return shifted_ptsss
 
 class DiamondSet(FrontEndSet):
     """class that allows you to manage diamond objects. Either this class
