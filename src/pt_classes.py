@@ -324,10 +324,10 @@ class DiamondPts(SquarePts):
             self.hs=self.hs[self._rot:]+self.hs[:self._rot]
         
         if self._hmir:
-            self.hs=[self.hs[i] for i in [1, 0, 3, 2]]
+            self.hs=[self.hs[i] for i in [2, 1, 0, 3]]
 
         if self._vmir:
-            self.hs=[self.hs[i] for i in [3, 2, 1, 0]]
+            self.hs=[self.hs[i] for i in [0, 3, 2, 1]]
 
 class QuadGroupPts(PyramidPts):
     def __init__(self, x, y, hs, a, b, s):
@@ -379,7 +379,7 @@ class QuadGroupPts(PyramidPts):
         return b_ptsss
 
     def generate(self):
-        # print(self)
+        
         b_ptss=self.gen_base_pts()
         self.switch_heights()
         for i, b_pts in enumerate(b_ptss):

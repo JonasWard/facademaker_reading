@@ -118,6 +118,9 @@ def square_function(facade, o_p, data_dict):
 def diamond_function(facade, o_p, data_dict):
     """function to parse diamonds with"""
 
+    # parsing the henning logic -> swithcing index 0 & 3
+    data_dict["mapped_hs"]=[data_dict["mapped_hs"][i] for i in [3, 1, 2, 0]]
+
     f_b_set=DiamondSet(
         x=data_dict["x_spacing"],
         y=data_dict["z_spacing"],

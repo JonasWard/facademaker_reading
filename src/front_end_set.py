@@ -307,6 +307,9 @@ class DiamondSet(FrontEndSet):
     def _gen_diamond(self):
         return DiamondPts(self.x, self.y, self.hs, self.s)
 
+    def populate(self):
+        return self._gen_diamond()
+
     def generate_b_pts(self):
         """method that sets the base_objects, stores them and returns their base_ptsss"""
         self.b_oss=[[],[]]
@@ -331,8 +334,18 @@ class DiamondSet(FrontEndSet):
 
         return pt_sets
 
-    def populate(self):
-        return self._gen_diamond()
+    def generate(self):
+        ptsss=self.generate_b_pts()
+
+        shifted_ptsss=[]
+        for ptss in ptsss:
+            row=[]
+            for pts in ptss:
+                loc_pts=pts[1:]+pts[:1]
+                row.append(loc_pts)
+            shifted_ptsss.append(row)
+
+        return shifted_ptsss
 
 class QuadGroupSet(FrontEndSet):
     """class that allows you to manage pyramid objects. Either this class
