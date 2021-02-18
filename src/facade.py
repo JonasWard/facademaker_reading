@@ -1,5 +1,6 @@
 from base_object import BaseObject
 from Rhino.Geometry import Plane, Point3d, Vector3d
+import debugging_tools as dbt
 
 class FacademakerFacade:
     """Facademaker Container Class"""
@@ -148,6 +149,12 @@ class FacademakerFacade:
     def set_multi_pyramids(self, ptsss, c_ptss, other_parameters=None, obj_idx=1):
         """assign a n.m list of 4 point pyramid objects"""
         self.base_objs[obj_idx]=[]
+        print("=== set_multi_pyramids ===")
+        print("    ptsss")
+        print(dbt.list_counter(ptsss))
+        print("    c_ptss")
+        print(dbt.list_counter(c_ptss))
+
         for i, ptss in enumerate(ptsss):
             base_obj_row=[]
             for j, pts in enumerate(ptss):
