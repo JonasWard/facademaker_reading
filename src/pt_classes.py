@@ -101,13 +101,10 @@ class SquarePts(PtSet):
         return f_idx%2
 
     def generate(self):
-        print(self)
         b_pts=self.gen_base_pts()
         self.switch_heights()
         for i, b_pt in enumerate(b_pts):
             b_pt.Z=self.hs[i]
-
-        # b_pts=b_pts[self.fold_idx:]+b_pts[:self.fold_idx]
 
         return [b_pts]
 
@@ -172,7 +169,6 @@ class TrianglePts(PtSet):
         return b_set
 
     def generate(self):
-        print(self)
         b_ptss=self.gen_base_pts()
         self.switch_heights()
         for b_pts in b_ptss:

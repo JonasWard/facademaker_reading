@@ -2,15 +2,26 @@ from facade import FacademakerFacade
 from front_end_set import TriangleSet, SquareSet, PyramidSet, DiamondSet, QuadGroupSet
 from facade_link_info import FUNCTION_TYPES, FUNCTION_SHIFT_VALUES
 
-def facade_from_dict(data_dict, z_spacing=1000., y_delta=500., other_parameters=None):
-    """function that returns a FacademakerObject based on a front-end data dict"""
+def facade_from_dict(data_dict, x_spacing=None, z_spacing=1000., y_delta=500., other_parameters=None):
+    """function that returns a FacademakerObject based on a front-end data dict
+    input:
+    x_spacing: float (None)         - overwriting the x_spacing value, if None using the default one
+    z_spacing: float (1000.)        - setting the z_spacing of the cassette
+    y_delta:   float (500.)         - setting the maximum thickness of the cassette
+    other_parameters: dict (None)   - parameter dicts, uses the default values if none given
+    return:
+    FacademakerFacade object"""
 
     try:
-        data_dict["hc"]=data_dict["hc_rel"]*data_dict["y_delta"]
+        data_dict["hc"]=data_dict["hc_rel"]*y_delta
     except:
         print("no hc_rel defined")
 
-    data_dict["x_spacing"]=z_spacing*data_dict['frat']
+    # non relative assignment of the x_spacing, default is based on 'frat'
+    if x_spacing is None:
+        data_dict["x_spacing"]=z_spacing*data_dict['frat']
+    else:
+        data_dict["x_spacing"]=x_spacing
     data_dict["z_spacing"]=z_spacing
     data_dict["y_delta"]=y_delta
     data_dict["mapped_hs"]=[h*data_dict["y_delta"] for h in data_dict["hs"]]
@@ -90,7 +101,6 @@ def square_function(facade, o_p, data_dict):
         s=FUNCTION_SHIFT_VALUES[data_dict['ft']]
     )
 
-
     apply_all_transformations(f_b_set, data_dict)
 
     if data_dict["base_objects"]!=2:
@@ -166,7 +176,6 @@ def pyramid_function(facade, o_p, data_dict):
         c_ptss=c_ptss,
         other_parameters=o_p
     )
-    pass
 
 def quad_group_function(facade, o_p, data_dict):
     """function to parse quad_group with"""

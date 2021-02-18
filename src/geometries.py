@@ -116,7 +116,7 @@ class Base():
 
     def is_coplanar(self):
         """method that check whether the original points are coplanar"""
-        return rg.Point3d.ArePointsCoplanar(self.ori_pts, Base.COPLANAR_TOLERANCE)
+        return rg.Point3d.ArePointsCoplanar(self.pts, Base.COPLANAR_TOLERANCE)
 
     def construct_graph(self):
         """method that constructs the connection graph of all the faces"""
