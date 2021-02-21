@@ -262,8 +262,8 @@ class PyramidSet(FrontEndSet):
                 row.append(b_o.gen_c_pt())
             c_ptss.append(row)
 
-        if self.has_negative():
-            ptss_increase(c_ptss, self.hc)
+        # if self.has_negative():
+        #     ptss_increase(c_ptss, self.hc)
 
         return c_ptss
 
@@ -278,8 +278,8 @@ class PyramidSet(FrontEndSet):
                 row.append(loc_pts)
         shifted_ptsss.append(row)
 
-        if self.has_negative():
-            ptsss_increase(shifted_ptsss, self.hc)
+        # if self.has_negative():
+        #     ptsss_increase(shifted_ptsss, self.hc)
 
         return shifted_ptsss
 

@@ -2,6 +2,25 @@ import Rhino.Geometry as rg
 import math
 from debugging_tools import list_counter
 
+#TODO function to unpack nested lists of points into a list of single points
+#TODO function that takes a bunch of nested lists and sets all the heights
+# according to a minimum one
+
+def nested_pts_unpacker(pts_):
+    if isinstance(pts_, list):
+        output_list=[]
+        for pts in pts_:
+            output_list.extend(nested_pts_unpacker(pts))
+        return output_list
+    else:
+        return [pts_]
+
+def fix_height_nested_pts(pts_, treshold_height):
+    fix_pts_heights(
+        nested_pts_unpacker(pts_),
+        treshold_height
+    )
+
 def pts_min_height(pts):
     """function that finds the minimum height of a list of rg.Point3ds
     return:

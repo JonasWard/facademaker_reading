@@ -11,7 +11,6 @@ DEFAULT_NAMES={
     "inner_folds":"folds_inner",
 }
 
-
 def bake_objects(layer, geos, ghdoc):
     
     sc.doc=Rhino.RhinoDoc.ActiveDoc
