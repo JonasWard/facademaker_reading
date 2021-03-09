@@ -71,6 +71,7 @@ class PanelSideSegment():
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[0]))
 
+        pt_0=loc_seg_pts[0]
         loc_seg_pts.reverse()
         seg_pts.extend(loc_seg_pts)
         folds_b.extend(loc_folds_b)
@@ -128,13 +129,13 @@ class PanelSideSegment():
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=1.0 if direction else -1.0
 
-        if h < (self.dis - h_lid):
+        if self.dis < h_lid or self.dis > l:
             pt_s=[self.pt_0+dir_val*n*self.dis]
         else:
             pt_s=[
                 self.pt_0+dir_val*n*l,
-                self.pt_0+dir_val*n*l+t*(h_lid),
-                self.pt_0+dir_val*n*h_lid+t*(h_lid)
+                self.pt_0+dir_val*n*l+t*h_lid,
+                self.pt_0+dir_val*n*(self.dis-h_lid)+t*h_lid
             ]
 
         return pt_s, [rg.Line(self.pt_0, self.pt_1)]
