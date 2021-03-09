@@ -28,9 +28,6 @@ def invert_pattern(value):
     elif value=="easyfix_neg":
         return "easyfix_pos"
 
-def is_inverted(p_name):
-
-
 def filling_pattern(p_name, cnt = 4, fix = True):
     global p_b_set
 

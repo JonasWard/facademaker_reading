@@ -295,6 +295,10 @@ class Base():
         return self.s_p_p["flap_h_max"]
 
     @property
+    def l_len(self):
+        return self.s_p_p["flap_l_max"]
+
+    @property
     def flap_h(self):
         return self.s_p_p["flap_h"]
 
@@ -382,6 +386,7 @@ class Base():
                     pt_0_new,
                     pt_1_new,
                     self.h_max,
+                    self.l_len,
                     loc_pattern
                 )
             elif isinstance(loc_pattern, str):

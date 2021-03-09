@@ -61,6 +61,7 @@ DEFAULT_DICT={
 
 DEFAULT_CONSTRUCTION_PARAMETERS={
     "flap_h_max" : 30.,
+    "flap_l_max" : 100.,
     "correction_val" : .7,
     "flap_h" : 20.0,
     "flap_w" : 40.0,

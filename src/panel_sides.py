@@ -47,7 +47,7 @@ class PanelSideSegment():
 
         return [pt_0_1, pt_1_1], [rg.Line(pt_0, pt_1)]
 
-    def complex_side(self, pt_0, pt_1, h_max, pattern_type=["straight","straight"] ):
+    def complex_side(self, pt_0, pt_1, h_max, lid_l, pattern_type=["straight","straight"] ):
         new_pts, fold_a=self.simple_side(pt_0, pt_1)
 
         n_s_0=PanelSideSegment(new_pts[0], pt_0)
@@ -64,6 +64,10 @@ class PanelSideSegment():
             loc_seg_pts, _=n_s_0.portrusion(h_max, False)
         elif pattern_type[0]=="negative":
             loc_seg_pts, loc_folds_b=n_s_0.portrusion(h_max, True)
+        elif pattern_type[0]=="easyfix_pos":
+            loc_seg_pts, _=n_s_0.easy_fix_portrusion(h_max, lid_l, False)
+        elif pattern_type[0]=="easyfix_neg":
+            loc_seg_pts, loc_folds_b=n_s_0.easy_fix_portrusion(h_max, lid_l, True)
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[0]))
 
@@ -79,6 +83,10 @@ class PanelSideSegment():
             loc_seg_pts, loc_folds_b = n_s_1.portrusion(h_max, False)
         elif pattern_type[1]=="negative":
             loc_seg_pts, _ = n_s_1.portrusion(h_max, True)
+        elif pattern_type[0]=="easyfix_pos":
+            loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, False)
+        elif pattern_type[0]=="easyfix_neg":
+            loc_seg_pts, loc_folds_b=n_s_1.easy_fix_portrusion(h_max, lid_l, True)
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
@@ -90,7 +98,6 @@ class PanelSideSegment():
     def simple_flap(self, h, w, invert=False):
         iv=-1.0 if invert else 1.0
 
-        # mv=rg.Point3d(iv*self.t*w + self.n*h)
         new_pts=[
             self.pt_0+rg.Point3d(iv*self.t*w + self.n*h),
             self.pt_1+rg.Point3d(-iv*self.t*w + self.n*h)
@@ -101,7 +108,6 @@ class PanelSideSegment():
         return new_pts, fold_lines
 
     def portrusion(self, h_max, direction):
-        # print("creating a portrusion")
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=1.0 if direction else -1.0
 
@@ -115,3 +121,20 @@ class PanelSideSegment():
             ]
 
         return pt_s, [rg.Line(self.pt_0, self.pt_1)]
+
+    def easy_fix_portrusion(self, h_lid, l, direction):
+        t, n = tangent_normal(self.pt_0, self.pt_1)
+        dir_val=1.0 if direction else -1.0
+
+        h=self.dis
+        if h < h_lid:
+            pt_s=[self.pt_0+dir_val*n*h]
+        else:
+            pt_s=[
+                self.pt_0+dir_val*n*l,
+                self.pt_0+dir_val*n*l+t*(h-h_lid),
+                self.pt_0+dir_val*n*h_lid+t*(h-h_lid)
+            ]
+
+        return pt_s, [rg.Line(self.pt_0, self.pt_1)]
+
