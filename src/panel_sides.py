@@ -84,9 +84,9 @@ class PanelSideSegment():
         elif pattern_type[1]=="negative":
             loc_seg_pts, _ = n_s_1.portrusion(h_max, True)
         elif pattern_type[0]=="easyfix_pos":
-            loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, False)
+            loc_seg_pts, loc_folds_b=n_s_1.easy_fix_portrusion(h_max, lid_l, False)
         elif pattern_type[0]=="easyfix_neg":
-            loc_seg_pts, loc_folds_b=n_s_1.easy_fix_portrusion(h_max, lid_l, True)
+            loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, True)
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
@@ -108,6 +108,7 @@ class PanelSideSegment():
         return new_pts, fold_lines
 
     def portrusion(self, h_max, direction):
+        print("simple portrusion")
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=1.0 if direction else -1.0
 
@@ -123,6 +124,7 @@ class PanelSideSegment():
         return pt_s, [rg.Line(self.pt_0, self.pt_1)]
 
     def easy_fix_portrusion(self, h_lid, l, direction):
+        print("easy_fix portrusion")
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=1.0 if direction else -1.0
 
