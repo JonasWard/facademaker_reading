@@ -6,7 +6,9 @@ p_b_set={
     "counter_clockwise" : [["negative", "negative"]],
     "alternating_A" : [["negative", "positive"], ["positive", "negative"]],
     "alternating_B" : [["positive", "negative"], ["negative", "positive"]],
-    "flaps" : ["flap"]
+    "flaps" : ["flap"],
+    "easyFix_A" : [["easyfix_neg", "easyfix_pos"], ["easyfix_pos", "easyfix_neg"]],
+    "easyFix_B" : [["easyfix_pos", "easyfix_neg"], ["easyfix_neg", "easyfix_pos"]]
 }
 
 def invert_pattern(value):
@@ -14,6 +16,10 @@ def invert_pattern(value):
         return "negative"
     elif value=="negative":
         return "positive"
+    elif value=="easyfix_pos":
+        return "easyfix_neg"
+    elif value=="easyfix_neg":
+        return "easyfix_pos"
 
 def filling_pattern(p_name, cnt = 4, fix = True):
     global p_b_set
