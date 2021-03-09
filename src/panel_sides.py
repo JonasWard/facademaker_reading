@@ -91,6 +91,13 @@ class PanelSideSegment():
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
+        pt_1=loc_seg_pts[0]
+
+        if pattern_type[0]=="easyfix_pos" or pattern_type[0]=="easyfix_neg":
+            loc_seg_pts, loc_folds_b = PanelSideSegment(pt_0, pt_1).simple_flap(h=2., w=5.)
+            seg_pts.extend(loc_seg_pts[1:-1])
+            folds_b.extend(loc_folds_b)
+
         seg_pts.extend(loc_seg_pts)
         folds_b.extend(loc_folds_b)
 
