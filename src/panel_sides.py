@@ -128,14 +128,13 @@ class PanelSideSegment():
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=1.0 if direction else -1.0
 
-        h=self.dis
-        if h < h_lid:
-            pt_s=[self.pt_0+dir_val*n*h]
+        if h < (self.dis - h_lid):
+            pt_s=[self.pt_0+dir_val*n*self.dis]
         else:
             pt_s=[
                 self.pt_0+dir_val*n*l,
-                self.pt_0+dir_val*n*l+t*(h-h_lid),
-                self.pt_0+dir_val*n*h_lid+t*(h-h_lid)
+                self.pt_0+dir_val*n*l+t*(h_lid),
+                self.pt_0+dir_val*n*h_lid+t*(h_lid)
             ]
 
         return pt_s, [rg.Line(self.pt_0, self.pt_1)]

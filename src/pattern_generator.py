@@ -7,8 +7,8 @@ p_b_set={
     "alternating_A" : [["negative", "positive"], ["positive", "negative"]],
     "alternating_B" : [["positive", "negative"], ["negative", "positive"]],
     "flaps" : ["flap"],
-    "easyFix_A" : [["easyfix_neg", "easyfix_pos"], ["easyfix_pos", "easyfix_neg"]],
-    "easyFix_B" : [["easyfix_pos", "easyfix_neg"], ["easyfix_neg", "easyfix_pos"]]
+    "easyFix_A" : [["easyfix_pos", "easyfix_pos"]],
+    "easyFix_B" : [["easyfix_neg", "easyfix_neg"]]
 }
 
 inverted_patterns=[
