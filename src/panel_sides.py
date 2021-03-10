@@ -68,10 +68,11 @@ class PanelSideSegment():
             loc_seg_pts, _=n_s_0.easy_fix_portrusion(h_max, lid_l, False)
         elif pattern_type[0]=="easyfix_neg":
             loc_seg_pts, loc_folds_b=n_s_0.easy_fix_portrusion(h_max, lid_l, True)
+            loc_seg_pts=[n_s_0.pt_0]+loc_seg_pts
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[0]))
 
-        pt_0=loc_seg_pts[0]
+        pt_f_0=loc_seg_pts[0]
         loc_seg_pts.reverse()
         seg_pts.extend(loc_seg_pts)
         folds_b.extend(loc_folds_b)
@@ -86,17 +87,18 @@ class PanelSideSegment():
             loc_seg_pts, _ = n_s_1.portrusion(h_max, True)
         elif pattern_type[0]=="easyfix_pos":
             loc_seg_pts, loc_folds_b=n_s_1.easy_fix_portrusion(h_max, lid_l, False)
+            loc_seg_pts=[n_s_0.pt_0]+loc_seg_pts
         elif pattern_type[0]=="easyfix_neg":
             loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, True)
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
-        pt_1=loc_seg_pts[0]
+        pt_f_1=loc_seg_pts[0]
 
         if pattern_type[0]=="easyfix_pos" or pattern_type[0]=="easyfix_neg":
-            loc_seg_pts, loc_folds_b = PanelSideSegment(pt_0, pt_1).simple_flap(h=2., w=5.)
-            seg_pts.extend(loc_seg_pts[1:-1])
-            folds_b.extend(loc_folds_b)
+            loc_f_seg_pts, loc_f_folds_b = PanelSideSegment(pt_f_0, pt_f_1).simple_flap(h=2., w=5.)
+            seg_pts.extend(loc_f_seg_pts)
+            folds_b.extend(loc_f_folds_b)
 
         seg_pts.extend(loc_seg_pts)
         folds_b.extend(loc_folds_b)
