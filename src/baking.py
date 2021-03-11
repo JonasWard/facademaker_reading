@@ -9,7 +9,8 @@ DEFAULT_NAMES={
     "main_folds":"folds_main",
     "sec_folds":"folds_secondary",
     "inner_folds":"folds_inner",
-    "holes":"holes"
+    "holes":"holes",
+    "plates":"plates"
 }
 
 def bake_objects(layer, geos, ghdoc):
@@ -19,23 +20,27 @@ def bake_objects(layer, geos, ghdoc):
     if not rs.IsLayer(layer):
         rs.AddLayer(layer)
     
-    for geo_id in geos:
-        try:
-            sc.doc=ghdoc
-            
-            doc_object=rs.coercerhinoobject(geo_id)
-            
-            geometry=doc_object.Geometry
-            attributes=doc_object.Attributes
-            
-            sc.doc=Rhino.RhinoDoc.ActiveDoc
-            
-            rhino_ref=sc.doc.Objects.Add(geometry)
+    try:
+        for geo_id in geos:
+            try:
+                sc.doc=ghdoc
                 
-            rs.ObjectLayer(rhino_ref, layer)
-        except:
-            print("failed to bake an object on layer {}".format(layer))
-        
+                doc_object=rs.coercerhinoobject(geo_id)
+                
+                geometry=doc_object.Geometry
+                attributes=doc_object.Attributes
+                
+                sc.doc=Rhino.RhinoDoc.ActiveDoc
+                
+                rhino_ref=sc.doc.Objects.Add(geometry)
+                    
+                rs.ObjectLayer(rhino_ref, layer)
+            except:
+                print("failed to bake an object on layer {}".format(layer))
+
+    except:
+        print("failed to bake all objects on layer: {}".format(layer))
+            
     sc.doc = ghdoc
 
 def set_color(layer, color, ghdoc):
@@ -46,7 +51,7 @@ def set_color(layer, color, ghdoc):
 
     rs.LayerColor(layer, color)
 
-def bake(outline_crv, main_folds, secundary_folds, inner_folds, holes, ghdoc, name_dict=None):
+def bake(outline_crv, main_folds, secundary_folds, inner_folds, holes, plates, ghdoc, name_dict=None):
     if name_dict is None:
         global DEFAULT_NAMES
         name_dict=DEFAULT_NAMES
@@ -56,5 +61,6 @@ def bake(outline_crv, main_folds, secundary_folds, inner_folds, holes, ghdoc, na
     bake_objects(name_dict["sec_folds"], secundary_folds, ghdoc)
     bake_objects(name_dict["inner_folds"], inner_folds, ghdoc)
     bake_objects(name_dict["holes"], holes, ghdoc)
+    bake_objects(name_dict["plates"], plates, ghdoc)
     
     time.sleep(.4)
