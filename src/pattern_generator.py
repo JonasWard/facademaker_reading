@@ -14,8 +14,6 @@ p_b_set={
 inverted_patterns=[
     "alternating_A",
     "alternating_B",
-    "easyFix_A",
-    "easyFix_B"
 ]
 
 easy_fix_patterns=[
@@ -63,9 +61,9 @@ def filling_pattern(p_name, cnt = 4, fix = True):
     if (p_name in inverted_patterns) and fix:
         full_pattern_list[0][0]=full_pattern_list[-1][-1]
 
-    if p_name in easy_fix_patterns:
-        print("easyFix step D:")
-        print(full_pattern_list)
+    # if p_name in easy_fix_patterns:
+    #     print("easyFix step D:")
+    #     print(full_pattern_list)
 
     return full_pattern_list
 
@@ -76,7 +74,7 @@ def pyramid_pattern_parser(name="flat", cnt=4):
     global p_b_set
 
     pentagon_set=filling_pattern(name, cnt-1, fix=False)
-    if (p_name in inverted_patterns):
+    if (name in inverted_patterns):
         triangle_set=[[invert_pattern(v) for v in ([pentagon_set[0][0], pentagon_set[-1][-1]])]]
     else:
         triangle_set=[[pentagon_set[0][0], pentagon_set[-1][-1]]]
