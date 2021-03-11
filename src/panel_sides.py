@@ -70,10 +70,10 @@ class PanelSideSegment():
             loc_seg_pts, loc_folds_b=n_s_0.portrusion(h_max, True)
         elif pattern_type[0]=="easyfix_pos":
             print("easyfix_pos")
-            loc_seg_pts, _=n_s_0.easy_fix_portrusion(h_max, lid_l, False)
+            loc_seg_pts, _=n_s_0.easy_fix_portrusion(h_max, lid_l, data_dict["angle"], False)
         elif pattern_type[0]=="easyfix_neg":
             print("easyfix_neg")
-            loc_seg_pts, loc_folds_b=n_s_0.easy_fix_portrusion(h_max, lid_l, True)
+            loc_seg_pts, loc_folds_b=n_s_0.easy_fix_portrusion(h_max, lid_l, data_dict["angle"], True)
             extra_pt=True
         elif pattern_type[0]=="easyfix_pos_simple":
             print("easyfix_pos_simple")
@@ -107,11 +107,11 @@ class PanelSideSegment():
             loc_seg_pts, _ = n_s_1.portrusion(h_max, True)
         elif pattern_type[0]=="easyfix_pos":
             print("easyfix_pos")
-            loc_seg_pts, loc_folds_b=n_s_1.easy_fix_portrusion(h_max, lid_l, False)
+            loc_seg_pts, loc_folds_b=n_s_1.easy_fix_portrusion(h_max, lid_l, data_dict["angle"], False)
             extra_pt=True
         elif pattern_type[0]=="easyfix_neg":
             print("easyfix_neg")
-            loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, True)
+            loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, data_dict["angle"], True)
         elif pattern_type[0]=="easyfix_pos_simple":
             print("easyfix_pos_simple")
             loc_seg_pts, loc_folds_b=n_s_1.triangle_end(data_dict["angle"], False)
