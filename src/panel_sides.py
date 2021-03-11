@@ -134,14 +134,15 @@ class PanelSideSegment():
                 (pattern_type[0]=="easyfix_pos_simple" or pattern_type[0]=="easyfix_neg_simple")
             ):
 
-            loc_f_seg_pts, loc_f_folds_b = PanelSideSegment(pt_f_0, pt_f_1).simple_flap(data_dict)
+            loc_f_seg_pts, loc_f_folds_b, loc_holes = PanelSideSegment(pt_f_0, pt_f_1).simple_flap(data_dict)
             seg_pts.extend(loc_f_seg_pts)
             folds_b.extend(loc_f_folds_b)
+            holes.extend(loc_holes)
 
         seg_pts.extend(loc_seg_pts)
         folds_b.extend(loc_folds_b)
 
-        return seg_pts, fold_a, folds_b
+        return seg_pts, fold_a, folds_b, holes
 
     def triangle_end(self, data_dict, direction=False):
         print("triangle end portrusion")
