@@ -11,11 +11,12 @@ class Unfolded():
         "w":1000.
     }
     
-    def __init__(self, boundary, top_face_folds=[], body_flap_folds=[], intra_flap_folds=[], sheet_parameters=None):
+    def __init__(self, boundary, top_face_folds=[], body_flap_folds=[], intra_flap_folds=[], holes=[], sheet_parameters=None):
         self.b_pts=boundary
         self.f_ff=top_face_folds
         self.f_bf=body_flap_folds
         self.f_if=intra_flap_folds
+        self.holes=holes
 
         if sheet_parameters is None:
             self.s_para = dict(Unfolded.DEFAULT_SHEET_PARAMETERS)
@@ -95,6 +96,7 @@ class Unfolded():
         [obj.Transform(t_matrix) for obj in self.f_ff]
         [obj.Transform(t_matrix) for obj in self.f_bf]
         [obj.Transform(t_matrix) for obj in self.f_if]
+        [obj.Transform(t_matrix) for obj in self.holes]
 
     def outline_crv(self):
         """method that returns the outline of the whole object"""
@@ -115,6 +117,9 @@ class Unfolded():
         """method that returns the folds on the flaps overlapping with other flaps"""
         return dc(self.f_if)
 
+    def all_holes(self):
+        return dc(self.holes)
+
     def panel(self):
         """method that returns a representation of the panel"""
         rec=rg.Rectangle3d(rg.Plane.WorldXY, self.width, self.height).ToNurbsCurve()
@@ -132,12 +137,14 @@ class Unfolded():
             top_face_folds=self.top_face_folds()
             body_flap_folds=self.body_flap_folds()
             intra_flap_folds=self.intra_flap_folds()
-            objs=[panel]+[outline_crv]+top_face_folds+body_flap_folds+intra_flap_folds    
+            holes=self.all_holes()
+            objs=[panel]+[outline_crv]+top_face_folds+body_flap_folds+intra_flap_folds+holes
         else:
             outline_crv=None
             top_face_folds=[]
             body_flap_folds=[]
             intra_flap_folds=self.empty_object()
+            holes=[]
             objs=[panel]+intra_flap_folds
 
         [obj.Transform(tr_m) for obj in objs]
@@ -148,6 +155,7 @@ class Unfolded():
             "top_face_folds"   : top_face_folds,
             "body_flap_folds"  : body_flap_folds,
             "intra_flap_folds" : intra_flap_folds
+            "holes"            : holes
         }
 
     def empty_object(self):

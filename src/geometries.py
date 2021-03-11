@@ -393,7 +393,7 @@ class Base():
                 )
             elif isinstance(loc_pattern, str):
                 if loc_pattern=="flap":
-                    pts, loc_folds_a = PanelSideSegment(pt_0_new, pt_1_new).simple_flap(self.s_p_p, False)
+                    pts, loc_folds_a, loc_holes = PanelSideSegment(pt_0_new, pt_1_new).simple_flap(self.s_p_p, False)
                     loc_folds_b = []
                 else:
                     print("undifined simple type: {}".format(loc_pattern))
@@ -417,6 +417,7 @@ class Base():
             top_face_folds=top_face_folds,
             body_flap_folds=folds_a, 
             intra_flap_folds=folds_b
+            holes=holes
         )
 
         self._has_sides=True
