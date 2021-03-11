@@ -1,5 +1,6 @@
 import Rhino.Geometry as rg
 from geometrical_helpers import *
+from math import tan
 
 class PanelSideSegment():
     """ PanelSideSegment class, defined by two points ( a line ) two definitions:
@@ -56,6 +57,7 @@ class PanelSideSegment():
         seg_pts=[]
         folds_b=[]
 
+        extra_pt=False
         # n_s_0
         loc_folds_b=[]
         if pattern_type[0]=="straight":
@@ -70,15 +72,22 @@ class PanelSideSegment():
         elif pattern_type[0]=="easyfix_neg":
             print("easyfix_neg")
             loc_seg_pts, loc_folds_b=n_s_0.easy_fix_portrusion(h_max, lid_l, True)
-            loc_seg_pts=[n_s_0.pt_0]+loc_seg_pts
+            extra_pt=True
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[0]))
 
+        if extra_pt:
+            print("adding an extra_pt")
+            loc_seg_pts=[n_s_0.pt_0]+loc_seg_pts
+
+        # point to be added in case easy fix
         pt_f_0=loc_seg_pts[0]
+
         loc_seg_pts.reverse()
         seg_pts.extend(loc_seg_pts)
         folds_b.extend(loc_folds_b)
 
+        extra_pt=False
         # n_s_1
         loc_folds_b=[]
         if pattern_type[1]=="straight":
@@ -90,13 +99,17 @@ class PanelSideSegment():
         elif pattern_type[0]=="easyfix_pos":
             print("easyfix_pos")
             loc_seg_pts, loc_folds_b=n_s_1.easy_fix_portrusion(h_max, lid_l, False)
-            loc_seg_pts=[n_s_1.pt_0]+loc_seg_pts
+            extra_pt=True
         elif pattern_type[0]=="easyfix_neg":
             print("easyfix_neg")
             loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, True)
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
+        if extra_pt:
+            loc_seg_pts=[n_s_1.pt_0]+loc_seg_pts
+
+        # point to be added in case easy fix
         pt_f_1=loc_seg_pts[0]
 
         if pattern_type[0]=="easyfix_pos" or pattern_type[0]=="easyfix_neg":
@@ -109,7 +122,25 @@ class PanelSideSegment():
 
         return seg_pts, fold_a, folds_b
 
+    def triangle_end(self, angle, direction=False):
+        print("triangle end portrusion")
+        cot=1./tan(angle)
+        t, n = tangent_normal(self.pt_0, self.pt_1)
+        dir_val=cot if direction else -cot
+
+        if self.dis < h_lid or self.dis > l:
+            pt_s=[self.pt_0+dir_val*n*self.dis]
+        else:
+            pt_s=[
+                self.pt_0+dir_val*n*l,
+                self.pt_0+dir_val*n*l+t*h_lid,
+                self.pt_0+dir_val*n*(self.dis-h_lid)+t*h_lid
+            ]
+
+        return pt_s, [rg.Line(self.pt_0, self.pt_1)]
+
     def simple_flap(self, h, w, invert=False):
+        print("simple flap")
         iv=-1.0 if invert else 1.0
 
         new_pts=[
@@ -122,7 +153,7 @@ class PanelSideSegment():
         return new_pts, fold_lines
 
     def portrusion(self, h_max, direction):
-        print("simple portrusion")
+        print("simple end portrusion")
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=1.0 if direction else -1.0
 
@@ -138,7 +169,7 @@ class PanelSideSegment():
         return pt_s, [rg.Line(self.pt_0, self.pt_1)]
 
     def easy_fix_portrusion(self, h_lid, l, direction):
-        print("easy_fix portrusion")
+        print("easy_fix end portrusion")
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=1.0 if direction else -1.0
 
