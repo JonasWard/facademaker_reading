@@ -73,12 +73,12 @@ class PanelSideSegment():
         elif pattern_type[0]=="easyfix_pos":
             loc_seg_pts, _, loc_holes=n_s_0.easy_fix_portrusion(data_dict, False, True)
         elif pattern_type[0]=="easyfix_neg":
-            loc_seg_pts, loc_folds_b, loc_holes=n_s_0.easy_fix_portrusion(data_dict, True, True)
+            loc_seg_pts, loc_folds_b, loc_holes=n_s_0.easy_fix_portrusion(data_dict, True, False)
             extra_pt=True
         elif pattern_type[0]=="easyfix_pos_simple":
             loc_seg_pts, _, loc_holes=n_s_0.triangle_end(data_dict, False, True)
         elif pattern_type[0]=="easyfix_neg_simple":
-            loc_seg_pts, loc_folds_b, loc_holes=n_s_0.triangle_end(data_dict, True, True)
+            loc_seg_pts, loc_folds_b, loc_holes=n_s_0.triangle_end(data_dict, True, False)
             extra_pt=True
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[0]))
@@ -112,12 +112,12 @@ class PanelSideSegment():
             loc_seg_pts, loc_folds_b, loc_holes=n_s_1.easy_fix_portrusion(data_dict, False, False)
             extra_pt=True
         elif pattern_type[1]=="easyfix_neg":
-            loc_seg_pts, _, loc_holes=n_s_1.easy_fix_portrusion(data_dict, True, False)
+            loc_seg_pts, _, loc_holes=n_s_1.easy_fix_portrusion(data_dict, True, True)
         elif pattern_type[1]=="easyfix_pos_simple":
             loc_seg_pts, loc_folds_b, loc_holes=n_s_1.triangle_end(data_dict, False, False)
             extra_pt=True
         elif pattern_type[1]=="easyfix_neg_simple":
-            loc_seg_pts, _, loc_holes=n_s_1.triangle_end(data_dict, True, False)
+            loc_seg_pts, _, loc_holes=n_s_1.triangle_end(data_dict, True, True)
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
@@ -215,14 +215,22 @@ class PanelSideSegment():
             return self.triangle_end(data_dict, direction, hole_direction)
         else:
             t, n = tangent_normal(self.pt_0, self.pt_1)
-            dir_val=cot if direction else -cot
+            dir_val=1. if direction else -1.
 
-            holes=[]
+            if hole_direction:
+                c_pt=rg.Point3d(self.pt_0+dir_val*n*(l-data_dict["hole_l_a"])+t*h_lid*.5)
+            else:
+                c_pt=rg.Point3d(self.pt_0+dir_val*n*(l+data_dict["hole_l_a"])+t*h_lid*.5)
+
+            holes=[rg.Circle(
+                c_pt,
+                data_dict["hole_r"]
+            )]
 
             pt_s=[
                 self.pt_0+dir_val*n*l,
                 self.pt_0+dir_val*n*l+t*h_lid,
-                self.pt_0+dir_val*n*(self.dis-h_lid)+t*h_lid
+                self.pt_0+dir_val*cot*n*(self.dis-h_lid)+t*h_lid
             ]
 
             return pt_s, [rg.Line(self.pt_0, self.pt_1)], holes
