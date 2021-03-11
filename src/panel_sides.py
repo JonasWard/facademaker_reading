@@ -58,10 +58,14 @@ class PanelSideSegment():
 
         seg_pts=[]
         folds_b=[]
+        holes=[]
 
         extra_pt=False
         # n_s_0
+        loc_seg_pts=[]
         loc_folds_b=[]
+        loc_holes=[]
+
         if pattern_type[0]=="straight":
             loc_seg_pts=[new_pts[0] ]
         elif pattern_type[0]=="positive":
@@ -69,18 +73,14 @@ class PanelSideSegment():
         elif pattern_type[0]=="negative":
             loc_seg_pts, loc_folds_b=n_s_0.portrusion(h_max, True)
         elif pattern_type[0]=="easyfix_pos":
-            print("easyfix_pos")
-            loc_seg_pts, _=n_s_0.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], False)
+            loc_seg_pts, _, loc_holes=n_s_0.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], False)
         elif pattern_type[0]=="easyfix_neg":
-            print("easyfix_neg")
-            loc_seg_pts, loc_folds_b=n_s_0.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], True)
+            loc_seg_pts, loc_folds_b, loc_holes=n_s_0.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], True)
             extra_pt=True
         elif pattern_type[0]=="easyfix_pos_simple":
-            print("easyfix_pos_simple")
-            loc_seg_pts, _=n_s_0.triangle_end(data_dict["side_angle"], False)
+            loc_seg_pts, _, loc_holes=n_s_0.triangle_end(data_dict["side_angle"], False)
         elif pattern_type[0]=="easyfix_neg_simple":
-            print("easyfix_neg_simple")
-            loc_seg_pts, loc_folds_b=n_s_0.triangle_end(data_dict["side_angle"], True)
+            loc_seg_pts, loc_folds_b, loc_holes=n_s_0.triangle_end(data_dict["side_angle"], True)
             extra_pt=True
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[0]))
@@ -88,6 +88,8 @@ class PanelSideSegment():
         if extra_pt:
             print("adding an extra_pt")
             loc_seg_pts=[n_s_0.pt_0]+loc_seg_pts
+
+        holes.extend(loc_holes)
 
         # point to be added in case easy fix
         pt_f_0=loc_seg_pts[0]
@@ -98,7 +100,10 @@ class PanelSideSegment():
 
         extra_pt=False
         # n_s_1
+        loc_seg_pts=[]
         loc_folds_b=[]
+        loc_holes=[]
+
         if pattern_type[1]=="straight":
             loc_seg_pts=[new_pts[1] ]
         elif pattern_type[1]=="positive":
@@ -106,24 +111,22 @@ class PanelSideSegment():
         elif pattern_type[1]=="negative":
             loc_seg_pts, _ = n_s_1.portrusion(h_max, True)
         elif pattern_type[1]=="easyfix_pos":
-            print("easyfix_pos")
-            loc_seg_pts, loc_folds_b=n_s_1.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], False)
+            loc_seg_pts, loc_folds_b, loc_holes=n_s_1.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], False)
             extra_pt=True
         elif pattern_type[1]=="easyfix_neg":
-            print("easyfix_neg")
-            loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], True)
+            loc_seg_pts, _, loc_holes=n_s_1.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], True)
         elif pattern_type[1]=="easyfix_pos_simple":
-            print("easyfix_pos_simple")
-            loc_seg_pts, loc_folds_b=n_s_1.triangle_end(data_dict["side_angle"], False)
+            loc_seg_pts, loc_folds_b, loc_holes=n_s_1.triangle_end(data_dict["side_angle"], False)
             extra_pt=True
         elif pattern_type[1]=="easyfix_neg_simple":
-            print("easyfix_neg_simple")
-            loc_seg_pts, _=n_s_1.triangle_end(data_dict["side_angle"], True)
+            loc_seg_pts, _, loc_holes=n_s_1.triangle_end(data_dict["side_angle"], True)
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
         if extra_pt:
             loc_seg_pts=[n_s_1.pt_0]+loc_seg_pts
+
+        holes.extend(loc_holes)
 
         # point to be added in case easy fix
         pt_f_1=loc_seg_pts[0]
@@ -132,9 +135,6 @@ class PanelSideSegment():
                 (pattern_type[0]=="easyfix_pos" or pattern_type[0]=="easyfix_neg") or
                 (pattern_type[0]=="easyfix_pos_simple" or pattern_type[0]=="easyfix_neg_simple")
             ):
-
-            print("EasyFix pattern:")
-            print(pattern_type)
 
             loc_f_seg_pts, loc_f_folds_b = PanelSideSegment(pt_f_0, pt_f_1).simple_flap(data_dict["flap_h"], data_dict["flap_w"])
             seg_pts.extend(loc_f_seg_pts)
@@ -151,9 +151,11 @@ class PanelSideSegment():
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=cot if direction else -cot
 
+        holes=[]
+
         pt_s=[self.pt_0+dir_val*n*self.dis]
 
-        return pt_s, [rg.Line(self.pt_0, self.pt_1)]
+        return pt_s, [rg.Line(self.pt_0, self.pt_1)], holes
 
     def simple_flap(self, h, w, invert=False):
         print("simple flap")
@@ -190,8 +192,11 @@ class PanelSideSegment():
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=cot if direction else -cot
 
+        holes=[]
+
         if self.dis*cot < h_lid or self.dis*cot > l:
             print("tried to add an easy fix end, but reached treshold states")
+            print("cot: {}, dis: {}, dis*cot: {}, h_lid: {}, l: {}, l*cot:{}".format(cot, self.dis, self.dis*cot, h_lid, l, l*cot))
             pt_s=[self.pt_0+dir_val*n*self.dis]
         else:
             pt_s=[
@@ -199,9 +204,6 @@ class PanelSideSegment():
                 self.pt_0+dir_val*n*l+t*h_lid,
                 self.pt_0+dir_val*n*(self.dis-h_lid)+t*h_lid
             ]
-            print("tried and succeeded to add an easy fix end")
-        
-        print("cot: {}, dis: {}, dis*cot: {}, h_lid: {}, l: {}, l*cot:{}".format(cot, self.dis, self.dis*cot, h_lid, l, l*cot))
 
-        return pt_s, [rg.Line(self.pt_0, self.pt_1)]
+        return pt_s, [rg.Line(self.pt_0, self.pt_1)], holes
 
