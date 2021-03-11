@@ -152,7 +152,13 @@ class PanelSideSegment():
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=cot if direction else -cot
 
-        holes=[]
+        l_sp=self.dis-data_dict["hole_l_a"]/cot
+        h_sp=data_dict["hole_l_a"]*.5
+
+        holes=[rg.Circle(
+            rg.Point3d(self.pt_0+dir_val*l_sp*n-t*h_sp),
+            data_dict["hole_r"]
+        )]
 
         pt_s=[self.pt_0+dir_val*n*self.dis]
 
