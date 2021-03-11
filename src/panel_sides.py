@@ -48,7 +48,7 @@ class PanelSideSegment():
 
         return [pt_0_1, pt_1_1], [rg.Line(pt_0, pt_1)]
 
-    def complex_side(self, pt_0, pt_1, data_dict, pattern_type=["straight","straight"] ):
+    def complex_side(self, pt_0, pt_1, data_dict, pattern_type=["straight","straight"]):
         new_pts, fold_a=self.simple_side(pt_0, pt_1)
 
         n_s_0=PanelSideSegment(new_pts[0], pt_0)
@@ -71,14 +71,14 @@ class PanelSideSegment():
         elif pattern_type[0]=="negative":
             loc_seg_pts, loc_folds_b, _=n_s_0.portrusion(data_dict, True)
         elif pattern_type[0]=="easyfix_pos":
-            loc_seg_pts, _, loc_holes=n_s_0.easy_fix_portrusion(data_dict, False)
+            loc_seg_pts, _, loc_holes=n_s_0.easy_fix_portrusion(data_dict, False, True)
         elif pattern_type[0]=="easyfix_neg":
-            loc_seg_pts, loc_folds_b, loc_holes=n_s_0.easy_fix_portrusion(data_dict, True)
+            loc_seg_pts, loc_folds_b, loc_holes=n_s_0.easy_fix_portrusion(data_dict, True, True)
             extra_pt=True
         elif pattern_type[0]=="easyfix_pos_simple":
-            loc_seg_pts, _, loc_holes=n_s_0.triangle_end(data_dict, False)
+            loc_seg_pts, _, loc_holes=n_s_0.triangle_end(data_dict, False, True)
         elif pattern_type[0]=="easyfix_neg_simple":
-            loc_seg_pts, loc_folds_b, loc_holes=n_s_0.triangle_end(data_dict, True)
+            loc_seg_pts, loc_folds_b, loc_holes=n_s_0.triangle_end(data_dict, True, True)
             extra_pt=True
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[0]))
@@ -109,15 +109,15 @@ class PanelSideSegment():
         elif pattern_type[1]=="negative":
             loc_seg_pts, _, _ = n_s_1.portrusion(data_dict, True)
         elif pattern_type[1]=="easyfix_pos":
-            loc_seg_pts, loc_folds_b, loc_holes=n_s_1.easy_fix_portrusion(data_dict, False)
+            loc_seg_pts, loc_folds_b, loc_holes=n_s_1.easy_fix_portrusion(data_dict, False, False)
             extra_pt=True
         elif pattern_type[1]=="easyfix_neg":
-            loc_seg_pts, _, loc_holes=n_s_1.easy_fix_portrusion(data_dict, True)
+            loc_seg_pts, _, loc_holes=n_s_1.easy_fix_portrusion(data_dict, True, False)
         elif pattern_type[1]=="easyfix_pos_simple":
-            loc_seg_pts, loc_folds_b, loc_holes=n_s_1.triangle_end(data_dict, False)
+            loc_seg_pts, loc_folds_b, loc_holes=n_s_1.triangle_end(data_dict, False, False)
             extra_pt=True
         elif pattern_type[1]=="easyfix_neg_simple":
-            loc_seg_pts, _, loc_holes=n_s_1.triangle_end(data_dict, True)
+            loc_seg_pts, _, loc_holes=n_s_1.triangle_end(data_dict, True, False)
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
@@ -144,7 +144,7 @@ class PanelSideSegment():
 
         return seg_pts, fold_a, folds_b, holes
 
-    def triangle_end(self, data_dict, direction=False):
+    def triangle_end(self, data_dict, direction=False, hole_direction=False):
         print("triangle end portrusion")
         angle = data_dict["side_angle"]
 
@@ -152,11 +152,11 @@ class PanelSideSegment():
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=cot if direction else -cot
 
-        l_sp=self.dis-data_dict["hole_l_a"]/cot
-        h_sp=data_dict["hole_l_a"]*.5
+        l_sp=self.dis if hole_direction else self.dis-data_dict["hole_l_a"]/cot
+        h_sp=data_dict["hole_l_a"]*.5/cot
 
         holes=[rg.Circle(
-            rg.Point3d(self.pt_0+dir_val*l_sp*n-t*h_sp),
+            rg.Point3d(self.pt_0+dir_val*l_sp*n+t*h_sp),
             data_dict["hole_r"]
         )]
 
@@ -201,26 +201,31 @@ class PanelSideSegment():
 
         return pt_s, [rg.Line(self.pt_0, self.pt_1)], holes
 
-    def easy_fix_portrusion(self, data_dict, direction):
+    def easy_fix_portrusion(self, data_dict, direction, hole_direction):
         print("easy_fix end portrusion")
 
         h_lid, l, angle = data_dict["flap_h_max"], data_dict["flap_l_max"], data_dict["side_angle"]
         cot=1./tan(angle)
-        t, n = tangent_normal(self.pt_0, self.pt_1)
-        dir_val=cot if direction else -cot
-
-        holes=[]
 
         if self.dis*cot < h_lid or self.dis*cot > l:
             print("tried to add an easy fix end, but reached treshold states")
             print("cot: {}, dis: {}, dis*cot: {}, h_lid: {}, l: {}, l*cot:{}".format(cot, self.dis, self.dis*cot, h_lid, l, l*cot))
-            pt_s=[self.pt_0+dir_val*n*self.dis]
+            # pt_s=[self.pt_0+dir_val*n*self.dis]
+
+            return self.triangle_end(data_dict, direction, hole_direction)
         else:
+            t, n = tangent_normal(self.pt_0, self.pt_1)
+            dir_val=cot if direction else -cot
+
+            holes=[]
+
             pt_s=[
                 self.pt_0+dir_val*n*l,
                 self.pt_0+dir_val*n*l+t*h_lid,
                 self.pt_0+dir_val*n*(self.dis-h_lid)+t*h_lid
             ]
 
-        return pt_s, [rg.Line(self.pt_0, self.pt_1)], holes
+            return pt_s, [rg.Line(self.pt_0, self.pt_1)], holes
+
+        
 
