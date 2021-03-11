@@ -366,6 +366,7 @@ class Base():
         outline_pts=[]
         folds_a=[] # main folds between flap and main body
         folds_b=[] # folds on the flaps to be able to interlock them
+        holes=[]
 
         for i in range(self.count):
 
@@ -380,9 +381,11 @@ class Base():
             pt_0_new=self.flat_pts[idx_0]
             pt_1_new=self.flat_pts[idx_1]
 
+            loc_holes=[]
+
             outline_pts.append(pt_0_new)
             if isinstance(loc_pattern, tuple) or isinstance(loc_pattern, list):
-                pts, loc_folds_a, loc_folds_b = PanelSideSegment(pt_0, pt_1).complex_side(
+                pts, loc_folds_a, loc_folds_b, loc_holes = PanelSideSegment(pt_0, pt_1).complex_side(
                     pt_0_new,
                     pt_1_new,
                     self.s_p_p,
@@ -402,6 +405,7 @@ class Base():
             outline_pts.extend(pts)
             folds_a.extend(loc_folds_a)
             folds_b.extend(loc_folds_b)
+            holes.extend(loc_holes)
 
         if not(self.is_coplanar()):
             top_face_folds=self.fold_lns()

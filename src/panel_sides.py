@@ -67,9 +67,9 @@ class PanelSideSegment():
         if pattern_type[0]=="straight":
             loc_seg_pts=[new_pts[0] ]
         elif pattern_type[0]=="positive":
-            loc_seg_pts, _=n_s_0.portrusion(data_dict, False)
+            loc_seg_pts, _, _=n_s_0.portrusion(data_dict, False)
         elif pattern_type[0]=="negative":
-            loc_seg_pts, loc_folds_b=n_s_0.portrusion(data_dict, True)
+            loc_seg_pts, loc_folds_b, _=n_s_0.portrusion(data_dict, True)
         elif pattern_type[0]=="easyfix_pos":
             loc_seg_pts, _, loc_holes=n_s_0.easy_fix_portrusion(data_dict, False)
         elif pattern_type[0]=="easyfix_neg":
@@ -105,9 +105,9 @@ class PanelSideSegment():
         if pattern_type[1]=="straight":
             loc_seg_pts=[new_pts[1] ]
         elif pattern_type[1]=="positive":
-            loc_seg_pts, loc_folds_b = n_s_1.portrusion(data_dict, False)
+            loc_seg_pts, loc_folds_b, _ = n_s_1.portrusion(data_dict, False)
         elif pattern_type[1]=="negative":
-            loc_seg_pts, _ = n_s_1.portrusion(data_dict, True)
+            loc_seg_pts, _, _ = n_s_1.portrusion(data_dict, True)
         elif pattern_type[1]=="easyfix_pos":
             loc_seg_pts, loc_folds_b, loc_holes=n_s_1.easy_fix_portrusion(data_dict, False)
             extra_pt=True
@@ -163,6 +163,8 @@ class PanelSideSegment():
         h, w = data_dict["flap_h"], data_dict["flap_w"]
         iv=-1.0 if invert else 1.0
 
+        holes=[]
+
         new_pts=[
             self.pt_0+rg.Point3d(iv*self.t*w + self.n*h),
             self.pt_1+rg.Point3d(-iv*self.t*w + self.n*h)
@@ -170,7 +172,7 @@ class PanelSideSegment():
 
         fold_lines=[rg.Line(self.pt_0, self.pt_1)]
 
-        return new_pts, fold_lines
+        return new_pts, fold_lines, holes
 
     def portrusion(self, data_dict, direction):
         print("simple end portrusion")
@@ -178,6 +180,8 @@ class PanelSideSegment():
 
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=1.0 if direction else -1.0
+
+        holes=[]
 
         h=self.dis
         if h < h_max:
@@ -188,7 +192,7 @@ class PanelSideSegment():
                 self.pt_0+dir_val*n*h_max+t*(h-h_max)
             ]
 
-        return pt_s, [rg.Line(self.pt_0, self.pt_1)]
+        return pt_s, [rg.Line(self.pt_0, self.pt_1)], holes
 
     def easy_fix_portrusion(self, data_dict, direction):
         print("easy_fix end portrusion")
