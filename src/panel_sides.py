@@ -218,9 +218,9 @@ class PanelSideSegment():
             dir_val=1. if direction else -1.
 
             if hole_direction:
-                c_pt=rg.Point3d(self.pt_0+dir_val*n*(l-data_dict["hole_l_a"])+t*h_lid*.5)
-            else:
                 c_pt=rg.Point3d(self.pt_0+dir_val*n*(l+data_dict["hole_l_a"])+t*h_lid*.5)
+            else:
+                c_pt=rg.Point3d(self.pt_0+dir_val*n*(l-data_dict["hole_l_a"])+t*h_lid*.5)
 
             holes=[rg.Circle(
                 c_pt,
