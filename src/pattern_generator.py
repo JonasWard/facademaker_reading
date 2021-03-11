@@ -70,6 +70,7 @@ def pyramid_pattern_parser(name="flat", cnt=4):
         triangle_set=[[invert_pattern(v) for v in ([pentagon_set[0][0], pentagon_set[-1][-1]])]]
     else:
         triangle_set=[[pentagon_set[0][0], pentagon_set[-1][-1]]]
+
     triangle_set=p_b_set["flaps"]+p_b_set["flaps"]+triangle_set
     pentagon_set=p_b_set["flaps"]+pentagon_set+p_b_set["flaps"]
 

@@ -48,8 +48,10 @@ class PanelSideSegment():
 
         return [pt_0_1, pt_1_1], [rg.Line(pt_0, pt_1)]
 
-    def complex_side(self, pt_0, pt_1, h_max, lid_l, pattern_type=["straight","straight"] ):
+    def complex_side(self, pt_0, pt_1, data_dict, pattern_type=["straight","straight"] ):
         new_pts, fold_a=self.simple_side(pt_0, pt_1)
+
+        h_max, lid_l = data_dict["flap_h_max"], data_dict["flap_l_max"]
 
         n_s_0=PanelSideSegment(new_pts[0], pt_0)
         n_s_1=PanelSideSegment(new_pts[1], pt_1)
@@ -113,7 +115,7 @@ class PanelSideSegment():
         pt_f_1=loc_seg_pts[0]
 
         if pattern_type[0]=="easyfix_pos" or pattern_type[0]=="easyfix_neg":
-            loc_f_seg_pts, loc_f_folds_b = PanelSideSegment(pt_f_0, pt_f_1).simple_flap(h=20., w=50.)
+            loc_f_seg_pts, loc_f_folds_b = PanelSideSegment(pt_f_0, pt_f_1).simple_flap(data_dict["flap_h"], data_dict["flap_w"])
             seg_pts.extend(loc_f_seg_pts)
             folds_b.extend(loc_f_folds_b)
 
