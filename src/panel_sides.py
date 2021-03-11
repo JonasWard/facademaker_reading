@@ -128,7 +128,11 @@ class PanelSideSegment():
         # point to be added in case easy fix
         pt_f_1=loc_seg_pts[0]
 
-        if pattern_type[0]=="easyfix_pos" or pattern_type[0]=="easyfix_neg":
+        if (
+                (pattern_type[0]=="easyfix_pos" or pattern_type[0]=="easyfix_neg") or
+                (pattern_type[0]=="easyfix_pos_simple" or pattern_type[0]=="easyfix_neg_simple")
+            ):
+
             loc_f_seg_pts, loc_f_folds_b = PanelSideSegment(pt_f_0, pt_f_1).simple_flap(data_dict["flap_h"], data_dict["flap_w"])
             seg_pts.extend(loc_f_seg_pts)
             folds_b.extend(loc_f_folds_b)

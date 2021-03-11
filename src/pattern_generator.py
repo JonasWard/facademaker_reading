@@ -40,7 +40,7 @@ def invert_pattern(value):
 def easy_fix_function(p_name, cnt = 4):
     full_pattern_list=[p_b_set[p_name][1][:] for i in range(cnt)]
     full_pattern_list[0][0]=p_b_set[p_name][0][0]
-    full_pattern_list[-1][-1]=p_b_set[p_name][0][1]
+    full_pattern_list[cnt-1][1]=p_b_set[p_name][0][1]
 
     return full_pattern_list
 
