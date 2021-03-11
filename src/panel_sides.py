@@ -75,6 +75,13 @@ class PanelSideSegment():
             print("easyfix_neg")
             loc_seg_pts, loc_folds_b=n_s_0.easy_fix_portrusion(h_max, lid_l, True)
             extra_pt=True
+        elif pattern_type[0]=="easyfix_pos_simple":
+            print("easyfix_pos_simple")
+            loc_seg_pts, _=n_s_0.triangle_end(data_dict["angle"], False)
+        elif pattern_type[0]=="easyfix_neg_simple":
+            print("easyfix_neg_simple")
+            loc_seg_pts, loc_folds_b=n_s_0.triangle_end(data_dict["angle"], True)
+            extra_pt=True
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[0]))
 
@@ -105,6 +112,13 @@ class PanelSideSegment():
         elif pattern_type[0]=="easyfix_neg":
             print("easyfix_neg")
             loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, True)
+        elif pattern_type[0]=="easyfix_pos_simple":
+            print("easyfix_pos_simple")
+            loc_seg_pts, loc_folds_b=n_s_1.triangle_end(data_dict["angle"], False)
+            extra_pt=True
+        elif pattern_type[0]=="easyfix_neg_simple":
+            print("easyfix_neg_simple")
+            loc_seg_pts, _=n_s_1.triangle_end(data_dict["angle"], True)
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
@@ -130,14 +144,7 @@ class PanelSideSegment():
         t, n = tangent_normal(self.pt_0, self.pt_1)
         dir_val=cot if direction else -cot
 
-        if self.dis < h_lid or self.dis > l:
-            pt_s=[self.pt_0+dir_val*n*self.dis]
-        else:
-            pt_s=[
-                self.pt_0+dir_val*n*l,
-                self.pt_0+dir_val*n*l+t*h_lid,
-                self.pt_0+dir_val*n*(self.dis-h_lid)+t*h_lid
-            ]
+        pt_s=[self.pt_0+dir_val*n*self.dis]
 
         return pt_s, [rg.Line(self.pt_0, self.pt_1)]
 
@@ -170,12 +177,13 @@ class PanelSideSegment():
 
         return pt_s, [rg.Line(self.pt_0, self.pt_1)]
 
-    def easy_fix_portrusion(self, h_lid, l, direction):
+    def easy_fix_portrusion(self, h_lid, l, angle, direction):
         print("easy_fix end portrusion")
+        cot=1./tan(angle)
         t, n = tangent_normal(self.pt_0, self.pt_1)
-        dir_val=1.0 if direction else -1.0
+        dir_val=cot if direction else -cot
 
-        if self.dis < h_lid or self.dis > l:
+        if self.dis < h_lid or self.dis > l/cot:
             pt_s=[self.pt_0+dir_val*n*self.dis]
         else:
             pt_s=[

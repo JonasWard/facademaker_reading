@@ -385,8 +385,7 @@ class Base():
                 pts, loc_folds_a, loc_folds_b = PanelSideSegment(pt_0, pt_1).complex_side(
                     pt_0_new,
                     pt_1_new,
-                    self.h_max,
-                    self.l_len,
+                    self.s_p_p,
                     loc_pattern
                 )
             elif isinstance(loc_pattern, str):
