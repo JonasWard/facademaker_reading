@@ -39,8 +39,14 @@ def invert_pattern(value):
 
 def easy_fix_function(p_name, cnt = 4):
     full_pattern_list=[p_b_set[p_name][1][:] for i in range(cnt)]
+    print("easyFix step A:")
+    print(full_pattern_list)
     full_pattern_list[0][0]=p_b_set[p_name][0][0]
+    print("easyFix step B:")
+    print(full_pattern_list)
     full_pattern_list[cnt-1][1]=p_b_set[p_name][0][1]
+    print("easyFix step C:")
+    print(full_pattern_list)
 
     return full_pattern_list
 
@@ -56,6 +62,10 @@ def filling_pattern(p_name, cnt = 4, fix = True):
 
     if (p_name in inverted_patterns) and fix:
         full_pattern_list[0][0]=full_pattern_list[-1][-1]
+
+    if p_name in easy_fix_patterns:
+        print("easyFix step D:")
+        print(full_pattern_list)
 
     return full_pattern_list
 
