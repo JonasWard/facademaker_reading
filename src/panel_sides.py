@@ -70,17 +70,17 @@ class PanelSideSegment():
             loc_seg_pts, loc_folds_b=n_s_0.portrusion(h_max, True)
         elif pattern_type[0]=="easyfix_pos":
             print("easyfix_pos")
-            loc_seg_pts, _=n_s_0.easy_fix_portrusion(h_max, lid_l, data_dict["angle"], False)
+            loc_seg_pts, _=n_s_0.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], False)
         elif pattern_type[0]=="easyfix_neg":
             print("easyfix_neg")
-            loc_seg_pts, loc_folds_b=n_s_0.easy_fix_portrusion(h_max, lid_l, data_dict["angle"], True)
+            loc_seg_pts, loc_folds_b=n_s_0.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], True)
             extra_pt=True
         elif pattern_type[0]=="easyfix_pos_simple":
             print("easyfix_pos_simple")
-            loc_seg_pts, _=n_s_0.triangle_end(data_dict["angle"], False)
+            loc_seg_pts, _=n_s_0.triangle_end(data_dict["side_angle"], False)
         elif pattern_type[0]=="easyfix_neg_simple":
             print("easyfix_neg_simple")
-            loc_seg_pts, loc_folds_b=n_s_0.triangle_end(data_dict["angle"], True)
+            loc_seg_pts, loc_folds_b=n_s_0.triangle_end(data_dict["side_angle"], True)
             extra_pt=True
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[0]))
@@ -107,18 +107,18 @@ class PanelSideSegment():
             loc_seg_pts, _ = n_s_1.portrusion(h_max, True)
         elif pattern_type[0]=="easyfix_pos":
             print("easyfix_pos")
-            loc_seg_pts, loc_folds_b=n_s_1.easy_fix_portrusion(h_max, lid_l, data_dict["angle"], False)
+            loc_seg_pts, loc_folds_b=n_s_1.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], False)
             extra_pt=True
         elif pattern_type[0]=="easyfix_neg":
             print("easyfix_neg")
-            loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, data_dict["angle"], True)
+            loc_seg_pts, _=n_s_1.easy_fix_portrusion(h_max, lid_l, data_dict["side_angle"], True)
         elif pattern_type[0]=="easyfix_pos_simple":
             print("easyfix_pos_simple")
-            loc_seg_pts, loc_folds_b=n_s_1.triangle_end(data_dict["angle"], False)
+            loc_seg_pts, loc_folds_b=n_s_1.triangle_end(data_dict["side_angle"], False)
             extra_pt=True
         elif pattern_type[0]=="easyfix_neg_simple":
             print("easyfix_neg_simple")
-            loc_seg_pts, _=n_s_1.triangle_end(data_dict["angle"], True)
+            loc_seg_pts, _=n_s_1.triangle_end(data_dict["side_angle"], True)
         else:
             print("this pattern type '{}' is not defined".format(pattern_type[1]))
 
