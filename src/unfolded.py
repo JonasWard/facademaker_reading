@@ -154,7 +154,7 @@ class Unfolded():
             "outline_crv"      : outline_crv,
             "top_face_folds"   : top_face_folds,
             "body_flap_folds"  : body_flap_folds,
-            "intra_flap_folds" : intra_flap_folds
+            "intra_flap_folds" : intra_flap_folds,
             "holes"            : holes
         }
 

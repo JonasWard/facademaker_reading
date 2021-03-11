@@ -9,6 +9,7 @@ DEFAULT_NAMES={
     "main_folds":"folds_main",
     "sec_folds":"folds_secondary",
     "inner_folds":"folds_inner",
+    "holes":"holes"
 }
 
 def bake_objects(layer, geos, ghdoc):
@@ -45,7 +46,7 @@ def set_color(layer, color, ghdoc):
 
     rs.LayerColor(layer, color)
 
-def bake(outline_crv, main_folds, secundary_folds, inner_folds, ghdoc, name_dict=None):
+def bake(outline_crv, main_folds, secundary_folds, inner_folds, holes, ghdoc, name_dict=None):
     if name_dict is None:
         global DEFAULT_NAMES
         name_dict=DEFAULT_NAMES
@@ -54,5 +55,6 @@ def bake(outline_crv, main_folds, secundary_folds, inner_folds, ghdoc, name_dict
     bake_objects(name_dict["main_folds"], main_folds, ghdoc)
     bake_objects(name_dict["sec_folds"], secundary_folds, ghdoc)
     bake_objects(name_dict["inner_folds"], inner_folds, ghdoc)
+    bake_objects(name_dict["holes"], holes, ghdoc)
     
     time.sleep(.4)
